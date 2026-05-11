@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Play, Pause, RotateCcw, Coffee, Brain } from "lucide-react";
+import { safeLoad, safeSave, StorageKey } from "@/lib/storage";
 
 const WORK_SECS  = 25 * 60;
 const BREAK_SECS =  5 * 60;
@@ -8,7 +9,21 @@ export function PomodoroTimer() {
   const [mode,     setMode]     = useState<'work' | 'break'>('work');
   const [timeLeft, setTimeLeft] = useState(WORK_SECS);
   const [running,  setRunning]  = useState(false);
-  const [sessions, setSessions] = useState(0);
+  const [sessions, setSessions] = useState<number>(() => {
+    // Reset daily — store sessions as { date, count }
+    const saved = safeLoad<{ date: string; count: number }>(
+      StorageKey.PomodoroSessions,
+      { date: '', count: 0 }
+    );
+    const today = new Date().toISOString().slice(0, 10);
+    return saved.date === today ? saved.count : 0;
+  });
+
+  // Persist sessions count (daily)
+  useEffect(() => {
+    const today = new Date().toISOString().slice(0, 10);
+    safeSave(StorageKey.PomodoroSessions, { date: today, count: sessions });
+  }, [sessions]);
 
   useEffect(() => {
     if (!running) return;
