@@ -55,7 +55,7 @@ function exportAllData(prefix: string) {
   URL.revokeObjectURL(url);
 }
 
-// ─── StudyApp ─────────────────────────────────────────────────────────────────
+// ─── StudyApp ──────────────────────────────────────────────────────────────────────────────────
 
 interface StudyAppProps {
   prefix: string;
@@ -427,7 +427,7 @@ function StudyApp({ prefix, user, onSignOut }: StudyAppProps) {
   );
 }
 
-// ─── App (Auth Gate) ──────────────────────────────────────────────────────────
+// ─── App (Auth Gate) ──────────────────────────────────────────────
 
 export default function App() {
   const { user, loading, isGuest, storagePrefix, signOut } = useAuth();
