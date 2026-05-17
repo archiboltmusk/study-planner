@@ -68,15 +68,15 @@ function ensureOnlineListener(): void {
 
 // ── Debounce helper ───────────────────────────────────────────────────────────
 
-function useDebounce<T extends (...args: Parameters<T>) => void>(fn: T, ms: number): T {
+function useDebounce<A extends unknown[]>(fn: (...args: A) => void, ms: number): (...args: A) => void {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   return useCallback(
-    (...args: Parameters<T>) => {
+    (...args: A) => {
       if (timer.current) clearTimeout(timer.current);
       timer.current = setTimeout(() => fn(...args), ms);
     },
     [fn, ms]
-  ) as T;
+  );
 }
 
 // ── UserData shape (mirrors Supabase user_data columns) ───────────────────────
