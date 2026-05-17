@@ -406,7 +406,6 @@ function StudyApp({ prefix, user, onSignOut }: StudyAppProps) {
 
   const handlePYQCorrect = useCallback(() => gainXP(XP_VALUES.pyq_correct, 'PYQ correct'), [gainXP]);
   const handlePYQWrong   = useCallback(() => gainXP(XP_VALUES.pyq_wrong,   'PYQ attempt'), [gainXP]);
-  const handleAIChat     = useCallback(() => gainXP(XP_VALUES.ai_chat,     'AI tutor'),    [gainXP]);
 
   // ── Nav helpers ───────────────────────────────────────────────
   const handleGroupClick = (gid: NavGroup) => {
@@ -437,14 +436,6 @@ function StudyApp({ prefix, user, onSignOut }: StudyAppProps) {
   const isPostExam   = examDate.getTime() <= Date.now();
   const userInitial  = user?.email?.[0]?.toUpperCase() ?? 'G';
   const userLabel    = user?.email ?? 'Guest';
-
-  const studyContext = useMemo(() => ({
-    completedDays,
-    mcqScores,
-    flaggedCount: flagged.length,
-    currentDayFocus: selectedDay ? `Day ${selectedDay.day} — ${selectedDay.subject}: ${selectedDay.focus}` : '',
-    examDate,
-  }), [completedDays, mcqScores, flagged.length, selectedDay, examDate]);
 
   const activeGroupData = NAV_GROUPS.find(g => g.id === activeGroup) ?? NAV_GROUPS[0];
   const showSubNav      = activeGroupData.tabs.length > 1;

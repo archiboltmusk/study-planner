@@ -37,7 +37,7 @@ function getUrgencyBg(daysLeft: number): string {
   return "bg-destructive/10 border-destructive/25";
 }
 
-// Subject → which plan days map to it (mirrors ChatPanel's SUBJECT_DAYS)
+// Subject → which plan days map to it
 const SUBJECT_DAYS: Record<string, number[]> = {
   Medicine:      [1, 2, 3, 4],
   Surgery:       [5, 6],
