@@ -21,9 +21,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  // Accept key from client header OR server env var
+  const apiKey = (req.headers['x-api-key'] as string | undefined) || process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
-    return res.status(500).json({ error: "Server misconfiguration: ANTHROPIC_API_KEY not set" });
+    return res.status(401).json({ error: "No API key provided. Add your Anthropic API key in the AI Tutor settings (key icon)." });
   }
 
   const { messages, context } = req.body as {

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { Bot, Send, Trash2, Loader2 } from "lucide-react";
+import { Bot, Send, Trash2, Loader2, Key } from "lucide-react";
+import { safeLoad, safeSave } from "@/lib/storage";
 
 interface Message {
   role: "user" | "assistant";
@@ -66,6 +67,8 @@ export function ChatPanel({ studyContext, onFirstMessage }: Props) {
   const [input,     setInput]     = useState<string>("");
   const [streaming, setStreaming] = useState<boolean>(false);
   const [error,     setError]     = useState<string>("");
+  const [apiKey,    setApiKey]    = useState<string>(() => safeLoad<string>('neetpg_ai_key', ''));
+  const [showKeyInput, setShowKeyInput] = useState<boolean>(false);
   const firstMsgFired = useRef(false);
   const bottomRef     = useRef<HTMLDivElement>(null);
   const textareaRef   = useRef<HTMLTextAreaElement>(null);
@@ -104,7 +107,10 @@ export function ChatPanel({ studyContext, onFirstMessage }: Props) {
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(apiKey ? { "x-api-key": apiKey } : {}),
+        },
         body: JSON.stringify({
           messages: nextMessages.map(m => ({ role: m.role, content: m.content })),
           context: buildContext(studyContext),
@@ -175,15 +181,56 @@ export function ChatPanel({ studyContext, onFirstMessage }: Props) {
             <p className="text-xs text-muted-foreground font-mono">Powered by Claude · NEET PG focused</p>
           </div>
         </div>
-        {messages.length > 0 && (
+        <div className="flex items-center gap-2">
           <button
-            onClick={clearChat}
+            onClick={() => setShowKeyInput(s => !s)}
+            title="Set API key"
             className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-mono text-muted-foreground hover:text-foreground border border-border rounded-md transition-colors"
           >
-            <Trash2 className="w-3.5 h-3.5" /> Clear
+            <Key className="w-3.5 h-3.5" />
+            {apiKey ? 'Key set' : 'Add key'}
           </button>
-        )}
+          {messages.length > 0 && (
+            <button
+              onClick={clearChat}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-mono text-muted-foreground hover:text-foreground border border-border rounded-md transition-colors"
+            >
+              <Trash2 className="w-3.5 h-3.5" /> Clear
+            </button>
+          )}
+        </div>
       </div>
+
+      {/* API Key input panel */}
+      {showKeyInput && (
+        <div className="shrink-0 bg-amber-500/5 border border-amber-500/20 rounded-xl p-4 flex flex-col gap-2">
+          <p className="text-[11px] font-mono text-amber-400 font-bold uppercase">Anthropic API Key</p>
+          <p className="text-[11px] font-mono text-muted-foreground">Enter your key from console.anthropic.com. Stored locally, never sent to our servers.</p>
+          <div className="flex gap-2">
+            <input
+              type="password"
+              value={apiKey}
+              onChange={e => {
+                setApiKey(e.target.value);
+                safeSave('neetpg_ai_key', e.target.value);
+              }}
+              placeholder="sk-ant-api03-..."
+              className="flex-1 bg-background border border-border rounded-lg px-3 py-2 text-xs font-mono focus:outline-none focus:ring-1 focus:ring-amber-500"
+            />
+            <button
+              onClick={() => setShowKeyInput(false)}
+              className="px-3 py-2 bg-amber-500/20 text-amber-400 text-xs font-mono rounded-lg hover:bg-amber-500/30 transition-colors"
+            >
+              Save
+            </button>
+          </div>
+          {!apiKey && (
+            <p className="text-[10px] font-mono text-muted-foreground/60">
+              Without a key, the AI tutor requires ANTHROPIC_API_KEY to be set on the server.
+            </p>
+          )}
+        </div>
+      )}
 
       {/* Chat area */}
       <div className="flex-1 overflow-y-auto bg-card border border-border rounded-xl flex flex-col">
