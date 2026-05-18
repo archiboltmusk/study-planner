@@ -11,7 +11,7 @@ export interface DayEntry {
   images: string;
 }
 
-export const EXAM_DATE = new Date("2026-11-16T09:00:00");
+export const EXAM_DATE = new Date("2026-08-30T09:00:00");
 
 export const PHASES = [
   { id: "blitz",    label: "Blitz Pass",         days: [1, 18],  color: "#ff4d4d" },
