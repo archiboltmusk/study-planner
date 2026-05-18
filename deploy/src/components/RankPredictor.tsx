@@ -7,7 +7,7 @@ interface MockEntry {
 }
 
 // NEET PG rank estimation based on historical data patterns.
-// Roughly: score% → estimated AIR (from cutoff analysis 2020-2025).
+// Roughly: score% → estimated AIR (from cutoff analysis 2020-2026).
 // These brackets are derived from publicly available NEET PG result trends.
 function estimateRank(pct: number): { airMin: number; airMax: number; category: string; color: string; advice: string } {
   if (pct >= 90)  return { airMin: 1,     airMax: 500,   category: "Top 500 — Government MDH/MS/MD seats", color: "#22c55e", advice: "Outstanding. Secure top government specialty. Maintain with mock analysis." };
@@ -91,7 +91,7 @@ export function RankPredictor() {
           <div className="flex gap-2">
             <AlertCircle className="w-3.5 h-3.5 text-blue-400 shrink-0 mt-0.5" />
             <p className="text-[11px] font-mono text-foreground/70 leading-relaxed">
-              Estimates are based on historical NEET PG cutoff trends (2020–2025). Actual rank depends on exam difficulty, number of candidates, and paper pattern. Use this as a directional guide, not a guarantee. Negative marking: -0.25 per wrong answer.
+              Estimates are based on historical NEET PG cutoff trends (2020–2026). Actual rank depends on exam difficulty, number of candidates, and paper pattern. Use this as a directional guide, not a guarantee. Negative marking: -0.25 per wrong answer.
             </p>
           </div>
         </div>
