@@ -33,9 +33,9 @@ function estimateRank(pct: number): {
   return           { airMin: 5000, airMax: 10000, category: "Below competitive range",                         color: "#ef4444" };
 }
 
-// ─── Negative marking ─────────────────────────────────────────────────────────
+// ─── Negative marking (INI-CET: −1/3 per wrong) ─────────────────────────────
 function negativeMarkingScore(correct: number, wrong: number): number {
-  return correct - wrong * 0.25;
+  return correct - wrong / 3;
 }
 
 // ─── Fisher-Yates shuffle ─────────────────────────────────────────────────────
@@ -56,6 +56,14 @@ function formatTime(secs: number): string {
   return `${String(m).padStart(2, "0")}:${String(r).padStart(2, "0")}`;
 }
 
+// ─── INI-CET sections (used when 200Q mode is active) ────────────────────────
+const INICET_SECTIONS = [
+  { name: "Pre-clinical",    subjects: ["Anatomy","Physiology","Biochemistry"],                     mins: 52 },
+  { name: "Para-clinical",   subjects: ["Pathology","Microbiology","Pharmacology","Forensic"],      mins: 53 },
+  { name: "Clinical",        subjects: ["Medicine","Surgery","OBG","Paediatrics","ENT/Ophth/Derm"], mins: 53 },
+  { name: "Social & Prev.",  subjects: ["PSM/Community Medicine","PSM"],                            mins: 52 },
+] as const;
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Phase = "setup" | "running" | "results";
 type Confidence = "sure" | "unsure" | "skipped";
@@ -70,6 +78,8 @@ export function ExamSimulation({ onComplete }: { onComplete?: () => void } = {})
   // ── Setup state ──
   const [numQuestions, setNumQuestions] = useState<50 | 100 | 200>(200);
   const [subjectFilter, setSubjectFilter] = useState<string | QuestionSubject>("All subjects");
+  const [sectionMode, setSectionMode] = useState(true); // INI-CET 4-section format
+  const [currentSection, setCurrentSection] = useState(0);
 
   // ── Exam state ──
   const [phase, setPhase] = useState<Phase>("setup");
@@ -126,7 +136,9 @@ export function ExamSimulation({ onComplete }: { onComplete?: () => void } = {})
     setCurrentIdx(0);
     setAnswers({});
     setConfidence({});
-    setSecsLeft(total * 54);
+    // INI-CET 200Q = 210 min (3.5h); scale proportionally for shorter modes
+    setSecsLeft(total === 200 ? 210 * 60 : total === 100 ? 105 * 60 : 53 * 60);
+    setCurrentSection(0);
     setShowReview(false);
     setPhase("running");
   };
@@ -330,13 +342,38 @@ export function ExamSimulation({ onComplete }: { onComplete?: () => void } = {})
             </div>
           </div>
 
+          {/* Section mode toggle (200Q only) */}
+          {numQuestions === 200 && (
+            <div>
+              <p className="text-[11px] font-mono uppercase text-muted-foreground mb-2.5">Format</p>
+              <div className="flex gap-2">
+                {[
+                  { v: true,  label: "INI-CET (4 Sections × ~52 min)" },
+                  { v: false, label: "Free-flow (210 min continuous)"  },
+                ].map(opt => (
+                  <button
+                    key={String(opt.v)}
+                    onClick={() => setSectionMode(opt.v)}
+                    className={`flex-1 py-2 rounded-lg text-[11px] font-mono border transition-all ${
+                      sectionMode === opt.v
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "bg-background border-border text-muted-foreground hover:border-primary/50"
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Info note */}
           <div className="bg-amber-500/5 border border-amber-500/20 rounded-lg px-4 py-3">
             <div className="flex gap-2 items-start">
               <AlertTriangle className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
               <p className="text-[11px] font-mono text-foreground/70 leading-relaxed">
-                Negative marking: <span className="text-amber-400 font-bold">–0.25</span> per wrong answer.
-                Timer: <span className="text-amber-400 font-bold">54 seconds</span> per question.
+                Negative marking: <span className="text-amber-400 font-bold">−⅓</span> per wrong answer (INI-CET standard).
+                Duration: <span className="text-amber-400 font-bold">{numQuestions === 200 ? "3.5h (210 min)" : numQuestions === 100 ? "105 min" : "53 min"}</span>.
               </p>
             </div>
           </div>
@@ -365,14 +402,24 @@ export function ExamSimulation({ onComplete }: { onComplete?: () => void } = {})
     const isLast = currentIdx === total - 1;
     const timerUrgent = secsLeft < 300; // < 5 min
 
+    // Section progress for 200Q section mode
+    const sectionLabel = sectionMode && total === 200
+      ? INICET_SECTIONS[Math.min(currentSection, INICET_SECTIONS.length - 1)].name
+      : null;
+
     return (
       <div className="bg-card border border-border rounded-xl overflow-hidden">
         {/* Top bar */}
         <div className="px-4 py-3 border-b border-border flex items-center justify-between gap-3">
-          <span className="text-xs font-mono font-bold text-muted-foreground">
-            Q <span className="text-foreground">{currentIdx + 1}</span>
-            <span className="text-muted-foreground/50"> / {total}</span>
-          </span>
+          <div className="flex flex-col">
+            <span className="text-xs font-mono font-bold text-muted-foreground">
+              Q <span className="text-foreground">{currentIdx + 1}</span>
+              <span className="text-muted-foreground/50"> / {total}</span>
+            </span>
+            {sectionLabel && (
+              <span className="text-[9px] font-mono text-primary/70">{sectionLabel}</span>
+            )}
+          </div>
 
           <div className={`flex items-center gap-1.5 px-3 py-1 rounded-lg border font-mono text-sm font-bold ${
             timerUrgent
