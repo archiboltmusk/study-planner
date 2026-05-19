@@ -13,6 +13,8 @@ import {
   ChevronDown,
   ChevronUp,
   Bookmark,
+  ThumbsUp,
+  ThumbsDown,
 } from "lucide-react";
 import { QUESTIONS, QUESTIONS_BY_SUBJECT, QUESTION_SUBJECTS, Question, type QuestionSubject } from "@/data/questions";
 import { autoLogMistakes } from "@/lib/mistakeLogger";
@@ -32,6 +34,24 @@ function computePercentile(scores: SimScore[], currentPct: number): number {
   if (scores.length < 2) return 100;
   const below = scores.filter(s => s.pct < currentPct).length;
   return Math.round((below / scores.length) * 100);
+}
+
+// ─── Explanation ratings ──────────────────────────────────────────────────────
+const EXP_RATINGS_KEY = "neetpg_explanation_ratings";
+type ExpRating = "up" | "down";
+
+function saveExpRating(qId: number, rating: ExpRating) {
+  const existing = safeLoad<Record<string, ExpRating>>(EXP_RATINGS_KEY, {});
+  safeSave(EXP_RATINGS_KEY, { ...existing, [String(qId)]: rating });
+}
+
+function useExpRating(qId: number) {
+  const [rating, setRating] = useState<ExpRating | null>(() => {
+    const stored = safeLoad<Record<string, ExpRating>>(EXP_RATINGS_KEY, {});
+    return stored[String(qId)] ?? null;
+  });
+  const rate = (r: ExpRating) => { setRating(r); saveExpRating(qId, r); };
+  return { rating, rate };
 }
 
 // ─── Rank estimation (same brackets as RankPredictor) ────────────────────────
@@ -90,6 +110,57 @@ type ConfidenceMap = Record<number, Confidence>;
 
 // ─── Option label helper ──────────────────────────────────────────────────────
 const OPTION_LABELS = ["A", "B", "C", "D"] as const;
+
+// ─── Review row (needs hook for rating) ──────────────────────────────────────
+function ReviewRow({ q, ans, idx }: { q: { id: number; stem: string; answer: number; explanation?: string; subject: string }, ans: number | null | undefined, idx: number }) {
+  const answered = ans !== null && ans !== undefined;
+  const isCorrect = answered && ans === q.answer;
+  const isWrong   = answered && ans !== q.answer;
+  const { rating, rate } = useExpRating(q.id);
+
+  return (
+    <div className="px-4 py-3 flex items-start gap-3 text-xs font-mono">
+      <span className="flex-shrink-0 mt-0.5">
+        {isCorrect ? (
+          <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
+        ) : isWrong ? (
+          <XCircle className="w-3.5 h-3.5 text-destructive" />
+        ) : (
+          <span className="inline-block w-3.5 h-3.5 rounded-full border border-muted-foreground/30" />
+        )}
+      </span>
+      <div className="flex-1 min-w-0">
+        <p className="text-foreground/70 leading-relaxed truncate">
+          <span className="text-muted-foreground mr-1.5">Q{idx + 1}</span>
+          {q.stem.slice(0, 100)}{q.stem.length > 100 ? "…" : ""}
+        </p>
+        <div className="flex items-center gap-4 mt-1 text-[10px]">
+          <span>
+            <span className="text-muted-foreground">Your: </span>
+            <span className={isCorrect ? "text-emerald-400" : isWrong ? "text-destructive" : "text-muted-foreground"}>
+              {answered ? OPTION_LABELS[ans!] : "—"}
+            </span>
+          </span>
+          <span>
+            <span className="text-muted-foreground">Correct: </span>
+            <span className="text-emerald-400">{OPTION_LABELS[q.answer]}</span>
+          </span>
+          {(isWrong || !answered) && (
+            <span className="ml-auto flex items-center gap-1 text-muted-foreground/60">
+              <span>Explanation:</span>
+              <button onClick={() => rate("up")} className={`p-0.5 hover:text-emerald-400 transition-colors ${rating === "up" ? "text-emerald-400" : ""}`} title="Helpful">
+                <ThumbsUp className="w-2.5 h-2.5" fill={rating === "up" ? "currentColor" : "none"} />
+              </button>
+              <button onClick={() => rate("down")} className={`p-0.5 hover:text-destructive transition-colors ${rating === "down" ? "text-destructive" : ""}`} title="Unclear">
+                <ThumbsDown className="w-2.5 h-2.5" fill={rating === "down" ? "currentColor" : "none"} />
+              </button>
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 // ─── Component ────────────────────────────────────────────────────────────────
 export function ExamSimulation({ onComplete }: { onComplete?: () => void } = {}) {
@@ -842,46 +913,9 @@ export function ExamSimulation({ onComplete }: { onComplete?: () => void } = {})
 
             {showReview && (
               <div className="divide-y divide-border">
-                {examQuestions.map((q, i) => {
-                  const ans = answers[q.id];
-                  const answered = ans !== null && ans !== undefined;
-                  const isCorrect = answered && ans === q.answer;
-                  const isWrong   = answered && ans !== q.answer;
-
-                  return (
-                    <div key={q.id} className="px-4 py-3 flex items-start gap-3 text-xs font-mono">
-                      {/* Status icon */}
-                      <span className="flex-shrink-0 mt-0.5">
-                        {isCorrect ? (
-                          <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
-                        ) : isWrong ? (
-                          <XCircle className="w-3.5 h-3.5 text-destructive" />
-                        ) : (
-                          <span className="inline-block w-3.5 h-3.5 rounded-full border border-muted-foreground/30" />
-                        )}
-                      </span>
-
-                      <div className="flex-1 min-w-0">
-                        <p className="text-foreground/70 leading-relaxed truncate">
-                          <span className="text-muted-foreground mr-1.5">Q{i + 1}</span>
-                          {q.stem.slice(0, 100)}{q.stem.length > 100 ? "…" : ""}
-                        </p>
-                        <div className="flex gap-4 mt-1 text-[10px]">
-                          <span>
-                            <span className="text-muted-foreground">Your: </span>
-                            <span className={isCorrect ? "text-emerald-400" : isWrong ? "text-destructive" : "text-muted-foreground"}>
-                              {answered ? OPTION_LABELS[ans!] : "—"}
-                            </span>
-                          </span>
-                          <span>
-                            <span className="text-muted-foreground">Correct: </span>
-                            <span className="text-emerald-400">{OPTION_LABELS[q.answer]}</span>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
+                {examQuestions.map((q, i) => (
+                  <ReviewRow key={q.id} q={q} ans={answers[q.id]} idx={i} />
+                ))}
               </div>
             )}
           </div>

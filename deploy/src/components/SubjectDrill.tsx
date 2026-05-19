@@ -10,6 +10,8 @@ import {
   ChevronUp,
   BookOpen,
   Zap,
+  ThumbsUp,
+  ThumbsDown,
 } from "lucide-react";
 import { QUESTIONS_BY_SUBJECT, QUESTION_SUBJECTS, Question, type QuestionSubject } from "@/data/questions";
 import { safeLoad, safeSave } from "@/lib/storage";
@@ -100,15 +102,36 @@ function aiToUnified(q: AIQuestion): UnifiedQuestion {
   };
 }
 
+// ─── Explanation rating helpers ───────────────────────────────────────────────
+const RATINGS_KEY = "neetpg_explanation_ratings";
+type Rating = "up" | "down";
+
+function saveRating(qUid: string, rating: Rating) {
+  const existing = safeLoad<Record<string, Rating>>(RATINGS_KEY, {});
+  safeSave(RATINGS_KEY, { ...existing, [qUid]: rating });
+}
+
 // ─── FeedbackOverlay ──────────────────────────────────────────────────────────
 
 function FeedbackOverlay({
+  qUid,
   correct,
   explanation,
 }: {
+  qUid: string;
   correct: boolean;
   explanation: string;
 }) {
+  const [rating, setRating] = useState<Rating | null>(() => {
+    const stored = safeLoad<Record<string, Rating>>(RATINGS_KEY, {});
+    return stored[qUid] ?? null;
+  });
+
+  const rate = (r: Rating) => {
+    setRating(r);
+    saveRating(qUid, r);
+  };
+
   return (
     <div
       className={`mt-3 rounded-xl border px-4 py-3 ${
@@ -130,6 +153,23 @@ function FeedbackOverlay({
         >
           {correct ? "Correct!" : "Wrong"}
         </span>
+        <div className="ml-auto flex items-center gap-1">
+          <span className="text-[9px] font-mono text-muted-foreground mr-1">Rate explanation:</span>
+          <button
+            onClick={() => rate("up")}
+            className={`p-1 rounded transition-colors ${rating === "up" ? "text-emerald-400" : "text-muted-foreground/40 hover:text-emerald-400"}`}
+            title="Helpful explanation"
+          >
+            <ThumbsUp className="w-3 h-3" fill={rating === "up" ? "currentColor" : "none"} />
+          </button>
+          <button
+            onClick={() => rate("down")}
+            className={`p-1 rounded transition-colors ${rating === "down" ? "text-destructive" : "text-muted-foreground/40 hover:text-destructive"}`}
+            title="Unclear explanation"
+          >
+            <ThumbsDown className="w-3 h-3" fill={rating === "down" ? "currentColor" : "none"} />
+          </button>
+        </div>
       </div>
       <p className="text-xs font-mono text-foreground/75 leading-relaxed">
         {explanation}
@@ -594,6 +634,7 @@ export function SubjectDrill({ onComplete }: { onComplete?: () => void } = {}) {
           {/* Feedback */}
           {revealed && feedback && (
             <FeedbackOverlay
+              qUid={q.uid}
               correct={feedback.correct}
               explanation={q.explanation}
             />
