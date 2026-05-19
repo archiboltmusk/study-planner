@@ -300,14 +300,36 @@ function StudyApp({ prefix, user }: StudyAppProps) {
   const toggleFlag    = useCallback((dayId: number, topicIdx: number) => appStore.getState().toggleFlag(dayId, topicIdx), [appStore]);
   const updateSrCard  = useCallback((dayId: number, card: SRCard) => appStore.getState().updateSrCard(dayId, card), [appStore]);
 
+  // Preserve streak if ≥10 MCQs answered on any given day (even without full day completion)
+  const preserveStreakFromActivity = useCallback((n: number) => {
+    if (n <= 0) return;
+    const today = new Date().toISOString().slice(0, 10);
+    const key = 'neetpg_today_mcq_streak';
+    const stored = safeLoad<{ date: string; count: number }>(key, { date: '', count: 0 });
+    const before = stored.date === today ? stored.count : 0;
+    const after  = before + n;
+    safeSave(key, { date: today, count: after });
+    if (after >= 10 && before < 10) {
+      appStore.getState().setStreak(s => {
+        if (s.lastDate === today) return s;
+        const prevDay = new Date(); prevDay.setDate(prevDay.getDate() - 1);
+        const newCount = s.lastDate === prevDay.toISOString().slice(0, 10) ? s.count + 1 : 1;
+        return { count: newCount, longest: Math.max(s.longest, newCount), lastDate: today };
+      });
+      toast.success('Streak preserved! (10+ MCQs done today)', { duration: 3000 });
+    }
+  }, [appStore]);
+
   const saveMcqScore = useCallback((day: number, attempted: number, correct: number) => {
     const prev = mcqScores[day] ?? { attempted: 0, correct: 0 };
-    const newCorrect = correct - (prev.correct ?? 0);
-    const newWrong   = (attempted - correct) - Math.max(0, (prev.attempted ?? 0) - (prev.correct ?? 0));
+    const newAttempted = attempted - (prev.attempted ?? 0);
+    const newCorrect   = correct - (prev.correct ?? 0);
+    const newWrong     = (attempted - correct) - Math.max(0, (prev.attempted ?? 0) - (prev.correct ?? 0));
     appStore.getState().saveMcqScore(day, attempted, correct);
     if (newCorrect > 0) gainXP(newCorrect * XP_VALUES.mcq_correct, 'MCQ correct');
     if (newWrong   > 0) gainXP(newWrong   * XP_VALUES.mcq_wrong,   'MCQ attempt');
-  }, [appStore, mcqScores, gainXP]);
+    preserveStreakFromActivity(newAttempted);
+  }, [appStore, mcqScores, gainXP, preserveStreakFromActivity]);
 
   const handleImport = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -335,9 +357,9 @@ function StudyApp({ prefix, user }: StudyAppProps) {
     e.target.value = '';
   };
 
-  const handleDrillComplete  = useCallback(() => { appStore.getState().incrementDrills(); gainXP(XP_VALUES.drill_complete,       'Drill complete');    }, [appStore, gainXP]);
-  const handleRapidComplete  = useCallback(() => { appStore.getState().incrementDrills(); gainXP(XP_VALUES.rapid_complete,       'Rapid revision');    }, [appStore, gainXP]);
-  const handleSimComplete    = useCallback(() => { appStore.getState().setSimCompleted(true); gainXP(XP_VALUES.simulation_complete, 'Exam simulation'); }, [appStore, gainXP]);
+  const handleDrillComplete  = useCallback(() => { appStore.getState().incrementDrills(); gainXP(XP_VALUES.drill_complete,       'Drill complete');    preserveStreakFromActivity(20); }, [appStore, gainXP, preserveStreakFromActivity]);
+  const handleRapidComplete  = useCallback(() => { appStore.getState().incrementDrills(); gainXP(XP_VALUES.rapid_complete,       'Rapid revision');    preserveStreakFromActivity(10); }, [appStore, gainXP, preserveStreakFromActivity]);
+  const handleSimComplete    = useCallback(() => { appStore.getState().setSimCompleted(true); gainXP(XP_VALUES.simulation_complete, 'Exam simulation'); preserveStreakFromActivity(50); }, [appStore, gainXP, preserveStreakFromActivity]);
   const handleExamDateSave   = useCallback((date: Date) => appStore.getState().setExamDateIso(date.toISOString()), [appStore]);
   const handlePYQCorrect     = useCallback(() => gainXP(XP_VALUES.pyq_correct, 'PYQ correct'), [gainXP]);
   const handlePYQWrong       = useCallback(() => gainXP(XP_VALUES.pyq_wrong,   'PYQ attempt'), [gainXP]);
