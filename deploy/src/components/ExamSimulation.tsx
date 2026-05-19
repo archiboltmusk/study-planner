@@ -14,6 +14,7 @@ import {
   ChevronUp,
 } from "lucide-react";
 import { QUESTIONS, QUESTIONS_BY_SUBJECT, QUESTION_SUBJECTS, Question, type QuestionSubject } from "@/data/questions";
+import { autoLogMistakes } from "@/lib/mistakeLogger";
 
 // ─── Rank estimation (same brackets as RankPredictor) ────────────────────────
 function estimateRank(pct: number): {
@@ -133,9 +134,20 @@ export function ExamSimulation({ onComplete }: { onComplete?: () => void } = {})
   // ── Submit exam ───────────────────────────────────────────────────────────
   const submitExam = useCallback(() => {
     stopTimer();
+    // Auto-capture all wrong answers into MistakeLogbook
+    const mistakes = examQuestions
+      .filter(q => { const a = answers[q.id]; return a !== null && a !== undefined && a !== q.answer; })
+      .map(q => ({
+        subject: q.subject,
+        question: q.stem,
+        correctAnswer: q.options[q.answer],
+        myAnswer: q.options[answers[q.id]!],
+        explanation: q.explanation,
+      }));
+    autoLogMistakes(mistakes);
     setPhase("results");
     onComplete?.();
-  }, [stopTimer, onComplete]);
+  }, [stopTimer, examQuestions, answers, onComplete]);
 
   // Keep the ref up-to-date
   useEffect(() => {

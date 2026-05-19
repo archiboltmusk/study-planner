@@ -12,6 +12,7 @@ interface MistakeEntry {
   myAnswer: string;
   whyWrong: string;
   reviewed: boolean;
+  source?: "auto" | "manual";
 }
 
 const SUBJECTS = ["Medicine","Surgery","Pharmacology","Physiology","Biochemistry","Pathology","Anatomy","Microbiology","OBG","Paediatrics","PSM","Forensic","ENT/Ophth/Derm"];
@@ -260,6 +261,7 @@ export function MistakeLogbook() {
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-medium ${SUBJECT_COLORS[entry.subject] ?? "bg-card text-muted-foreground"}`}>{entry.subject}</span>
                   <span className="text-sm font-medium text-foreground">{entry.topic}</span>
+                  {entry.source === "auto" && <span className="text-[10px] font-mono text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded">Auto</span>}
                   {entry.reviewed && <span className="text-[10px] font-mono text-green-400 bg-green-500/10 px-2 py-0.5 rounded">Reviewed</span>}
                 </div>
                 <div className="flex items-center gap-1 shrink-0">

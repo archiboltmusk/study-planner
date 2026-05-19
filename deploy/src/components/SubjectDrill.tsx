@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { QUESTIONS_BY_SUBJECT, QUESTION_SUBJECTS, Question, type QuestionSubject } from "@/data/questions";
 import { safeLoad, safeSave } from "@/lib/storage";
+import { autoLogMistakes } from "@/lib/mistakeLogger";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -253,6 +254,15 @@ export function SubjectDrill({ onComplete }: { onComplete?: () => void } = {}) {
     const correct = opt === q.answer;
     setAnswers((prev) => ({ ...prev, [uid]: opt }));
     setFeedback({ selected: opt, correct });
+    if (!correct) {
+      autoLogMistakes([{
+        subject: q.subject,
+        question: q.stem,
+        correctAnswer: q.options[q.answer],
+        myAnswer: q.options[opt],
+        explanation: q.explanation,
+      }]);
+    }
 
     // Auto-advance after 2 seconds
     setAdvancing(true);
