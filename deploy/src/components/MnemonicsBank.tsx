@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { Brain, Search, Copy, CheckCheck } from "lucide-react";
 
 // ─── Types ─────────────────────────────────────────────────────────────────
-interface Mnemonic {
+export interface Mnemonic {
   id: number;
   acronym: string;
   title: string;
@@ -12,7 +12,7 @@ interface Mnemonic {
 }
 
 // ─── Data ──────────────────────────────────────────────────────────────────
-const MNEMONICS: Mnemonic[] = [
+export const MNEMONICS: Mnemonic[] = [
   // ── Medicine ─────────────────────────────────────────────────────────────
   {
     id: 1, acronym: "MUDPILES", title: "High Anion Gap Metabolic Acidosis causes",

@@ -12,10 +12,12 @@ import {
   Zap,
   ThumbsUp,
   ThumbsDown,
+  Brain,
 } from "lucide-react";
 import { QUESTIONS_BY_SUBJECT, QUESTION_SUBJECTS, Question, type QuestionSubject } from "@/data/questions";
 import { safeLoad, safeSave } from "@/lib/storage";
 import { autoLogMistakes } from "@/lib/mistakeLogger";
+import { MNEMONICS } from "@/components/MnemonicsBank";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -100,6 +102,45 @@ function aiToUnified(q: AIQuestion): UnifiedQuestion {
     explanation: q.explanation,
     isAI: true,
   };
+}
+
+// ─── Mnemonic quick-reference sidebar ────────────────────────────────────────
+
+function MnemonicSidebar({ subject }: { subject: string }) {
+  const [open, setOpen] = useState(false);
+  const relevant = MNEMONICS.filter(m => m.subject === subject || m.subject.startsWith(subject)).slice(0, 4);
+  if (relevant.length === 0) return null;
+
+  return (
+    <div className="border border-violet-500/20 rounded-xl overflow-hidden bg-violet-500/5">
+      <button
+        onClick={() => setOpen(o => !o)}
+        className="w-full flex items-center justify-between px-3 py-2 text-xs font-mono text-violet-400 hover:bg-violet-500/10 transition-colors"
+      >
+        <span className="flex items-center gap-1.5">
+          <Brain className="w-3.5 h-3.5" />
+          Quick Mnemonics ({relevant.length} for {subject})
+        </span>
+        {open ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+      </button>
+      {open && (
+        <div className="px-3 pb-3 space-y-2">
+          {relevant.map(m => (
+            <div key={m.id} className="bg-background/60 border border-border/50 rounded-lg px-3 py-2">
+              <p className="text-[11px] font-mono font-bold text-violet-400">{m.acronym} — {m.title}</p>
+              <ul className="mt-1 space-y-0.5">
+                {m.expansion.map((e, i) => (
+                  <li key={i} className="text-[10px] font-mono text-foreground/70 flex gap-1.5">
+                    <span className="text-violet-400/60">{i + 1}.</span>{e}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
 
 // ─── Explanation rating helpers ───────────────────────────────────────────────
@@ -630,6 +671,9 @@ export function SubjectDrill({ onComplete }: { onComplete?: () => void } = {}) {
               );
             })}
           </div>
+
+          {/* Mnemonic quick-reference */}
+          <MnemonicSidebar subject={q.subject} />
 
           {/* Feedback */}
           {revealed && feedback && (
