@@ -12,6 +12,7 @@ import {
   BookOpen,
   ChevronDown,
   ChevronUp,
+  Bookmark,
 } from "lucide-react";
 import { QUESTIONS, QUESTIONS_BY_SUBJECT, QUESTION_SUBJECTS, Question, type QuestionSubject } from "@/data/questions";
 import { autoLogMistakes } from "@/lib/mistakeLogger";
@@ -112,6 +113,7 @@ export function ExamSimulation({ onComplete }: { onComplete?: () => void } = {})
   // ── Results state ──
   const [showReview, setShowReview] = useState(false);
   const [simScores, setSimScores] = useState<SimScore[]>(() => safeLoad<SimScore[]>(SIM_SCORES_KEY, []));
+  const [bookmarks, setBookmarks] = useState<Set<number>>(new Set());
 
   // ── Timer ─────────────────────────────────────────────────────────────────
   const stopTimer = useCallback(() => {
@@ -211,6 +213,14 @@ export function ExamSimulation({ onComplete }: { onComplete?: () => void } = {})
     setConfidence(prev => ({ ...prev, [qId]: conf }));
   };
 
+  const toggleBookmark = (qId: number) => {
+    setBookmarks(prev => {
+      const next = new Set(prev);
+      if (next.has(qId)) next.delete(qId); else next.add(qId);
+      return next;
+    });
+  };
+
   // ── Navigation ────────────────────────────────────────────────────────────
   const goTo = (idx: number) => {
     const spent = Math.round((Date.now() - qStartTime) / 1000);
@@ -232,6 +242,7 @@ export function ExamSimulation({ onComplete }: { onComplete?: () => void } = {})
     setConfidence({});
     setSecsLeft(0);
     setShowReview(false);
+    setBookmarks(new Set());
   };
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -464,13 +475,21 @@ export function ExamSimulation({ onComplete }: { onComplete?: () => void } = {})
             )}
           </div>
 
-          <div className={`flex items-center gap-1.5 px-3 py-1 rounded-lg border font-mono text-sm font-bold ${
-            timerUrgent
-              ? "bg-destructive/10 border-destructive/30 text-destructive animate-pulse"
-              : "bg-background border-border text-foreground"
-          }`}>
-            <Timer className="w-3.5 h-3.5" />
-            {formatTime(secsLeft)}
+          <div className="flex items-center gap-2">
+            {bookmarks.size > 0 && (
+              <span className="flex items-center gap-1 text-[10px] font-mono text-amber-400">
+                <Bookmark className="w-3 h-3" fill="currentColor" />
+                {bookmarks.size}
+              </span>
+            )}
+            <div className={`flex items-center gap-1.5 px-3 py-1 rounded-lg border font-mono text-sm font-bold ${
+              timerUrgent
+                ? "bg-destructive/10 border-destructive/30 text-destructive animate-pulse"
+                : "bg-background border-border text-foreground"
+            }`}>
+              <Timer className="w-3.5 h-3.5" />
+              {formatTime(secsLeft)}
+            </div>
           </div>
 
           <button
@@ -491,11 +510,24 @@ export function ExamSimulation({ onComplete }: { onComplete?: () => void } = {})
 
         {/* Question card */}
         <div className="p-5 space-y-4">
-          {/* Subject badge + stem */}
+          {/* Subject badge + bookmark + stem */}
           <div className="relative">
-            <span className="absolute top-0 right-0 text-[9px] font-mono uppercase px-2 py-0.5 rounded-full bg-primary/10 border border-primary/20 text-primary">
-              {q.subject}
-            </span>
+            <div className="absolute top-0 right-0 flex items-center gap-1.5">
+              <button
+                onClick={() => toggleBookmark(q.id)}
+                title={bookmarks.has(q.id) ? "Remove bookmark" : "Bookmark for review"}
+                className={`p-1 rounded transition-colors ${
+                  bookmarks.has(q.id)
+                    ? "text-amber-400"
+                    : "text-muted-foreground/40 hover:text-amber-400"
+                }`}
+              >
+                <Bookmark className="w-3.5 h-3.5" fill={bookmarks.has(q.id) ? "currentColor" : "none"} />
+              </button>
+              <span className="text-[9px] font-mono uppercase px-2 py-0.5 rounded-full bg-primary/10 border border-primary/20 text-primary">
+                {q.subject}
+              </span>
+            </div>
             <p className="text-sm font-mono text-foreground leading-relaxed pr-28">
               {q.stem}
             </p>
@@ -737,6 +769,60 @@ export function ExamSimulation({ onComplete }: { onComplete?: () => void } = {})
                       <span className={`w-12 text-right font-bold ${accColor}`}>
                         {acc !== null ? `${acc.toFixed(0)}%` : "—"}
                       </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Bookmarked questions */}
+          {bookmarks.size > 0 && (
+            <div className="border border-amber-500/30 rounded-xl overflow-hidden bg-amber-500/5">
+              <div className="flex items-center gap-2 px-4 py-2.5 border-b border-amber-500/20">
+                <Bookmark className="w-3.5 h-3.5 text-amber-400" fill="currentColor" />
+                <p className="text-xs font-mono font-bold text-amber-400">Bookmarked Questions ({bookmarks.size})</p>
+              </div>
+              <div className="divide-y divide-amber-500/10">
+                {examQuestions.filter(q => bookmarks.has(q.id)).map((q, _) => {
+                  const ans = answers[q.id];
+                  const answered = ans !== null && ans !== undefined;
+                  const isCorrect = answered && ans === q.answer;
+                  const isWrong   = answered && ans !== q.answer;
+                  const qNum = examQuestions.indexOf(q) + 1;
+                  return (
+                    <div key={q.id} className="px-4 py-3 flex items-start gap-3 text-xs font-mono">
+                      <span className="flex-shrink-0 mt-0.5">
+                        {isCorrect ? (
+                          <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
+                        ) : isWrong ? (
+                          <XCircle className="w-3.5 h-3.5 text-destructive" />
+                        ) : (
+                          <span className="inline-block w-3.5 h-3.5 rounded-full border border-muted-foreground/30" />
+                        )}
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-foreground/70 leading-relaxed">
+                          <span className="text-muted-foreground mr-1.5">Q{qNum}</span>
+                          {q.stem.slice(0, 120)}{q.stem.length > 120 ? "…" : ""}
+                        </p>
+                        <div className="flex gap-4 mt-1 text-[10px]">
+                          <span><span className="text-muted-foreground">Your: </span>
+                            <span className={isCorrect ? "text-emerald-400" : isWrong ? "text-destructive" : "text-muted-foreground"}>
+                              {answered ? OPTION_LABELS[ans!] : "—"}
+                            </span>
+                          </span>
+                          <span><span className="text-muted-foreground">Correct: </span>
+                            <span className="text-emerald-400">{OPTION_LABELS[q.answer]}</span>
+                          </span>
+                          <span className="text-amber-400/60">{q.subject}</span>
+                        </div>
+                        {q.explanation && (
+                          <p className="text-[10px] text-muted-foreground mt-1.5 leading-relaxed">
+                            {q.explanation.slice(0, 200)}{q.explanation.length > 200 ? "…" : ""}
+                          </p>
+                        )}
+                      </div>
                     </div>
                   );
                 })}
