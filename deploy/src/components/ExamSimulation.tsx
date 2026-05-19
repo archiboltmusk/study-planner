@@ -88,6 +88,8 @@ export function ExamSimulation({ onComplete }: { onComplete?: () => void } = {})
   const [answers, setAnswers] = useState<AnswerMap>({});
   const [confidence, setConfidence] = useState<ConfidenceMap>({});
   const [secsLeft, setSecsLeft] = useState(0);
+  const [qStartTime, setQStartTime] = useState<number>(0);
+  const [timings, setTimings] = useState<Record<number, number>>({}); // qId → secs spent
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // ── Results state ──
@@ -136,6 +138,8 @@ export function ExamSimulation({ onComplete }: { onComplete?: () => void } = {})
     setCurrentIdx(0);
     setAnswers({});
     setConfidence({});
+    setTimings({});
+    setQStartTime(Date.now());
     // INI-CET 200Q = 210 min (3.5h); scale proportionally for shorter modes
     setSecsLeft(total === 200 ? 210 * 60 : total === 100 ? 105 * 60 : 53 * 60);
     setCurrentSection(0);
@@ -184,6 +188,12 @@ export function ExamSimulation({ onComplete }: { onComplete?: () => void } = {})
 
   // ── Navigation ────────────────────────────────────────────────────────────
   const goTo = (idx: number) => {
+    const spent = Math.round((Date.now() - qStartTime) / 1000);
+    const qId = examQuestions[currentIdx]?.id;
+    if (qId !== undefined) {
+      setTimings(prev => ({ ...prev, [qId]: (prev[qId] ?? 0) + spent }));
+    }
+    setQStartTime(Date.now());
     setCurrentIdx(Math.max(0, Math.min(idx, examQuestions.length - 1)));
   };
 
@@ -232,7 +242,15 @@ export function ExamSimulation({ onComplete }: { onComplete?: () => void } = {})
     const pct = total > 0 ? (adjusted / total) * 100 : 0;
     const rank = estimateRank(Math.max(0, pct));
 
-    return { correct, wrong, unanswered, total, adjusted, pct, rank, subjectMap };
+    // Timing analytics
+    const timedQs = Object.values(timings).filter(t => t > 0);
+    const avgTimeSecs = timedQs.length > 0
+      ? Math.round(timedQs.reduce((a, b) => a + b, 0) / timedQs.length)
+      : null;
+    const allowedSecs = total === 200 ? 63 : total === 100 ? 63 : 63; // 210min/200Q = 63s
+    const timeOverrun = avgTimeSecs !== null && avgTimeSecs > allowedSecs;
+
+    return { correct, wrong, unanswered, total, adjusted, pct, rank, subjectMap, avgTimeSecs, allowedSecs, timeOverrun };
   })();
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -548,7 +566,7 @@ export function ExamSimulation({ onComplete }: { onComplete?: () => void } = {})
   // RENDER — RESULTS
   // ─────────────────────────────────────────────────────────────────────────
   if (phase === "results" && results) {
-    const { correct, wrong, unanswered, total, adjusted, pct, rank, subjectMap } = results;
+    const { correct, wrong, unanswered, total, adjusted, pct, rank, subjectMap, avgTimeSecs, allowedSecs, timeOverrun } = results;
     const safePct = Math.max(0, pct);
 
     return (
@@ -626,6 +644,22 @@ export function ExamSimulation({ onComplete }: { onComplete?: () => void } = {})
               <p className="text-[10px] font-mono text-muted-foreground">Unanswered</p>
             </div>
           </div>
+
+          {/* Time-per-question */}
+          {avgTimeSecs !== null && (
+            <div className={`flex items-center justify-between px-4 py-3 rounded-xl border text-xs font-mono ${
+              timeOverrun ? "bg-amber-500/10 border-amber-500/30" : "bg-emerald-500/10 border-emerald-500/30"
+            }`}>
+              <span className="text-muted-foreground">Avg time / question</span>
+              <div className="text-right">
+                <span className={`font-bold ${timeOverrun ? "text-amber-400" : "text-emerald-400"}`}>
+                  {avgTimeSecs}s
+                </span>
+                <span className="text-muted-foreground ml-2">(allowed {allowedSecs}s)</span>
+                {timeOverrun && <p className="text-[10px] text-amber-400 mt-0.5">Speed needs work — aim for faster elimination</p>}
+              </div>
+            </div>
+          )}
 
           {/* Subject-wise breakdown */}
           {Object.keys(subjectMap).length > 0 && (

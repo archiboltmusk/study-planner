@@ -157,6 +157,11 @@ export function SubjectDrill({ onComplete }: { onComplete?: () => void } = {}) {
   } | null>(null);
   const [advancing, setAdvancing] = useState(false);
 
+  // Per-question timing
+  const [qStartTime, setQStartTime] = useState<number>(0);
+  const [totalTimeSpent, setTotalTimeSpent] = useState(0);
+  const [timedCount, setTimedCount] = useState(0);
+
   // Results state
   const [showReview, setShowReview] = useState(false);
   const [scores, setScores] = useState<DrillScore[]>(() =>
@@ -232,6 +237,9 @@ export function SubjectDrill({ onComplete }: { onComplete?: () => void } = {}) {
     setFeedback(null);
     setAdvancing(false);
     setShowReview(false);
+    setTotalTimeSpent(0);
+    setTimedCount(0);
+    setQStartTime(Date.now());
     setSecsLeft(30 * 60); // 30 minutes
     setPhase("running");
   };
@@ -263,6 +271,11 @@ export function SubjectDrill({ onComplete }: { onComplete?: () => void } = {}) {
         explanation: q.explanation,
       }]);
     }
+    // Record time spent on this question
+    const spent = Math.round((Date.now() - qStartTime) / 1000);
+    setTotalTimeSpent(p => p + spent);
+    setTimedCount(p => p + 1);
+    setQStartTime(Date.now());
 
     // Auto-advance after 2 seconds
     setAdvancing(true);
@@ -682,6 +695,17 @@ export function SubjectDrill({ onComplete }: { onComplete?: () => void } = {}) {
                 : "Needs work — schedule focused revision."}
             </p>
           </div>
+
+          {/* Avg time per question */}
+          {timedCount > 0 && (
+            <div className="flex items-center justify-between px-4 py-2.5 rounded-xl border border-border bg-background/50 text-xs font-mono">
+              <span className="text-muted-foreground">Avg time / question</span>
+              <span className="font-bold text-foreground">
+                {Math.round(totalTimeSpent / timedCount)}s
+                <span className="text-muted-foreground font-normal ml-1">(INI-CET allows 63s)</span>
+              </span>
+            </div>
+          )}
 
           {/* Correct / Wrong / Unanswered */}
           <div className="grid grid-cols-3 gap-3">
