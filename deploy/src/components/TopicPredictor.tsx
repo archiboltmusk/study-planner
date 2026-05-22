@@ -53,6 +53,45 @@ const TOPICS: TopicEntry[] = [
   { topic: "Otitis media", subject: "ENT", yearlyFreq: [3,3,4,4,4,4,5,5,5,5], trend: "consistent", probability: 70, lastYear: 2024 },
   { topic: "Asphyxia", subject: "Forensic Medicine", yearlyFreq: [2,2,3,3,4,4,5,5,6,6], trend: "rising", probability: 75, lastYear: 2024 },
   { topic: "Medico-legal examination", subject: "Forensic Medicine", yearlyFreq: [3,3,4,4,4,4,4,5,5,5], trend: "consistent", probability: 72, lastYear: 2024 },
+
+  // Surgery additions
+  { topic: "Whipple procedure (pancreaticoduodenectomy)", subject: "Surgery", yearlyFreq: [1,1,2,2,3,3,4,4,5,6], trend: "rising", probability: 72, lastYear: 2024 },
+  { topic: "Portal hypertension", subject: "Surgery", yearlyFreq: [3,4,4,5,5,6,6,7,7,8], trend: "hot", probability: 83, lastYear: 2024 },
+  { topic: "Colorectal cancer", subject: "Surgery", yearlyFreq: [2,2,3,3,4,4,5,5,6,6], trend: "rising", probability: 74, lastYear: 2024 },
+  { topic: "Thyroid carcinoma surgery", subject: "Surgery", yearlyFreq: [2,3,3,4,4,5,5,6,6,7], trend: "rising", probability: 76, lastYear: 2024 },
+  { topic: "Wound healing", subject: "Surgery", yearlyFreq: [3,3,4,4,5,5,5,6,6,7], trend: "hot", probability: 82, lastYear: 2024 },
+  { topic: "Hernia types and repair", subject: "Surgery", yearlyFreq: [4,4,5,5,5,6,6,6,7,7], trend: "hot", probability: 84, lastYear: 2024 },
+
+  // Orthopaedics additions
+  { topic: "CTEV (Clubfoot)", subject: "Orthopaedics", yearlyFreq: [2,2,3,3,4,4,5,5,6,6], trend: "rising", probability: 74, lastYear: 2024 },
+  { topic: "Perthes disease", subject: "Orthopaedics", yearlyFreq: [2,3,3,3,4,4,4,5,5,5], trend: "consistent", probability: 68, lastYear: 2024 },
+  { topic: "Spinal cord injuries", subject: "Orthopaedics", yearlyFreq: [3,3,4,4,5,5,6,6,7,7], trend: "hot", probability: 80, lastYear: 2024 },
+  { topic: "Compartment syndrome", subject: "Orthopaedics", yearlyFreq: [2,3,3,4,4,5,5,6,6,7], trend: "rising", probability: 77, lastYear: 2024 },
+
+  // Radiology additions
+  { topic: "Pleural effusion X-ray signs", subject: "Radiology", yearlyFreq: [3,4,4,5,5,5,6,6,7,7], trend: "hot", probability: 81, lastYear: 2024 },
+  { topic: "Barium meal findings", subject: "Radiology", yearlyFreq: [3,3,4,4,5,5,5,5,6,6], trend: "consistent", probability: 73, lastYear: 2024 },
+  { topic: "MRI principles and sequences", subject: "Radiology", yearlyFreq: [2,2,3,3,4,4,5,5,6,6], trend: "rising", probability: 70, lastYear: 2024 },
+
+  // Anesthesia additions
+  { topic: "Inhalational agents MAC values", subject: "Anesthesia", yearlyFreq: [3,3,4,4,5,5,6,6,7,7], trend: "hot", probability: 82, lastYear: 2024 },
+  { topic: "Spinal anesthesia complications", subject: "Anesthesia", yearlyFreq: [3,4,4,5,5,5,6,6,7,7], trend: "hot", probability: 80, lastYear: 2024 },
+  { topic: "Malignant hyperthermia", subject: "Anesthesia", yearlyFreq: [2,2,3,3,4,4,5,5,6,6], trend: "rising", probability: 74, lastYear: 2024 },
+
+  // Dermatology additions
+  { topic: "Pemphigus vs pemphigoid", subject: "Dermatology", yearlyFreq: [3,3,4,4,5,5,6,6,7,7], trend: "hot", probability: 83, lastYear: 2024 },
+  { topic: "Psoriasis treatment", subject: "Dermatology", yearlyFreq: [2,3,3,4,4,5,5,6,6,7], trend: "rising", probability: 76, lastYear: 2024 },
+  { topic: "Drug-induced skin reactions", subject: "Dermatology", yearlyFreq: [2,3,3,4,4,5,5,5,6,6], trend: "rising", probability: 72, lastYear: 2024 },
+
+  // Biochemistry additions
+  { topic: "Lysosomal storage disorders", subject: "Biochemistry", yearlyFreq: [2,2,3,3,4,4,5,5,6,6], trend: "rising", probability: 73, lastYear: 2024 },
+  { topic: "Collagen synthesis defects", subject: "Biochemistry", yearlyFreq: [2,3,3,4,4,4,5,5,5,6], trend: "consistent", probability: 70, lastYear: 2024 },
+  { topic: "DNA repair mechanisms", subject: "Biochemistry", yearlyFreq: [1,2,2,3,3,4,4,5,5,6], trend: "rising", probability: 68, lastYear: 2024 },
+
+  // Forensics/FMT additions
+  { topic: "Sexual assault examination", subject: "Forensic Medicine", yearlyFreq: [2,2,3,3,4,4,5,5,6,6], trend: "rising", probability: 74, lastYear: 2024 },
+  { topic: "Brain death criteria", subject: "Forensic Medicine", yearlyFreq: [2,3,3,4,4,5,5,6,6,7], trend: "rising", probability: 76, lastYear: 2024 },
+  { topic: "Wound age estimation", subject: "Forensic Medicine", yearlyFreq: [2,2,3,3,4,4,5,5,5,6], trend: "consistent", probability: 71, lastYear: 2024 },
 ];
 
 const SUBJECT_COLORS: Record<string, string> = {
@@ -70,6 +109,10 @@ const SUBJECT_COLORS: Record<string, string> = {
   "Ophthalmology": "bg-violet-500/20 text-violet-400 border-violet-500/30",
   "PSM": "bg-indigo-500/20 text-indigo-400 border-indigo-500/30",
   "Forensic Medicine": "bg-slate-500/20 text-slate-400 border-slate-500/30",
+  "Orthopaedics": "bg-amber-500/20 text-amber-400 border-amber-500/30",
+  "Radiology": "bg-cyan-500/20 text-cyan-400 border-cyan-500/30",
+  "Anesthesia": "bg-rose-500/20 text-rose-400 border-rose-500/30",
+  "Dermatology": "bg-fuchsia-500/20 text-fuchsia-400 border-fuchsia-500/30",
 };
 
 const TREND_CONFIG = {
