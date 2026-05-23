@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 
 export type MainTab =
-  | 'planner' | 'schedule' | 'circadian' | 'stress' | 'coreBTR'
+  | 'planner' | 'schedule' | 'circadian' | 'stress' | 'coreBTR' | 'marrow'
   | 'pyq' | 'drills' | 'rapid' | 'oneliners' | 'simulation' | 'revision'
   | 'dailyquiz' | 'aiquiz' | 'custommock' | 'psmcalc' | 'imagequiz' | 'microburst' | 'neetpg2026'
   | 'notes' | 'pdf' | 'ai' | 'mnemonics' | 'analysis' | 'flashcards'
@@ -43,8 +43,9 @@ export const NAV_GROUPS: NavGroupConfig[] = [
     tabs: [
       { id: 'planner',   label: 'Planner',   Icon: Calendar    },
       { id: 'schedule',  label: 'Schedule',  Icon: Clock       },
-      { id: 'coreBTR',   label: 'Core BTR',  Icon: ListOrdered },
-      { id: 'circadian', label: 'Circadian', Icon: Sun         },
+      { id: 'coreBTR',   label: 'Core BTR',  Icon: ListOrdered   },
+      { id: 'marrow',    label: 'Marrow',    Icon: GraduationCap },
+      { id: 'circadian', label: 'Circadian', Icon: Sun           },
       { id: 'stress',    label: 'Wellbeing', Icon: Heart       },
     ],
   },

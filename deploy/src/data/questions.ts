@@ -5,10 +5,6 @@ import { PHARMA_PATH_MICRO_QUESTIONS } from "./questions-pharma-path-micro";
 import { BASIC_SCIENCES_QUESTIONS } from "./questions-basic-sciences";
 import { CLINICAL_SPECIALTIES_QUESTIONS } from "./questions-clinical-specialties";
 import { IMAGE_MCQS } from "./questions-image-mcqs";
-import { PREDICTED_MEDICINE_QUESTIONS } from "./questions-predicted-medicine";
-import { PREDICTED_SURGERY_OBG_QUESTIONS } from "./questions-predicted-surgery-obg";
-import { PREDICTED_PHARMA_PATH_QUESTIONS } from "./questions-predicted-pharma-path";
-import { PREDICTED_PSM_BASIC_QUESTIONS } from "./questions-predicted-psm-basic";
 
 export const QUESTION_SUBJECTS = [
   "Pharmacology",
@@ -8164,10 +8160,6 @@ const ALL_RAW_QUESTIONS = [
   ...BASIC_SCIENCES_QUESTIONS,
   ...CLINICAL_SPECIALTIES_QUESTIONS,
   ...IMAGE_MCQS,
-  ...PREDICTED_MEDICINE_QUESTIONS,
-  ...PREDICTED_SURGERY_OBG_QUESTIONS,
-  ...PREDICTED_PHARMA_PATH_QUESTIONS,
-  ...PREDICTED_PSM_BASIC_QUESTIONS,
 ];
 
 const parsed = z.array(QuestionSchema).safeParse(ALL_RAW_QUESTIONS);
