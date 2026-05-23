@@ -15,7 +15,6 @@ import { SCHEDULE, EXAM_DATE } from "@/data/schedule";
 import type { QuestionSubject } from "@/data/questions";
 import { safeLoad, safeSave } from "@/lib/storage";
 import { SRCard } from "@/lib/sr";
-import { NotesView } from "@/components/NotesView";
 import { RevisionList } from "@/components/RevisionList";
 import { OnboardingModal } from "@/components/OnboardingModal";
 import { PomodoroTimer } from "@/components/PomodoroTimer";
@@ -76,6 +75,7 @@ const ZainabVoraTips      = mk(() => import("@/components/ZainabVoraTips"),     
 const MarrowSchedule      = mk(() => import("@/components/MarrowSchedule"),      "MarrowSchedule");
 const DailyTodoList       = mk(() => import("@/components/DailyTodoList"),       "DailyTodoList");
 const PlannerCalendar     = mk(() => import("@/components/PlannerCalendar"),     "PlannerCalendar");
+const NotesEditor         = mk(() => import("@/components/NotesEditor"),         "NotesEditor");
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -558,15 +558,9 @@ function StudyApp({ prefix, user }: StudyAppProps) {
 
         {/* LEARN */}
         <div hidden={activeGroup !== 'learn' || activeTab !== 'notes'}>
-          <NotesView
-            selectedDayId={selectedDayId}
-            selectedDay={selectedDay}
-            onSelectDay={setSelectedDayId}
-            notes={notes}
-            onUpdateNote={updateNote}
-            srCards={srCards}
-            onUpdateSrCard={updateSrCard}
-          />
+          {visitedTabs.has('notes') && <Suspense fallback={<TabFallback />}>
+            <NotesEditor />
+          </Suspense>}
         </div>
         <div hidden={activeGroup !== 'learn' || activeTab !== 'pdf'}>
           {visitedTabs.has('pdf') && <Suspense fallback={<TabFallback />}>

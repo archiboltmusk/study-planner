@@ -14,6 +14,9 @@ CREATE TABLE IF NOT EXISTS user_data (
   streak           JSONB        DEFAULT '{"count":0,"longest":0,"lastDate":""}',
   exam_date        TEXT,
 
+  -- Subject-based notes with SM-2 spaced repetition cards
+  subject_notes    JSONB        DEFAULT '{}',
+
   -- Daily Plan checklist (unified_todos_v2)
   todos_checked    JSONB        DEFAULT '{}',
 

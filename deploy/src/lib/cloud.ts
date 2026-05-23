@@ -83,6 +83,7 @@ interface UserData {
   streak:              { count: number; longest: number; lastDate: string };
   exam_date:           string | null;
   // Component-level data
+  subject_notes:       Record<string, { text: string; lastEdited: string; srCard?: { ef: number; interval: number; repetitions: number; dueDate: string } }>;
   todos_checked:       Record<string, string[]>;
   mistake_logbook:     JsonValue[];
   flashcards:          Record<string, JsonValue>;
@@ -115,6 +116,7 @@ interface UserData {
 //   neetpg_daily_checklist — legacy, replaced by unified_todos_v2
 
 const BULK_SYNC_KEYS: { local: string; cloud: keyof UserData }[] = [
+  { local: "neetpg_subject_notes",        cloud: "subject_notes"       },
   { local: "unified_todos_v2",            cloud: "todos_checked"       },
   { local: "neetpg_mistake_logbook",      cloud: "mistake_logbook"     },
   { local: "neetpg_flashcards",           cloud: "flashcards"          },
