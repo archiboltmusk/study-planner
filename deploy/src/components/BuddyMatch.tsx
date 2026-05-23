@@ -171,7 +171,7 @@ function StudyTimeIcon({ time }: { time: StudyTime }) {
 
 let toastTimeout: ReturnType<typeof setTimeout> | null = null;
 
-export function BuddyMatch() {
+export function BuddyMatch({ onGoToStudyRooms }: { onGoToStudyRooms?: () => void }) {
   const [profile, setProfile] = useState<BuddyProfile>(() =>
     safeLoad<BuddyProfile>("buddy_profile", {
       strongSubjects: [],
@@ -333,14 +333,10 @@ export function BuddyMatch() {
                 </div>
 
                 <button
-                  onClick={() =>
-                    showToast(
-                      "Feature coming soon — share your room code to study together!"
-                    )
-                  }
+                  onClick={() => onGoToStudyRooms ? onGoToStudyRooms() : showToast("Go to Study Rooms to create or join a room with this buddy!")}
                   className="w-full py-2 rounded-lg border border-primary text-primary text-sm font-medium hover:bg-primary hover:text-primary-foreground transition-colors"
                 >
-                  Connect
+                  Open Study Room →
                 </button>
               </div>
             </div>
