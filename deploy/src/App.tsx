@@ -667,7 +667,7 @@ function StudyApp({ prefix, user }: StudyAppProps) {
         </div>
         <div hidden={activeGroup !== 'insights' || activeTab !== 'buddymatch'}>
           {visitedTabs.has('buddymatch') && <Suspense fallback={<TabFallback />}>
-            <BuddyMatch />
+            <BuddyMatch onGoToStudyRooms={() => handleNavigate('insights', 'studyrooms')} />
           </Suspense>}
         </div>
         <div hidden={activeGroup !== 'insights' || activeTab !== 'zainabvora'}>
