@@ -2,10 +2,11 @@ import { useState, useMemo } from "react";
 import {
   Flame, Calendar, TrendingDown, Zap, BookOpen, Target,
   AlertTriangle, Clock, ChevronDown, ChevronUp, Star,
-  CheckCircle2, BarChart2, Brain, Crosshair, Trophy,
+  CheckCircle2, BarChart2, Brain, Crosshair, Trophy, GraduationCap,
 } from "lucide-react";
 import { QUESTION_SUBJECTS } from "@/data/questions";
 import { safeLoad } from "@/lib/storage";
+import { getTodayMarrowDay } from "@/data/marrow-schedule";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -180,6 +181,7 @@ export function DailyBriefing({ completedDays, mcqScores, streak, examDate, onGo
   const dayPlan       = useMemo(() => buildDayPlan(weakSubjs, daysLeft, todayMood, planDay), [weakSubjs, daysLeft, todayMood, planDay]);
   const totalPlanMins = dayPlan.blocks.reduce((s, b) => s + b.mins, 0);
   const btrPhase      = useMemo(() => getCoreBTRPhase(), []);
+  const marrowToday   = useMemo(() => getTodayMarrowDay(), []);
   const zvTip         = ZV_TIPS[Math.floor(Date.now() / 86400000) % ZV_TIPS.length];
   const streakActive  = studiedToday && streak.count > 0;
   const top3Weak      = weakSubjs.slice(0, 3);
@@ -258,6 +260,33 @@ export function DailyBriefing({ completedDays, mcqScores, streak, examDate, onGo
               View →
             </button>
           </div>
+
+          {/* Marrow Today */}
+          {marrowToday && (
+            <div className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl border bg-emerald-500/10 border-emerald-500/30">
+              <GraduationCap className="w-4 h-4 shrink-0 text-emerald-400" />
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-mono font-bold text-emerald-400">
+                  Marrow Day {marrowToday.day} · {marrowToday.label}
+                </p>
+                <p className="text-[10px] font-mono text-muted-foreground truncate">
+                  {marrowToday.isTest
+                    ? `🏆 ${marrowToday.testName}`
+                    : marrowToday.isBuffer
+                    ? "📋 Buffer — review & analyse"
+                    : marrowToday.isOpenRevision
+                    ? "🔄 Open revision day"
+                    : marrowToday.activities.map(a => a.revision ? `${a.subject}(${a.revision})` : a.subject).join(" + ")}
+                </p>
+              </div>
+              <button
+                onClick={() => onGoToTab("marrow")}
+                className="text-[10px] font-mono px-2 py-1 rounded-lg border transition-colors bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:opacity-80"
+              >
+                View →
+              </button>
+            </div>
+          )}
 
           {/* Mood */}
           {moodLabel && (

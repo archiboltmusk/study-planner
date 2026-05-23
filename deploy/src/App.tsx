@@ -83,6 +83,7 @@ const WellnessTracker     = mk(() => import("@/components/WellnessTracker"),    
 const ExamEveLockdown     = mk(() => import("@/components/ExamEveLockdown"),     "ExamEveLockdown");
 const CoreBTRSchedule     = mk(() => import("@/components/CoreBTRSchedule"),     "CoreBTRSchedule");
 const ZainabVoraTips      = mk(() => import("@/components/ZainabVoraTips"),      "ZainabVoraTips");
+const MarrowSchedule      = mk(() => import("@/components/MarrowSchedule"),      "MarrowSchedule");
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -504,6 +505,24 @@ function StudyApp({ prefix, user }: StudyAppProps) {
         <div hidden={activeGroup !== 'home' || activeTab !== 'coreBTR'}>
           {visitedTabs.has('coreBTR') && <Suspense fallback={<TabFallback />}>
             <CoreBTRSchedule />
+          </Suspense>}
+        </div>
+
+        {/* HOME — Marrow Schedule */}
+        <div hidden={activeGroup !== 'home' || activeTab !== 'marrow'}>
+          {visitedTabs.has('marrow') && <Suspense fallback={<TabFallback />}>
+            <MarrowSchedule
+              onNavigateToDrill={(subject: string) => {
+                const subjectToTab: Record<string, MainTab> = {
+                  "Anatomy": "drills", "Biochemistry": "drills", "Physiology": "drills",
+                  "Pharmacology": "drills", "Microbiology": "drills", "Pathology": "drills",
+                  "PSM/Community Medicine": "drills", "Forensic Medicine": "drills",
+                  "ENT/Ophthalmology": "drills", "Medicine": "drills",
+                  "Surgery": "drills", "Paediatrics": "drills", "OBG": "drills",
+                };
+                handleNavigate('practice', subjectToTab[subject] ?? 'drills');
+              }}
+            />
           </Suspense>}
         </div>
 
