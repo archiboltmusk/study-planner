@@ -9,7 +9,9 @@ type JsonValue = string | number | boolean | null | JsonValue[] | { [k: string]:
 
 // ── Realtime sync constants & module state ────────────────────────────────────
 
-export const CLOUD_SYNC_EVENT = "neetpg_cloud_sync";
+export const CLOUD_SYNC_EVENT  = "neetpg_cloud_sync";
+// Fired whenever a tracked localStorage key is written — triggers immediate sync
+const SYNC_DIRTY_EVENT = "neetpg_sync_dirty";
 
 // Tracks when WE last wrote via a targeted (per-field) upsert so that
 // useRealtimeSync can suppress self-echoes.  Bulk-snapshot writes do NOT
@@ -147,6 +149,8 @@ interface UserData {
   exam_eve:            Record<string, JsonValue>;
   gamification:        Record<string, JsonValue>;
   pyq_attempts:        Record<string, JsonValue>;
+  q_notes:             Record<string, string>;
+  first_read:          Record<string, boolean>;
 }
 
 // ── Map: localStorage key → UserData column ───────────────────────────────────
@@ -175,7 +179,27 @@ const BULK_SYNC_KEYS: { local: string; cloud: keyof UserData }[] = [
   { local: "neetpg_explanation_ratings",  cloud: "explanation_ratings" },
   { local: "neetpg_pomodoro_sessions",    cloud: "pomodoro_sessions"   },
   { local: "neetpg_pyq_attempts",         cloud: "pyq_attempts"        },
+  { local: "neetpg_q_notes",              cloud: "q_notes"             },
+  { local: "neetpg_first_read",           cloud: "first_read"          },
 ];
+
+// ── Real-time write detection ──────────────────────────────────────────────────
+// Intercept localStorage.setItem so any write to a tracked key fires
+// SYNC_DIRTY_EVENT — useBulkSync debounces on this to sync within ~2 s.
+
+const _TRACKED_LS = new Set(BULK_SYNC_KEYS.map(k => k.local));
+let _lsPatchApplied = false;
+function patchLocalStorage(): void {
+  if (_lsPatchApplied || typeof window === "undefined") return;
+  _lsPatchApplied = true;
+  const orig = localStorage.setItem.bind(localStorage);
+  localStorage.setItem = (key: string, value: string) => {
+    orig(key, value);
+    if (_TRACKED_LS.has(key)) {
+      window.dispatchEvent(new Event(SYNC_DIRTY_EVENT));
+    }
+  };
+}
 
 // Circadian: two separate localStorage keys → one cloud column
 function readCircadianLocal(): Record<string, string> {
@@ -342,7 +366,7 @@ export function useCloudSync<T extends JsonValue>(
     [user, key]
   );
 
-  const debouncedSync = useDebounce(syncToCloud, 1500);
+  const debouncedSync = useDebounce(syncToCloud, 800);
 
   useEffect(() => {
     if (!ready || !user) return;
@@ -351,27 +375,31 @@ export function useCloudSync<T extends JsonValue>(
 }
 
 // ── Bulk sync hook (used for component-level localStorage data) ───────────────
-// Call once in App.tsx. Syncs all tracked keys to Supabase:
-//   • On first mount (logged-in) — waits for login-pull to finish first
-//   • Every 60 seconds
-//   • When the tab regains focus (user returns from another tab/app)
+// Syncs all tracked keys to Supabase:
+//   • On first mount (logged-in)
+//   • Within ~2 s of any write to a tracked localStorage key (real-time)
+//   • Every 30 s as a safety net
+//   • When the tab regains focus
 
 export function useBulkSync(ready: boolean): void {
   const { user } = useAuth();
-  const lastSyncRef = useRef<number>(0);
+  const lastSyncRef  = useRef<number>(0);
+  const dirtyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  useEffect(() => { ensureOnlineListener(); }, []);
+  useEffect(() => {
+    ensureOnlineListener();
+    patchLocalStorage();
+  }, []);
 
   const runSync = useCallback(async () => {
     if (!user || !ready) return;
     const now = Date.now();
-    if (now - lastSyncRef.current < 10_000) return; // debounce: min 10s between syncs
+    if (now - lastSyncRef.current < 2_000) return; // min 2 s between syncs
     lastSyncRef.current = now;
     await snapshotToCloud(user.id);
   }, [user, ready]);
 
-  // Initial sync on login — wait for useLoginSync to finish pulling from cloud
-  // first, so we never overwrite newer cloud data with stale local data.
+  // Initial sync on login
   useEffect(() => {
     if (!ready || !user) return;
     void (async () => {
@@ -381,14 +409,28 @@ export function useBulkSync(ready: boolean): void {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready]);
 
-  // Periodic sync every 60 seconds
+  // Real-time: sync within 2 s of any tracked localStorage write
   useEffect(() => {
     if (!ready || !user) return;
-    const interval = setInterval(() => { void runSync(); }, 60_000);
+    const handler = () => {
+      if (dirtyTimerRef.current) clearTimeout(dirtyTimerRef.current);
+      dirtyTimerRef.current = setTimeout(() => { void runSync(); }, 2_000);
+    };
+    window.addEventListener(SYNC_DIRTY_EVENT, handler);
+    return () => {
+      window.removeEventListener(SYNC_DIRTY_EVENT, handler);
+      if (dirtyTimerRef.current) clearTimeout(dirtyTimerRef.current);
+    };
+  }, [ready, user, runSync]);
+
+  // Safety-net: periodic sync every 30 s
+  useEffect(() => {
+    if (!ready || !user) return;
+    const interval = setInterval(() => { void runSync(); }, 30_000);
     return () => clearInterval(interval);
   }, [ready, user, runSync]);
 
-  // Sync when tab becomes visible again
+  // Sync on tab focus
   useEffect(() => {
     if (!ready || !user) return;
     const handler = () => { if (document.visibilityState === "visible") void runSync(); };
