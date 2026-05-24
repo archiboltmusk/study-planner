@@ -32,8 +32,8 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
-    if (eventType === "payment.refunded" || eventType === "refund.processed") {
-      const paymentId = event.payload?.payment?.entity?.id;
+    if (eventType === "refund.created" || eventType === "refund.processed" || eventType === "refund.speed_changed") {
+      const paymentId = event.payload?.refund?.entity?.payment_id;
       if (!paymentId) {
         console.warn("[webhook] No payment ID in refund event");
         return new Response("OK", { status: 200 });
