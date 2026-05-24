@@ -6,7 +6,7 @@ import {
   BarChart2, BookMarked, Pill, XCircle, Award, ExternalLink, MessageSquare,
   LayoutGrid, TrendingUp, Stethoscope, ScrollText, Trophy, Home, GraduationCap,
   Sparkles, Bot, Timer, Sun, Users, UserCheck, Heart, Radio, ClipboardList,
-  ListOrdered, Star, ListChecks, Crown,
+  ListOrdered, Star, ListChecks, Crown, Activity,
 } from "lucide-react";
 
 export type MainTab =
@@ -15,7 +15,7 @@ export type MainTab =
   | 'dailyquiz' | 'aiquiz' | 'custommock' | 'psmcalc' | 'imagequiz' | 'microburst' | 'neetpg2026'
   | 'notes' | 'ai' | 'mnemonics' | 'analysis' | 'flashcards'
   | 'doctable' | 'revschedule' | 'mistakelogbook' | 'aichat'
-  | 'analytics' | 'toppers' | 'resources' | 'community' | 'weakheatmap'
+  | 'analytics' | 'toppers' | 'resources' | 'community' | 'weakheatmap' | 'gapdiagnostic'
   | 'cutoffhistory' | 'specialtyseats' | 'guidelines'
   | 'topicpredict' | 'studyrooms' | 'buddymatch'
   | 'zainabvora'
@@ -95,6 +95,7 @@ export const NAV_GROUPS: NavGroupConfig[] = [
       { id: 'toppers',        label: 'Toppers',    Icon: Award        },
       { id: 'resources',      label: 'Resources',  Icon: ExternalLink },
       { id: 'community',      label: 'Community',  Icon: MessageSquare},
+      { id: 'gapdiagnostic',  label: 'Diagnose',   Icon: Activity     },
       { id: 'weakheatmap',    label: 'Weak Areas', Icon: LayoutGrid   },
       { id: 'cutoffhistory',  label: 'Cutoffs',    Icon: TrendingUp   },
       { id: 'specialtyseats', label: 'Specialties',Icon: Stethoscope  },

@@ -79,6 +79,7 @@ const DailyTodoList       = mk(() => import("@/components/DailyTodoList"),      
 const PlannerCalendar     = mk(() => import("@/components/PlannerCalendar"),     "PlannerCalendar");
 const NotesEditor         = mk(() => import("@/components/NotesEditor"),         "NotesEditor");
 const UpgradePage         = mk(() => import("@/components/UpgradePage"),         "UpgradePage");
+const GapDiagnostic       = mk(() => import("@/components/GapDiagnostic"),       "GapDiagnostic");
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -697,6 +698,15 @@ function StudyApp({ prefix, user }: StudyAppProps) {
           {visitedTabs.has('community') && <Suspense fallback={<TabFallback />}>
             <CommunityQA />
           </Suspense>}
+        </div>
+        <div hidden={activeGroup !== 'insights' || activeTab !== 'gapdiagnostic'}>
+          {visitedTabs.has('gapdiagnostic') && (
+            <PremiumGate isPremium={isPremium} feature="Knowledge Gap Diagnostic" onUpgrade={goToUpgrade}>
+              <Suspense fallback={<TabFallback />}>
+                <GapDiagnostic />
+              </Suspense>
+            </PremiumGate>
+          )}
         </div>
         <div hidden={activeGroup !== 'insights' || activeTab !== 'weakheatmap'}>
           {visitedTabs.has('weakheatmap') && (
