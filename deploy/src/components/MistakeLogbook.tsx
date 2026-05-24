@@ -1,6 +1,10 @@
 import { useState, useMemo, useEffect } from "react";
 import { safeLoad, safeSave } from "@/lib/storage";
-import { Plus, Trash2, Eye, EyeOff, CheckCircle, Download, BookOpen } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/lib/auth";
+import { useSubscription } from "@/lib/subscription";
+import { MISTAKE_STORAGE_KEY } from "@/lib/mistakeLogger";
+import { Plus, Trash2, Eye, EyeOff, CheckCircle, Download, BookOpen, Cloud, HardDrive } from "lucide-react";
 
 interface MistakeEntry {
   id: string;
@@ -15,8 +19,52 @@ interface MistakeEntry {
   source?: "auto" | "manual";
 }
 
+interface DbRow {
+  id: string;
+  user_id: string;
+  created_at: string;
+  subject: string;
+  topic: string;
+  question: string;
+  correct_answer: string;
+  my_answer: string;
+  why_wrong: string;
+  reviewed: boolean;
+  source: "auto" | "manual" | null;
+}
+
+function dbRowToEntry(row: DbRow): MistakeEntry {
+  return {
+    id: row.id,
+    date: row.created_at,
+    subject: row.subject,
+    topic: row.topic,
+    question: row.question,
+    correctAnswer: row.correct_answer,
+    myAnswer: row.my_answer,
+    whyWrong: row.why_wrong,
+    reviewed: row.reviewed,
+    source: row.source ?? undefined,
+  };
+}
+
+function entryToDbRow(e: MistakeEntry, userId: string) {
+  return {
+    id: e.id,
+    user_id: userId,
+    created_at: e.date,
+    subject: e.subject,
+    topic: e.topic,
+    question: e.question,
+    correct_answer: e.correctAnswer,
+    my_answer: e.myAnswer,
+    why_wrong: e.whyWrong,
+    reviewed: e.reviewed,
+    source: e.source ?? "manual",
+  };
+}
+
 const SUBJECTS = ["Medicine","Surgery","Pharmacology","Physiology","Biochemistry","Pathology","Anatomy","Microbiology","OBG","Paediatrics","PSM","Forensic","ENT/Ophth/Derm"];
-const STORAGE_KEY = "neetpg_mistake_logbook";
 
 const SUBJECT_COLORS: Record<string, string> = {
   Medicine:"bg-blue-500/20 text-blue-400",Pharmacology:"bg-violet-500/20 text-violet-400",
@@ -45,13 +93,59 @@ function isThisWeek(date: string): boolean {
 type ReviewStep = "question" | "revealed";
 
 export function MistakeLogbook() {
-  const [entries, setEntries] = useState<MistakeEntry[]>(() => safeLoad<MistakeEntry[]>(STORAGE_KEY, []));
+  const { user } = useAuth();
+  const { isPremium, loading: subLoading } = useSubscription();
+  const online = isPremium && !!user && !subLoading;
 
+  const [entries, setEntries] = useState<MistakeEntry[]>(() => safeLoad<MistakeEntry[]>(MISTAKE_STORAGE_KEY, []));
+  const [dbLoading, setDbLoading] = useState(false);
+
+  // ── Online mode: fetch from Supabase + subscribe to realtime ───────────────
   useEffect(() => {
-    const refresh = () => setEntries(safeLoad<MistakeEntry[]>(STORAGE_KEY, []));
+    if (!online || !user) return;
+
+    setDbLoading(true);
+    supabase
+      .from("mistake_logbook")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .then(({ data }) => {
+        if (data) setEntries((data as DbRow[]).map(dbRowToEntry));
+        setDbLoading(false);
+      });
+
+    const channel = supabase
+      .channel("mistake-logbook-" + user.id)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "mistake_logbook", filter: "user_id=eq." + user.id },
+        (payload) => {
+          if (payload.eventType === "INSERT") {
+            const newRow = dbRowToEntry(payload.new as DbRow);
+            setEntries(prev => prev.some(e => e.id === newRow.id) ? prev : [newRow, ...prev]);
+          } else if (payload.eventType === "UPDATE") {
+            const updated = dbRowToEntry(payload.new as DbRow);
+            setEntries(prev => prev.map(e => e.id === updated.id ? updated : e));
+          } else if (payload.eventType === "DELETE") {
+            const deletedId = (payload.old as { id: string }).id;
+            setEntries(prev => prev.filter(e => e.id !== deletedId));
+          }
+        }
+      )
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [online, user?.id]);
+
+  // ── Offline mode: listen for custom event from autoLogMistakes ─────────────
+  useEffect(() => {
+    if (online) return;
+    const refresh = () => setEntries(safeLoad<MistakeEntry[]>(MISTAKE_STORAGE_KEY, []));
     window.addEventListener("mistakeLogUpdate", refresh);
     return () => window.removeEventListener("mistakeLogUpdate", refresh);
-  }, []);
+  }, [online]);
+
   const [subjectFilter, setSubjectFilter] = useState("All");
   const [reviewMode, setReviewMode] = useState(false);
   const [reviewIdx, setReviewIdx] = useState(0);
@@ -60,33 +154,55 @@ export function MistakeLogbook() {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [form, setForm] = useState({ subject: SUBJECTS[0], topic: "", question: "", correctAnswer: "", myAnswer: "", whyWrong: "" });
 
-  const save = (updated: MistakeEntry[]) => {
+  // ── CRUD — branches on online vs offline ───────────────────────────────────
+
+  const saveLocal = (updated: MistakeEntry[]) => {
     setEntries(updated);
-    safeSave(STORAGE_KEY, updated);
+    safeSave(MISTAKE_STORAGE_KEY, updated);
   };
 
-  const addEntry = () => {
+  const addEntry = async () => {
     if (!form.topic || !form.question || !form.correctAnswer) return;
     const entry: MistakeEntry = {
       id: Date.now().toString(),
       date: new Date().toISOString(),
-      ...form,
+      subject: form.subject,
+      topic: form.topic,
+      question: form.question,
+      correctAnswer: form.correctAnswer,
+      myAnswer: form.myAnswer,
+      whyWrong: form.whyWrong,
       reviewed: false,
+      source: "manual",
     };
-    save([entry, ...entries]);
+    if (online && user) {
+      await supabase.from("mistake_logbook").insert(entryToDbRow(entry, user.id));
+      // realtime subscription updates state
+    } else {
+      saveLocal([entry, ...entries]);
+    }
     setForm({ subject: SUBJECTS[0], topic: "", question: "", correctAnswer: "", myAnswer: "", whyWrong: "" });
     setShowForm(false);
   };
 
-  const deleteEntry = (id: string) => {
-    save(entries.filter(e => e.id !== id));
+  const deleteEntry = async (id: string) => {
+    if (online && user) {
+      await supabase.from("mistake_logbook").delete().eq("id", id).eq("user_id", user.id);
+    } else {
+      saveLocal(entries.filter(e => e.id !== id));
+    }
     setDeleteId(null);
   };
 
-  const markReviewed = (id: string) => {
-    save(entries.map(e => e.id === id ? { ...e, reviewed: true } : e));
+  const markReviewed = async (id: string) => {
+    if (online && user) {
+      await supabase.from("mistake_logbook").update({ reviewed: true }).eq("id", id).eq("user_id", user.id);
+    } else {
+      saveLocal(entries.map(e => e.id === id ? { ...e, reviewed: true } : e));
+    }
   };
 
+  // ── Derived state ──────────────────────────────────────────────────────────
   const filtered = useMemo(() => {
     return entries.filter(e => subjectFilter === "All" || e.subject === subjectFilter).sort((a, b) => b.date.localeCompare(a.date));
   }, [entries, subjectFilter]);
@@ -94,7 +210,6 @@ export function MistakeLogbook() {
   const thisWeek = useMemo(() => filtered.filter(e => isThisWeek(e.date)), [filtered]);
   const reviewEntries = thisWeek.filter(e => !e.reviewed);
 
-  // Grouped by week
   const grouped = useMemo(() => {
     const map: Record<string, MistakeEntry[]> = {};
     for (const e of filtered) {
@@ -114,6 +229,7 @@ export function MistakeLogbook() {
     URL.revokeObjectURL(url);
   };
 
+  // ── Review mode ────────────────────────────────────────────────────────────
   if (reviewMode) {
     const card = reviewEntries[reviewIdx];
     if (!card) {
@@ -151,7 +267,7 @@ export function MistakeLogbook() {
               <button onClick={() => setReviewStep("revealed")} className="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-mono">Reveal Answer</button>
             ) : (
               <>
-                <button onClick={() => { markReviewed(card.id); setReviewIdx(i => i + 1); setReviewStep("question"); }} className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg text-sm">Mark Reviewed</button>
+                <button onClick={() => { void markReviewed(card.id); setReviewIdx(i => i + 1); setReviewStep("question"); }} className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg text-sm">Mark Reviewed</button>
                 <button onClick={() => { setReviewIdx(i => i + 1); setReviewStep("question"); }} className="px-4 py-2 bg-card border border-border text-muted-foreground rounded-lg text-sm hover:text-foreground">Skip</button>
               </>
             )}
@@ -161,13 +277,18 @@ export function MistakeLogbook() {
     );
   }
 
+  // ── Main view ──────────────────────────────────────────────────────────────
   return (
     <div className="flex flex-col gap-4">
       {/* Header */}
       <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
         <div>
           <h2 className="text-xl font-bold text-foreground">Mistake Logbook</h2>
-          <p className="text-sm text-muted-foreground font-mono">Track and review your wrong answers</p>
+          <p className="text-sm text-muted-foreground font-mono flex items-center gap-1.5">
+            {online
+              ? <><Cloud className="w-3 h-3 text-indigo-400" /><span className="text-indigo-400">Live sync</span></>
+              : <><HardDrive className="w-3 h-3" />Local storage</>}
+          </p>
         </div>
         <div className="flex gap-2">
           <button onClick={exportTxt} className="flex items-center gap-2 px-3 py-2 bg-card border border-border rounded-lg text-xs text-muted-foreground hover:text-foreground">
@@ -182,7 +303,7 @@ export function MistakeLogbook() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
         <div className="bg-card border border-border rounded-xl p-3 text-center">
-          <div className="text-2xl font-bold font-mono text-foreground">{entries.length}</div>
+          <div className="text-2xl font-bold font-mono text-foreground">{dbLoading ? "…" : entries.length}</div>
           <div className="text-xs text-muted-foreground mt-1">Total Entries</div>
         </div>
         <div className="bg-card border border-border rounded-xl p-3 text-center">
@@ -237,7 +358,7 @@ export function MistakeLogbook() {
             <textarea className="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm text-foreground focus:outline-none focus:border-primary resize-none" rows={2} placeholder="Reason for mistake / concept to remember" value={form.whyWrong} onChange={e => setForm(p => ({ ...p, whyWrong: e.target.value }))} />
           </div>
           <div className="flex gap-2">
-            <button onClick={addEntry} disabled={!form.topic || !form.question || !form.correctAnswer} className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm disabled:opacity-50">Save Entry</button>
+            <button onClick={() => { void addEntry(); }} disabled={!form.topic || !form.question || !form.correctAnswer} className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm disabled:opacity-50">Save Entry</button>
             <button onClick={() => setShowForm(false)} className="px-4 py-2 bg-card border border-border text-muted-foreground rounded-lg text-sm hover:text-foreground">Cancel</button>
           </div>
         </div>
@@ -252,11 +373,20 @@ export function MistakeLogbook() {
         ))}
       </div>
 
-      {/* Grouped Entry List */}
-      {grouped.length === 0 && (
-        <div className="text-center py-12 text-muted-foreground text-sm">No entries yet. Add your first mistake to start tracking!</div>
+      {/* Loading skeleton */}
+      {dbLoading && (
+        <div className="flex flex-col gap-2">
+          {[1,2,3].map(i => (
+            <div key={i} className="bg-card border border-border rounded-xl p-4 h-20 animate-pulse" />
+          ))}
+        </div>
       )}
-      {grouped.map(([wk, weekEntries]) => (
+
+      {/* Grouped Entry List */}
+      {!dbLoading && grouped.length === 0 && (
+        <div className="text-center py-12 text-muted-foreground text-sm">No entries yet. Answer questions to auto-populate, or add entries manually.</div>
+      )}
+      {!dbLoading && grouped.map(([wk, weekEntries]) => (
         <div key={wk} className="flex flex-col gap-2">
           <div className="text-xs font-mono text-muted-foreground border-b border-border pb-1">
             Week of {new Date(wk).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
@@ -273,13 +403,13 @@ export function MistakeLogbook() {
                 <div className="flex items-center gap-1 shrink-0">
                   <span className="text-[10px] font-mono text-muted-foreground">{entry.date.slice(0,10)}</span>
                   {!entry.reviewed && (
-                    <button onClick={() => markReviewed(entry.id)} title="Mark as reviewed" className="p-1 text-muted-foreground hover:text-green-400 transition-colors">
+                    <button onClick={() => { void markReviewed(entry.id); }} title="Mark as reviewed" className="p-1 text-muted-foreground hover:text-green-400 transition-colors">
                       <CheckCircle className="w-3.5 h-3.5" />
                     </button>
                   )}
                   {deleteId === entry.id ? (
                     <div className="flex gap-1">
-                      <button onClick={() => deleteEntry(entry.id)} className="px-2 py-0.5 text-[10px] bg-rose-600 text-white rounded">Yes</button>
+                      <button onClick={() => { void deleteEntry(entry.id); }} className="px-2 py-0.5 text-[10px] bg-rose-600 text-white rounded">Yes</button>
                       <button onClick={() => setDeleteId(null)} className="px-2 py-0.5 text-[10px] bg-card border border-border text-muted-foreground rounded">No</button>
                     </div>
                   ) : (

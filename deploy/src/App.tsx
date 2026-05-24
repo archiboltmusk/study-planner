@@ -27,6 +27,7 @@ import type { StreakData } from "@/lib/store";
 import { computeBaseXP, XP_VALUES, getRank } from "@/lib/xp";
 import { checkAchievements } from "@/lib/achievements";
 import { supabase } from "@/lib/supabase";
+import { setMistakeLoggerCtx } from "@/lib/mistakeLogger";
 
 // ── Lazy-loaded tab components ────────────────────────────────────────────────
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -377,6 +378,13 @@ function StudyApp({ prefix, user }: StudyAppProps) {
   // ── Subscription / premium ────────────────────────────────────────────────
   const { isPremium } = useSubscription();
   const goToUpgrade   = useCallback(() => handleNavigate('rewards', 'upgrade'), [handleNavigate]);
+
+  // Keep mistakeLogger aware of auth/premium state so autoLogMistakes can
+  // write to Supabase for premium users
+  useEffect(() => {
+    setMistakeLoggerCtx(user && isPremium ? { userId: user.id, isPremium: true } : null);
+    return () => setMistakeLoggerCtx(null);
+  }, [user?.id, isPremium]);
 
   // ── Keyboard shortcuts ────────────────────────────────────────────────────
   useKeyboardShortcuts({
