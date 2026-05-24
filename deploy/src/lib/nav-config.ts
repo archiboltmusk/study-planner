@@ -5,14 +5,14 @@ import {
   CalendarCheck, Sliders, Calculator, Eye, StickyNote, Brain,
   BarChart2, BookMarked, Pill, XCircle, Award, ExternalLink, MessageSquare,
   LayoutGrid, TrendingUp, Stethoscope, ScrollText, Trophy, Home, GraduationCap,
-  Sparkles, Timer, Sun, Users, UserCheck, Heart, Radio, ClipboardList,
+  Timer, Sun, Users, UserCheck, Heart, Radio, ClipboardList,
   ListOrdered, Star, ListChecks, Crown, Activity, Target,
 } from "lucide-react";
 
 export type MainTab =
   | 'planner' | 'circadian' | 'stress' | 'coreBTR' | 'marrow' | 'todolist' | 'smartstart'
   | 'pyq' | 'drills' | 'rapid' | 'oneliners' | 'simulation' | 'revision'
-  | 'dailyquiz' | 'aiquiz' | 'custommock' | 'psmcalc' | 'imagequiz' | 'microburst' | 'neetpg2026'
+  | 'dailyquiz' | 'custommock' | 'psmcalc' | 'imagequiz' | 'microburst' | 'neetpg2026'
   | 'notes' | 'ai' | 'mnemonics' | 'analysis' | 'flashcards'
   | 'doctable' | 'revschedule' | 'mistakelogbook'
   | 'analytics' | 'toppers' | 'resources' | 'community' | 'weakheatmap' | 'gapdiagnostic'
@@ -63,7 +63,6 @@ export const NAV_GROUPS: NavGroupConfig[] = [
       { id: 'simulation', label: 'Simulate',   Icon: FlaskConical },
       { id: 'revision',   label: 'Revision',   Icon: Flag         },
       { id: 'dailyquiz',  label: 'Daily Quiz', Icon: CalendarCheck},
-      { id: 'aiquiz',     label: 'AI Quiz',    Icon: Sparkles     },
       { id: 'custommock', label: 'Custom Mock',Icon: Sliders      },
       { id: 'psmcalc',    label: 'PSM Calc',   Icon: Calculator   },
       { id: 'imagequiz',  label: 'Image Bank', Icon: Eye          },

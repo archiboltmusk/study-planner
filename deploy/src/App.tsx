@@ -41,7 +41,6 @@ const RapidRevision       = mk(() => import("@/components/RapidRevision"),      
 const OneLinerBank        = mk(() => import("@/components/OneLinerBank"),        "OneLinerBank");
 const ExamSimulation      = mk(() => import("@/components/ExamSimulation"),      "ExamSimulation");
 const DailyQuiz           = mk(() => import("@/components/DailyQuiz"),           "DailyQuiz");
-const AIPredictedQuiz     = mk(() => import("@/components/AIPredictedQuiz"),     "AIPredictedQuiz");
 const CustomMockGenerator = mk(() => import("@/components/CustomMockGenerator"), "CustomMockGenerator");
 const PSMCalculator       = mk(() => import("@/components/PSMCalculator"),       "PSMCalculator");
 const ImageBank           = mk(() => import("@/components/ImageBank"),           "ImageBank");
@@ -588,15 +587,6 @@ function StudyApp({ prefix, user }: StudyAppProps) {
           {visitedTabs.has('dailyquiz') && <Suspense fallback={<TabFallback />}>
             <DailyQuiz />
           </Suspense>}
-        </div>
-        <div hidden={activeGroup !== 'practice' || activeTab !== 'aiquiz'}>
-          {visitedTabs.has('aiquiz') && (
-            <PremiumGate isPremium={isPremium} feature="Clinical Socratic Engine" onUpgrade={goToUpgrade}>
-              <Suspense fallback={<TabFallback />}>
-                <AIPredictedQuiz />
-              </Suspense>
-            </PremiumGate>
-          )}
         </div>
         <div hidden={activeGroup !== 'practice' || activeTab !== 'custommock'}>
           {visitedTabs.has('custommock') && (
