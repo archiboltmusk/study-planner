@@ -28,6 +28,7 @@ import { computeBaseXP, XP_VALUES, getRank } from "@/lib/xp";
 import { checkAchievements } from "@/lib/achievements";
 import { supabase } from "@/lib/supabase";
 import { setMistakeLoggerCtx } from "@/lib/mistakeLogger";
+import { REVISION_SCHEDULER_KEY, type ScheduledTopic } from "@/components/RevisionScheduler";
 
 // ── Lazy-loaded tab components ────────────────────────────────────────────────
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -282,6 +283,32 @@ function StudyApp({ prefix, user }: StudyAppProps) {
     toggle(day);
     if (isCompleting) {
       gainXP(XP_VALUES.day_complete, `Day ${day} complete`);
+
+      // Auto-add today's schedule entry to the revision scheduler
+      const dayEntry = SCHEDULE.find(d => d.day === day);
+      if (dayEntry) {
+        const today = new Date().toISOString().slice(0, 10);
+        const topicId = "schedule_day_" + day;
+        const existing = safeLoad<ScheduledTopic[]>(REVISION_SCHEDULER_KEY, []);
+        if (!existing.some(t => t.id === topicId)) {
+          const newTopic: ScheduledTopic = {
+            id: topicId,
+            subject: dayEntry.subject,
+            topicName: "Day " + day + ": " + dayEntry.focus,
+            studiedDate: today,
+            nextReviewDate: today,
+            reviewCount: 0,
+            easeFactor: 2.5,
+            interval: 1,
+          };
+          safeSave(REVISION_SCHEDULER_KEY, [newTopic, ...existing]);
+        } else {
+          // Day re-completed — bump the existing topic back to due
+          safeSave(REVISION_SCHEDULER_KEY, existing.map(t =>
+            t.id === topicId ? { ...t, studiedDate: today, nextReviewDate: today } : t
+          ));
+        }
+      }
       const today = new Date().toISOString().slice(0, 10);
       setStreak(s => {
         if (s.lastDate === today) return s;
