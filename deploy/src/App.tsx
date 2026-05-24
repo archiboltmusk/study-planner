@@ -42,7 +42,6 @@ const AIPredictedQuiz     = mk(() => import("@/components/AIPredictedQuiz"),    
 const CustomMockGenerator = mk(() => import("@/components/CustomMockGenerator"), "CustomMockGenerator");
 const PSMCalculator       = mk(() => import("@/components/PSMCalculator"),       "PSMCalculator");
 const ImageBank           = mk(() => import("@/components/ImageBank"),           "ImageBank");
-const PDFLearningExtractor = mk(() => import("@/components/PDFLearningExtractor"), "PDFLearningExtractor");
 const HighYieldReference  = mk(() => import("@/components/HighYieldReference"),  "HighYieldReference");
 const MnemonicsBank       = mk(() => import("@/components/MnemonicsBank"),       "MnemonicsBank");
 const NEETPGPaperAnalysis = mk(() => import("@/components/NEETPGPaperAnalysis"), "NEETPGPaperAnalysis");
@@ -560,11 +559,14 @@ function StudyApp({ prefix, user }: StudyAppProps) {
         <div hidden={activeGroup !== 'learn' || activeTab !== 'notes'}>
           {visitedTabs.has('notes') && <Suspense fallback={<TabFallback />}>
             <NotesEditor />
+<<<<<<< HEAD
           </Suspense>}
         </div>
         <div hidden={activeGroup !== 'learn' || activeTab !== 'pdf'}>
           {visitedTabs.has('pdf') && <Suspense fallback={<TabFallback />}>
             <PDFLearningExtractor />
+=======
+>>>>>>> claude/neetpg-rank-1-tools-SivFX
           </Suspense>}
         </div>
         <div hidden={activeGroup !== 'learn' || activeTab !== 'ai'}>

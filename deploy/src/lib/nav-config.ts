@@ -2,7 +2,7 @@ import type { ComponentType } from "react";
 
 import {
   Calendar, Zap, BookOpen, Crosshair, Layers, FlaskConical, Flag,
-  CalendarCheck, Sliders, Calculator, Eye, StickyNote, FileText, Brain,
+  CalendarCheck, Sliders, Calculator, Eye, StickyNote, Brain,
   BarChart2, BookMarked, Pill, XCircle, Award, ExternalLink, MessageSquare,
   LayoutGrid, TrendingUp, Stethoscope, ScrollText, Trophy, Home, GraduationCap,
   Sparkles, Bot, Timer, Sun, Users, UserCheck, Heart, Radio, ClipboardList,
@@ -13,7 +13,7 @@ export type MainTab =
   | 'planner' | 'circadian' | 'stress' | 'coreBTR' | 'marrow' | 'todolist'
   | 'pyq' | 'drills' | 'rapid' | 'oneliners' | 'simulation' | 'revision'
   | 'dailyquiz' | 'aiquiz' | 'custommock' | 'psmcalc' | 'imagequiz' | 'microburst' | 'neetpg2026'
-  | 'notes' | 'pdf' | 'ai' | 'mnemonics' | 'analysis' | 'flashcards'
+  | 'notes' | 'ai' | 'mnemonics' | 'analysis' | 'flashcards'
   | 'doctable' | 'revschedule' | 'mistakelogbook' | 'aichat'
   | 'analytics' | 'toppers' | 'resources' | 'community' | 'weakheatmap'
   | 'cutoffhistory' | 'specialtyseats' | 'guidelines'
@@ -76,7 +76,6 @@ export const NAV_GROUPS: NavGroupConfig[] = [
     Icon: GraduationCap,
     tabs: [
       { id: 'notes',          label: 'Notes',      Icon: StickyNote   },
-      { id: 'pdf',            label: 'PDF',        Icon: FileText     },
       { id: 'ai',             label: 'HY Ref',     Icon: BookOpen     },
       { id: 'mnemonics',      label: 'Mnemonics',  Icon: Brain        },
       { id: 'analysis',       label: 'Analysis',   Icon: BarChart2    },
