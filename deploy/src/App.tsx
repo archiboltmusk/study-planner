@@ -19,7 +19,7 @@ import { OnboardingModal } from "@/components/OnboardingModal";
 import { PomodoroTimer } from "@/components/PomodoroTimer";
 import { XPToastLayer, makeToastItem, type XPToastItem } from "@/components/XPToast";
 import { useAuth } from "@/lib/auth";
-import { useCloudSync, useBulkSync, useRealtimeSync } from "@/lib/cloud";
+import { useCloudSync, useBulkSync, useRealtimeSync, useLoginSync } from "@/lib/cloud";
 import { useSubscription } from "@/lib/subscription";
 import { PremiumGate } from "@/components/PremiumGate";
 import { getAppStore, sel } from "@/lib/store";
@@ -240,6 +240,8 @@ function StudyApp({ prefix, user }: StudyAppProps) {
 
   // ── Cloud sync ────────────────────────────────────────────────────────────
   const syncReady = !!user;
+  // Pull cloud → local on login (must run before useBulkSync's initial push)
+  useLoginSync(prefix);
   // Core Zustand state — synced per-field on every state change (debounced)
   useCloudSync('completed_days', completedDays as never, syncReady);
   useCloudSync('notes',           notes        as never, syncReady);
@@ -248,6 +250,12 @@ function StudyApp({ prefix, user }: StudyAppProps) {
   useCloudSync('sr_cards',        srCards      as never, syncReady);
   useCloudSync('streak',          streak       as never, syncReady);
   useCloudSync('exam_date',       examDateIso  as never, syncReady);
+  // Gamification / XP — synced so all devices show the same score
+  const gamification = useMemo(
+    () => ({ bonusXP, unlockedIds, drillsCompleted, simCompleted } as never),
+    [bonusXP, unlockedIds, drillsCompleted, simCompleted]
+  );
+  useCloudSync('gamification', gamification, syncReady);
   // Component-level localStorage data — bulk snapshot every 60s + on tab focus
   useBulkSync(syncReady);
 

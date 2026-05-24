@@ -11,11 +11,26 @@ type JsonValue = string | number | boolean | null | JsonValue[] | { [k: string]:
 
 export const CLOUD_SYNC_EVENT = "neetpg_cloud_sync";
 
-// Tracks when WE last wrote to Supabase so we can suppress self-echoes from
-// Realtime (Supabase broadcasts every change back to all subscribers, including
-// the writer). Any incoming event whose updated_at is within 5 s of our last
-// write is assumed to be our own echo and is dropped.
+// Tracks when WE last wrote via a targeted (per-field) upsert so that
+// useRealtimeSync can suppress self-echoes.  Bulk-snapshot writes do NOT
+// update this so they can never mask incoming changes from another device.
 let _lastWriteTs = 0;
+
+// Precise echo prevention: after receiving a column value from cloud, store its
+// JSON so useCloudSync won't write the exact same value back to Supabase.
+const _lastReceivedJson = new Map<string, string>();
+function markColumnsReceived(columns: string[], row: Partial<UserData>): void {
+  for (const col of columns) {
+    const val = (row as Record<string, unknown>)[col];
+    _lastReceivedJson.set(col, JSON.stringify(val));
+    setTimeout(() => _lastReceivedJson.delete(col), 5000);
+  }
+}
+
+// Coordinating login-pull with the initial bulk-push.
+// useBulkSync waits for this promise before its first push so it never
+// overwrites fresh cloud data with stale local data.
+let _loginSyncPromise: Promise<void> | null = null;
 
 // Module-level realtime connection status for the SyncStatus indicator.
 let _rtConnected = false;
@@ -212,8 +227,10 @@ export async function fetchCloudData(userId: string): Promise<UserData | null> {
   );
 }
 
-export async function upsertCloudData(userId: string, patch: Partial<UserData>): Promise<boolean> {
-  _lastWriteTs = Date.now();
+// updateEchoTs=false for bulk snapshots so periodic pushes never mask
+// incoming realtime events from other devices.
+export async function upsertCloudData(userId: string, patch: Partial<UserData>, updateEchoTs = true): Promise<boolean> {
+  if (updateEchoTs) _lastWriteTs = Date.now();
   try {
     await executeWithRetry(
       async () => {
@@ -288,7 +305,8 @@ export async function snapshotToCloud(userId: string): Promise<boolean> {
   patch.exam_eve  = readExamEveLocal();
 
   if (Object.keys(patch).length === 0) return true;
-  const ok = await upsertCloudData(userId, patch);
+  // updateEchoTs=false: bulk snapshots must not suppress incoming realtime events
+  const ok = await upsertCloudData(userId, patch, false);
   if (!ok) {
     for (const [key, value] of Object.entries(patch)) {
       enqueue(userId, key, value as JsonValue);
@@ -311,6 +329,12 @@ export function useCloudSync<T extends JsonValue>(
   const syncToCloud = useCallback(
     async (v: T) => {
       if (!user) return;
+      // Don't write back a value we just received from cloud (prevents echo loop)
+      const receivedJson = _lastReceivedJson.get(key as string);
+      if (receivedJson !== undefined && receivedJson === JSON.stringify(v)) {
+        _lastReceivedJson.delete(key as string);
+        return;
+      }
       const ok = await upsertCloudData(user.id, { [key]: v } as Partial<UserData>);
       if (!ok) enqueue(user.id, key, v as JsonValue);
       else     dequeue(user.id, key);
@@ -328,7 +352,7 @@ export function useCloudSync<T extends JsonValue>(
 
 // ── Bulk sync hook (used for component-level localStorage data) ───────────────
 // Call once in App.tsx. Syncs all tracked keys to Supabase:
-//   • On first mount (logged-in)
+//   • On first mount (logged-in) — waits for login-pull to finish first
 //   • Every 60 seconds
 //   • When the tab regains focus (user returns from another tab/app)
 
@@ -346,9 +370,14 @@ export function useBulkSync(ready: boolean): void {
     await snapshotToCloud(user.id);
   }, [user, ready]);
 
-  // Initial sync on login
+  // Initial sync on login — wait for useLoginSync to finish pulling from cloud
+  // first, so we never overwrite newer cloud data with stale local data.
   useEffect(() => {
-    if (ready && user) void runSync();
+    if (!ready || !user) return;
+    void (async () => {
+      if (_loginSyncPromise) await _loginSyncPromise;
+      void runSync();
+    })();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready]);
 
@@ -366,6 +395,65 @@ export function useBulkSync(ready: boolean): void {
     document.addEventListener("visibilitychange", handler);
     return () => document.removeEventListener("visibilitychange", handler);
   }, [ready, user, runSync]);
+}
+
+// ── Login sync hook ───────────────────────────────────────────────────────────
+// On first login, pull the entire user_data row from Supabase and hydrate both
+// localStorage and the Zustand store.  This is the pull counterpart to
+// useBulkSync's push, and it runs before useBulkSync's initial push.
+
+export function useLoginSync(prefix: string): void {
+  const { user } = useAuth();
+  const hydratedRef = useRef(false);
+
+  useEffect(() => {
+    if (!user || hydratedRef.current) return;
+    hydratedRef.current = true;
+
+    _loginSyncPromise = (async () => {
+      try {
+        const cloud = await fetchCloudData(user.id);
+        if (!cloud) return;
+
+        // Merge all bulk keys into localStorage
+        mergeCloudIntoLocal(cloud);
+
+        // Push core + gamification directly into the Zustand store
+        const store = getAppStore(prefix);
+        const s = store.getState();
+
+        if (cloud.completed_days) s.setCompletedDays(cloud.completed_days as number[]);
+        if (cloud.notes)          s.setNotes(cloud.notes as Record<number, string>);
+        if (cloud.mcq_scores)     s.setMcqScores(cloud.mcq_scores as Record<number, { attempted: number; correct: number }>);
+        if (cloud.flagged)        s.setFlagged(cloud.flagged as Parameters<typeof s.setFlagged>[0]);
+        if (cloud.sr_cards)       s.setSrCards(cloud.sr_cards as Parameters<typeof s.setSrCards>[0]);
+        if (cloud.exam_date)      s.setExamDateIso(cloud.exam_date);
+        if (cloud.streak) {
+          const cs = cloud.streak as { count: number; longest: number; lastDate: string };
+          s.setStreak(local => ({
+            count:    Math.max(local.count,   cs.count),
+            longest:  Math.max(local.longest, cs.longest),
+            lastDate: local.lastDate > cs.lastDate ? local.lastDate : cs.lastDate,
+          }));
+        }
+
+        // Gamification: take the best value from each device to avoid losing XP
+        if (cloud.gamification) {
+          const g = cloud.gamification as { bonusXP?: number; unlockedIds?: string[]; drillsCompleted?: number; simCompleted?: boolean };
+          if (g.bonusXP !== undefined)         s.setBonusXP(Math.max(s.bonusXP, g.bonusXP));
+          if (g.unlockedIds?.length)           s.setUnlockedIds([...new Set([...s.unlockedIds, ...g.unlockedIds])]);
+          if (g.drillsCompleted !== undefined) s.setDrillsCompleted(Math.max(s.drillsCompleted, g.drillsCompleted));
+          if (g.simCompleted)                  s.setSimCompleted(true);
+        }
+
+        // Notify localStorage-backed components (RevisionScheduler, etc.)
+        const cols = Object.keys(cloud).filter(k => k !== "user_id" && k !== "updated_at");
+        window.dispatchEvent(new CustomEvent(CLOUD_SYNC_EVENT, { detail: { columns: cols } }));
+      } finally {
+        _loginSyncPromise = null;
+      }
+    })();
+  }, [user?.id, prefix]);
 }
 
 // ── Realtime multi-device sync hook (premium only) ────────────────────────────
@@ -398,15 +486,21 @@ export function useRealtimeSync(isPremium: boolean, prefix: string): void {
         (payload: { new: Partial<UserData> & { updated_at?: string } }) => {
           const row = payload.new;
 
-          // Suppress self-echo: skip if this is our own write bouncing back
+          // Suppress self-echo: skip if this UPDATE came from our own targeted write
+          // (window is 2 s — just enough to cover the 1.5 s debounce + network RTT).
+          // Bulk-snapshot writes do NOT update _lastWriteTs so they never false-block.
           const rowTs = row.updated_at ? new Date(row.updated_at).getTime() : 0;
-          if (rowTs > 0 && rowTs <= _lastWriteTs + 5000) return;
+          if (rowTs > 0 && rowTs <= _lastWriteTs + 2000) return;
 
-          // 1. Merge all bulk localStorage keys from the incoming row
+          const changed = Object.keys(row).filter(k => k !== "user_id" && k !== "updated_at");
+
+          // Mark these columns so useCloudSync won't echo them back to Supabase
+          markColumnsReceived(changed, row);
+
+          // 1. Merge bulk localStorage keys
           mergeCloudIntoLocal(row);
 
-          // 2. Push core state directly into the Zustand store so components
-          //    using useStore() re-render immediately without a page refresh.
+          // 2. Push core + gamification into Zustand store
           const s = store.getState();
           if (row.completed_days) s.setCompletedDays(row.completed_days as number[]);
           if (row.notes)          s.setNotes(row.notes as Record<number, string>);
@@ -422,10 +516,15 @@ export function useRealtimeSync(isPremium: boolean, prefix: string): void {
               lastDate: local.lastDate > cs.lastDate ? local.lastDate : cs.lastDate,
             }));
           }
+          if (row.gamification) {
+            const g = row.gamification as { bonusXP?: number; unlockedIds?: string[]; drillsCompleted?: number; simCompleted?: boolean };
+            if (g.bonusXP !== undefined)         s.setBonusXP(Math.max(s.bonusXP, g.bonusXP));
+            if (g.unlockedIds?.length)           s.setUnlockedIds([...new Set([...s.unlockedIds, ...g.unlockedIds])]);
+            if (g.drillsCompleted !== undefined) s.setDrillsCompleted(Math.max(s.drillsCompleted, g.drillsCompleted));
+            if (g.simCompleted)                  s.setSimCompleted(true);
+          }
 
-          // 3. Notify components that manage their own localStorage state
-          //    (RevisionScheduler, DailyTodoList, FlashcardDeck, NotesEditor, …)
-          const changed = Object.keys(row).filter(k => k !== "user_id" && k !== "updated_at");
+          // 3. Notify localStorage-backed components
           window.dispatchEvent(new CustomEvent(CLOUD_SYNC_EVENT, { detail: { columns: changed } }));
         }
       )
