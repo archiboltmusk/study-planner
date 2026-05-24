@@ -99,8 +99,6 @@ interface UserData {
   custom_mock_history: JsonValue[];
   explanation_ratings: Record<string, JsonValue>;
   pomodoro_sessions:   JsonValue[];
-  pdf_history:         JsonValue[];
-  pdf_sr_cards:        Record<string, JsonValue>;
   exam_eve:            Record<string, JsonValue>;
   gamification:        Record<string, JsonValue>;
   pyq_attempts:        Record<string, JsonValue>;
@@ -131,8 +129,6 @@ const BULK_SYNC_KEYS: { local: string; cloud: keyof UserData }[] = [
   { local: "neetpg_custom_mock_history",  cloud: "custom_mock_history" },
   { local: "neetpg_explanation_ratings",  cloud: "explanation_ratings" },
   { local: "neetpg_pomodoro_sessions",    cloud: "pomodoro_sessions"   },
-  { local: "neetpg_pdf_history",          cloud: "pdf_history"         },
-  { local: "neetpg_pdf_sr_cards",         cloud: "pdf_sr_cards"        },
   { local: "neetpg_pyq_attempts",         cloud: "pyq_attempts"        },
 ];
 
