@@ -6,7 +6,7 @@ import {
   BarChart2, BookMarked, Pill, XCircle, Award, ExternalLink, MessageSquare,
   LayoutGrid, TrendingUp, Stethoscope, ScrollText, Trophy, Home, GraduationCap,
   Sparkles, Bot, Timer, Sun, Users, UserCheck, Heart, Radio, ClipboardList,
-  ListOrdered, Star, ListChecks,
+  ListOrdered, Star, ListChecks, Crown,
 } from "lucide-react";
 
 export type MainTab =
@@ -19,7 +19,7 @@ export type MainTab =
   | 'cutoffhistory' | 'specialtyseats' | 'guidelines'
   | 'topicpredict' | 'studyrooms' | 'buddymatch'
   | 'zainabvora'
-  | 'rewards';
+  | 'rewards' | 'upgrade';
 
 export type NavGroup = 'home' | 'practice' | 'learn' | 'insights' | 'rewards';
 
@@ -111,6 +111,7 @@ export const NAV_GROUPS: NavGroupConfig[] = [
     Icon: Trophy,
     tabs: [
       { id: 'rewards', label: 'Rewards', Icon: Trophy },
+      { id: 'upgrade', label: 'Premium',  Icon: Crown  },
     ],
   },
 ];

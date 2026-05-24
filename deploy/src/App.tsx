@@ -20,6 +20,8 @@ import { PomodoroTimer } from "@/components/PomodoroTimer";
 import { XPToastLayer, makeToastItem, type XPToastItem } from "@/components/XPToast";
 import { useAuth } from "@/lib/auth";
 import { useCloudSync, useBulkSync } from "@/lib/cloud";
+import { useSubscription } from "@/lib/subscription";
+import { PremiumGate } from "@/components/PremiumGate";
 import { getAppStore, sel } from "@/lib/store";
 import type { StreakData } from "@/lib/store";
 import { computeBaseXP, XP_VALUES, getRank } from "@/lib/xp";
@@ -74,6 +76,7 @@ const MarrowSchedule      = mk(() => import("@/components/MarrowSchedule"),     
 const DailyTodoList       = mk(() => import("@/components/DailyTodoList"),       "DailyTodoList");
 const PlannerCalendar     = mk(() => import("@/components/PlannerCalendar"),     "PlannerCalendar");
 const NotesEditor         = mk(() => import("@/components/NotesEditor"),         "NotesEditor");
+const UpgradePage         = mk(() => import("@/components/UpgradePage"),         "UpgradePage");
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -371,6 +374,10 @@ function StudyApp({ prefix, user }: StudyAppProps) {
     setActiveTab(tab);
   }, []);
 
+  // ── Subscription / premium ────────────────────────────────────────────────
+  const { isPremium } = useSubscription();
+  const goToUpgrade   = useCallback(() => handleNavigate('rewards', 'upgrade'), [handleNavigate]);
+
   // ── Keyboard shortcuts ────────────────────────────────────────────────────
   useKeyboardShortcuts({
     onCommandPalette: () => setCommandOpen(true),
@@ -510,9 +517,13 @@ function StudyApp({ prefix, user }: StudyAppProps) {
           </Suspense>}
         </div>
         <div hidden={activeGroup !== 'practice' || activeTab !== 'simulation'}>
-          {visitedTabs.has('simulation') && <Suspense fallback={<TabFallback />}>
-            <ExamSimulation onComplete={handleSimComplete} />
-          </Suspense>}
+          {visitedTabs.has('simulation') && (
+            <PremiumGate isPremium={isPremium} feature="Exam Simulation" onUpgrade={goToUpgrade}>
+              <Suspense fallback={<TabFallback />}>
+                <ExamSimulation onComplete={handleSimComplete} />
+              </Suspense>
+            </PremiumGate>
+          )}
         </div>
         <div hidden={activeGroup !== 'practice' || activeTab !== 'revision'}>
           <RevisionList
@@ -527,14 +538,22 @@ function StudyApp({ prefix, user }: StudyAppProps) {
           </Suspense>}
         </div>
         <div hidden={activeGroup !== 'practice' || activeTab !== 'aiquiz'}>
-          {visitedTabs.has('aiquiz') && <Suspense fallback={<TabFallback />}>
-            <AIPredictedQuiz />
-          </Suspense>}
+          {visitedTabs.has('aiquiz') && (
+            <PremiumGate isPremium={isPremium} feature="AI Quiz" onUpgrade={goToUpgrade}>
+              <Suspense fallback={<TabFallback />}>
+                <AIPredictedQuiz />
+              </Suspense>
+            </PremiumGate>
+          )}
         </div>
         <div hidden={activeGroup !== 'practice' || activeTab !== 'custommock'}>
-          {visitedTabs.has('custommock') && <Suspense fallback={<TabFallback />}>
-            <CustomMockGenerator />
-          </Suspense>}
+          {visitedTabs.has('custommock') && (
+            <PremiumGate isPremium={isPremium} feature="Custom Mock" onUpgrade={goToUpgrade}>
+              <Suspense fallback={<TabFallback />}>
+                <CustomMockGenerator />
+              </Suspense>
+            </PremiumGate>
+          )}
         </div>
         <div hidden={activeGroup !== 'practice' || activeTab !== 'psmcalc'}>
           {visitedTabs.has('psmcalc') && <Suspense fallback={<TabFallback />}>
@@ -579,9 +598,13 @@ function StudyApp({ prefix, user }: StudyAppProps) {
           </Suspense>}
         </div>
         <div hidden={activeGroup !== 'learn' || activeTab !== 'flashcards'}>
-          {visitedTabs.has('flashcards') && <Suspense fallback={<TabFallback />}>
-            <FlashcardDeck />
-          </Suspense>}
+          {visitedTabs.has('flashcards') && (
+            <PremiumGate isPremium={isPremium} feature="Flashcard Deck" onUpgrade={goToUpgrade}>
+              <Suspense fallback={<TabFallback />}>
+                <FlashcardDeck />
+              </Suspense>
+            </PremiumGate>
+          )}
         </div>
         <div hidden={activeGroup !== 'learn' || activeTab !== 'doctable'}>
           {visitedTabs.has('doctable') && <Suspense fallback={<TabFallback />}>
@@ -589,9 +612,13 @@ function StudyApp({ prefix, user }: StudyAppProps) {
           </Suspense>}
         </div>
         <div hidden={activeGroup !== 'learn' || activeTab !== 'revschedule'}>
-          {visitedTabs.has('revschedule') && <Suspense fallback={<TabFallback />}>
-            <RevisionScheduler />
-          </Suspense>}
+          {visitedTabs.has('revschedule') && (
+            <PremiumGate isPremium={isPremium} feature="Revision Scheduler" onUpgrade={goToUpgrade}>
+              <Suspense fallback={<TabFallback />}>
+                <RevisionScheduler />
+              </Suspense>
+            </PremiumGate>
+          )}
         </div>
         <div hidden={activeGroup !== 'learn' || activeTab !== 'mistakelogbook'}>
           {visitedTabs.has('mistakelogbook') && <Suspense fallback={<TabFallback />}>
@@ -599,19 +626,27 @@ function StudyApp({ prefix, user }: StudyAppProps) {
           </Suspense>}
         </div>
         <div hidden={activeGroup !== 'learn' || activeTab !== 'aichat'}>
-          {visitedTabs.has('aichat') && <Suspense fallback={<TabFallback />}>
-            <ChatPanel studyContext={studyContext} onFirstMessage={handleAIChat} />
-          </Suspense>}
+          {visitedTabs.has('aichat') && (
+            <PremiumGate isPremium={isPremium} feature="AI Chat Tutor" onUpgrade={goToUpgrade}>
+              <Suspense fallback={<TabFallback />}>
+                <ChatPanel studyContext={studyContext} onFirstMessage={handleAIChat} />
+              </Suspense>
+            </PremiumGate>
+          )}
         </div>
 
         {/* INSIGHTS */}
         <div hidden={activeGroup !== 'insights' || activeTab !== 'analytics'}>
-          {visitedTabs.has('analytics') && <Suspense fallback={<TabFallback />}>
-            <div className="flex flex-col gap-6">
-              <AnalyticsPanel mcqScores={mcqScores} completedDays={completedDays} streak={streak} examDate={examDate} />
-              <ErrorAnalysis mcqScores={mcqScores} />
-            </div>
-          </Suspense>}
+          {visitedTabs.has('analytics') && (
+            <PremiumGate isPremium={isPremium} feature="Analytics" onUpgrade={goToUpgrade}>
+              <Suspense fallback={<TabFallback />}>
+                <div className="flex flex-col gap-6">
+                  <AnalyticsPanel mcqScores={mcqScores} completedDays={completedDays} streak={streak} examDate={examDate} />
+                  <ErrorAnalysis mcqScores={mcqScores} />
+                </div>
+              </Suspense>
+            </PremiumGate>
+          )}
         </div>
         <div hidden={activeGroup !== 'insights' || activeTab !== 'toppers'}>
           {visitedTabs.has('toppers') && <Suspense fallback={<TabFallback />}>
@@ -629,9 +664,13 @@ function StudyApp({ prefix, user }: StudyAppProps) {
           </Suspense>}
         </div>
         <div hidden={activeGroup !== 'insights' || activeTab !== 'weakheatmap'}>
-          {visitedTabs.has('weakheatmap') && <Suspense fallback={<TabFallback />}>
-            <WeakTopicHeatmap onGoToSubject={() => handleNavigate('practice', 'pyq')} />
-          </Suspense>}
+          {visitedTabs.has('weakheatmap') && (
+            <PremiumGate isPremium={isPremium} feature="Weak Area Heatmap" onUpgrade={goToUpgrade}>
+              <Suspense fallback={<TabFallback />}>
+                <WeakTopicHeatmap onGoToSubject={() => handleNavigate('practice', 'pyq')} />
+              </Suspense>
+            </PremiumGate>
+          )}
         </div>
         <div hidden={activeGroup !== 'insights' || activeTab !== 'cutoffhistory'}>
           {visitedTabs.has('cutoffhistory') && <Suspense fallback={<TabFallback />}>
@@ -670,7 +709,7 @@ function StudyApp({ prefix, user }: StudyAppProps) {
         </div>
 
         {/* REWARDS */}
-        <div hidden={activeGroup !== 'rewards'}>
+        <div hidden={activeGroup !== 'rewards' || activeTab !== 'rewards'}>
           {visitedTabs.has('rewards') && <Suspense fallback={<TabFallback />}>
             <GamificationPanel
               xp={totalXP}
@@ -679,6 +718,13 @@ function StudyApp({ prefix, user }: StudyAppProps) {
               streak={streak.longest}
               displayName={user?.email ?? 'Aspirant'}
             />
+          </Suspense>}
+        </div>
+
+        {/* PREMIUM UPGRADE */}
+        <div hidden={activeGroup !== 'rewards' || activeTab !== 'upgrade'}>
+          {visitedTabs.has('upgrade') && <Suspense fallback={<TabFallback />}>
+            <UpgradePage />
           </Suspense>}
         </div>
 
