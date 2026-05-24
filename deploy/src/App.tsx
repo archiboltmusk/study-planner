@@ -28,7 +28,7 @@ import { computeBaseXP, XP_VALUES, getRank } from "@/lib/xp";
 import { checkAchievements } from "@/lib/achievements";
 import { supabase } from "@/lib/supabase";
 import { setMistakeLoggerCtx } from "@/lib/mistakeLogger";
-import { REVISION_SCHEDULER_KEY, sm2Update, type ScheduledTopic } from "@/components/RevisionScheduler";
+import { REVISION_SCHEDULER_KEY, type ScheduledTopic } from "@/components/RevisionScheduler";
 
 // ── Lazy-loaded tab components ────────────────────────────────────────────────
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
