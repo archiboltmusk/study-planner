@@ -405,7 +405,7 @@ function StudyApp({ prefix, user }: StudyAppProps) {
   // ── Subscription / premium ────────────────────────────────────────────────
   const { isPremium } = useSubscription();
   const goToUpgrade   = useCallback(() => handleNavigate('rewards', 'upgrade'), [handleNavigate]);
-  useRealtimeSync(isPremium, prefix);
+  useRealtimeSync(!!user, prefix);
 
   // Keep mistakeLogger aware of auth/premium state so autoLogMistakes can
   // write to Supabase for premium users
