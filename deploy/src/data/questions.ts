@@ -18,8 +18,15 @@ export const QUESTION_SUBJECTS = [
   "OBG",
   "Paediatrics",
   "ENT/Ophthalmology",
+  "ENT",
+  "Ophthalmology",
   "PSM/Community Medicine",
   "Forensic Medicine",
+  "Radiology",
+  "Orthopaedics",
+  "Dermatology",
+  "Psychiatry",
+  "Anaesthesia",
 ] as const;
 
 export type QuestionSubject = (typeof QUESTION_SUBJECTS)[number];
