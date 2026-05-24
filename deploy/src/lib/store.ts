@@ -39,8 +39,11 @@ interface GamificationState {
   simCompleted: boolean;
 
   addBonusXP: (amount: number) => void;
+  setBonusXP: (n: number) => void;
   unlockAchievement: (id: string, xpReward: number) => void;
+  setUnlockedIds: (ids: string[]) => void;
   incrementDrills: () => void;
+  setDrillsCompleted: (n: number) => void;
   setSimCompleted: (v: boolean) => void;
 }
 
@@ -109,6 +112,7 @@ function buildStore(prefix: string) {
         simCompleted:    safeLoad<boolean>("neetpg_sim_done", false),
 
         addBonusXP: (amount) => set((s) => ({ bonusXP: s.bonusXP + amount })),
+        setBonusXP: (n) => set({ bonusXP: n }),
 
         unlockAchievement: (id, xpReward) =>
           set((s) => ({
@@ -116,7 +120,10 @@ function buildStore(prefix: string) {
             bonusXP:     s.unlockedIds.includes(id) ? s.bonusXP : s.bonusXP + xpReward,
           })),
 
+        setUnlockedIds: (ids) => set({ unlockedIds: ids }),
+
         incrementDrills: () => set((s) => ({ drillsCompleted: s.drillsCompleted + 1 })),
+        setDrillsCompleted: (n) => set({ drillsCompleted: n }),
 
         setSimCompleted: (v) => set({ simCompleted: v }),
       }),
