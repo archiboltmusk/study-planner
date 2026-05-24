@@ -9,11 +9,12 @@ import {
   ReferenceLine,
   ResponsiveContainer,
 } from "recharts";
-import { TrendingUp, Activity, Calendar, Flame, Trophy, Target, Clock, Brain, Zap } from "lucide-react";
+import { TrendingUp, Activity, Calendar, Flame, Trophy, Target, Clock, Brain, Zap, History } from "lucide-react";
 import { SCHEDULE } from "@/data/schedule";
 import { calcAllMastery } from "@/lib/mastery";
 import { QUESTION_SUBJECTS } from "@/data/questions";
 import { safeLoad } from "@/lib/storage";
+import { loadSessions } from "@/lib/sessionHistory";
 
 export interface McqScore {
   attempted: number;
@@ -503,6 +504,9 @@ export function AnalyticsPanel({ mcqScores, completedDays, streak, examDate }: P
       {/* ── Section 7: Subject Mastery Scores ─────────────────────────────────── */}
       <MasterySection />
 
+      {/* ── Section 8: Recent Sessions ────────────────────────────────────────── */}
+      <RecentSessions />
+
     </div>
   );
 }
@@ -592,6 +596,56 @@ function MasterySection() {
             {label}
           </div>
         ))}
+      </div>
+    </div>
+  );
+}
+
+function RecentSessions() {
+  const sessions = useMemo(() => loadSessions().slice(0, 10), []);
+  if (sessions.length === 0) return null;
+
+  const accColor = (acc: number) =>
+    acc >= 75 ? "text-emerald-400" : acc >= 60 ? "text-amber-400" : "text-red-400";
+
+  const modeLabel: Record<string, string> = {
+    drill: "Drill",
+    rapid: "Rapid",
+    adaptive: "Adaptive",
+    standard: "Standard",
+  };
+
+  return (
+    <div className="bg-card border border-border rounded-xl p-5">
+      <div className="flex items-center gap-2 mb-1">
+        <History className="w-4 h-4 text-muted-foreground" />
+        <h3 className="text-xs uppercase text-muted-foreground font-mono">Recent Sessions</h3>
+        <span className="text-[10px] text-muted-foreground ml-auto">last {sessions.length}</span>
+      </div>
+      <p className="text-[10px] text-muted-foreground mb-4">Your most recent PYQ practice sessions.</p>
+      <div className="overflow-x-auto">
+        <table className="w-full text-[11px] font-mono">
+          <thead>
+            <tr className="text-muted-foreground border-b border-border/60">
+              <th className="text-left pb-2 pr-3 font-normal">Date</th>
+              <th className="text-left pb-2 pr-3 font-normal">Mode</th>
+              <th className="text-right pb-2 pr-3 font-normal">Qs</th>
+              <th className="text-right pb-2 pr-3 font-normal">Acc</th>
+              <th className="text-right pb-2 font-normal">Min</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sessions.map((s, i) => (
+              <tr key={i} className="border-b border-border/30 last:border-0">
+                <td className="py-2 pr-3 text-muted-foreground">{s.date}</td>
+                <td className="py-2 pr-3 text-foreground">{modeLabel[s.mode] ?? s.mode}</td>
+                <td className="py-2 pr-3 text-right text-foreground">{s.questionsAttempted}</td>
+                <td className={`py-2 pr-3 text-right font-bold ${accColor(s.accuracy)}`}>{s.accuracy}%</td>
+                <td className="py-2 text-right text-muted-foreground">{s.durationMin}m</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

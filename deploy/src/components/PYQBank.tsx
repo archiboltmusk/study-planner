@@ -7,6 +7,7 @@ import { QUESTIONS, QUESTION_SUBJECTS, Question } from "@/data/questions";
 import { SPECIFIC_PYQS, type ExamSource } from "@/data/pyqSpecific";
 import { safeLoad, safeSave } from "@/lib/storage";
 import { autoLogMistakes } from "@/lib/mistakeLogger";
+import { recordSession } from "@/lib/sessionHistory";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -166,6 +167,7 @@ function DrillView({
   const [results, setResults] = useState<DrillResult[]>([]);
   const [done, setDone] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const startTimeRef = useRef<number>(Date.now());
 
   const current = pool[idx] ?? null;
   const revealed = selected !== null;
@@ -177,6 +179,22 @@ function DrillView({
     timerRef.current = setTimeout(() => setTimer(t => t - 1), 1000);
     return () => { if (timerRef.current) clearTimeout(timerRef.current); };
   }, [timer, done, revealed, current]);
+
+  useEffect(() => {
+    if (!done || results.length === 0) return;
+    const durationMin = Math.max(1, Math.round((Date.now() - startTimeRef.current) / 60000));
+    const total = results.length;
+    const correct = results.filter(r => r.correct).length;
+    recordSession({
+      date: new Date().toISOString().slice(0, 10),
+      durationMin,
+      questionsAttempted: total,
+      accuracy: Math.round((correct / total) * 100),
+      subjectsCovered: [...new Set(pool.map(q => q.subject))],
+      mode: "drill",
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [done]);
 
   function advance(opt: number | null) {
     if (!current) return;
