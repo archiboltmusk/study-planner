@@ -55,8 +55,15 @@ const PYQ_TO_SUBJECT: Record<string, string> = {
   "OBG":                   "OBG",
   "Paediatrics":           "Paediatrics",
   "ENT/Ophthalmology":     "ENT",
+  "ENT":                   "ENT",
+  "Ophthalmology":         "Ophthalmology",
   "PSM/Community Medicine":"PSM",
   "Forensic Medicine":     "Forensic Medicine",
+  "Radiology":             "Radiology",
+  "Orthopaedics":          "Orthopaedics",
+  "Dermatology":           "Dermatology",
+  "Psychiatry":            "Psychiatry",
+  "Anaesthesia":           "Anaesthesia",
 };
 
 // Maps mistake logbook subject strings → our canonical names
