@@ -12,7 +12,6 @@ import { OfflineIndicator } from "@/components/OfflineIndicator";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
 
 import { SCHEDULE, EXAM_DATE } from "@/data/schedule";
-import type { QuestionSubject } from "@/data/questions";
 import { safeLoad, safeSave } from "@/lib/storage";
 import { SRCard } from "@/lib/sr";
 import { RevisionList } from "@/components/RevisionList";
@@ -69,7 +68,6 @@ const StressAdaptive      = mk(() => import("@/components/StressAdaptive"),     
 const FitnessWellness     = mk(() => import("@/components/FitnessWellness"),     "FitnessWellness");
 const NeetPGMockTest      = mk(() => import("@/components/NeetPGMockTest"),      "NeetPGMockTest");
 const WellnessTracker     = mk(() => import("@/components/WellnessTracker"),     "WellnessTracker");
-const ExamEveLockdown     = mk(() => import("@/components/ExamEveLockdown"),     "ExamEveLockdown");
 const CoreBTRSchedule     = mk(() => import("@/components/CoreBTRSchedule"),     "CoreBTRSchedule");
 const ZainabVoraTips      = mk(() => import("@/components/ZainabVoraTips"),      "ZainabVoraTips");
 const MarrowSchedule      = mk(() => import("@/components/MarrowSchedule"),      "MarrowSchedule");
@@ -563,8 +561,6 @@ function StudyApp({ prefix, user }: StudyAppProps) {
         <div hidden={activeGroup !== 'learn' || activeTab !== 'notes'}>
           {visitedTabs.has('notes') && <Suspense fallback={<TabFallback />}>
             <NotesEditor />
-=======
->>>>>>> claude/neetpg-rank-1-tools-SivFX
           </Suspense>}
         </div>
         <div hidden={activeGroup !== 'learn' || activeTab !== 'ai'}>
