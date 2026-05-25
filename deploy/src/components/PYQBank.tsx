@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import {
   BookOpen, CheckCircle, XCircle, Shuffle, ChevronLeft, ChevronRight,
-  RotateCcw, TrendingUp, Search, Zap, Pencil, Clock, Trophy,
+  RotateCcw, TrendingUp, Search, Zap, Pencil, Clock, Trophy, SlidersHorizontal, ChevronDown,
 } from "lucide-react";
 import { QUESTIONS, QUESTION_SUBJECTS, Question } from "@/data/questions";
 import { SPECIFIC_PYQS, type ExamSource } from "@/data/pyqSpecific";
@@ -311,25 +311,25 @@ function DrillView({
           <DiffBadge level={current.difficulty} />
         </div>
         <div className="px-5 py-5">
-          <p className="font-serif text-base text-foreground leading-relaxed">{current.stem}</p>
+          <p className="font-serif text-lg md:text-xl text-foreground leading-relaxed">{current.stem}</p>
         </div>
-        <div className="px-5 pb-5 space-y-2.5">
+        <div className="px-5 pb-5 space-y-3">
           {current.options.map((opt, i) => (
             <button
               key={i}
               onClick={() => pick(i)}
               disabled={revealed}
-              className={`w-full text-left px-4 py-3 rounded-xl border-2 transition-all text-sm font-mono flex items-start gap-3 ${optClass(i)}`}
+              className={`w-full text-left px-4 py-4 rounded-xl border-2 transition-all text-base font-mono flex items-start gap-3 ${optClass(i)}`}
             >
-              <span className="font-bold shrink-0">{OPTION_LABELS[i]}.</span>
-              <span>{opt}</span>
+              <span className="font-bold shrink-0 text-base">{OPTION_LABELS[i]}.</span>
+              <span className="leading-snug">{opt}</span>
             </button>
           ))}
         </div>
         {revealed && (
-          <div className="mx-5 mb-5 bg-emerald-500/5 border border-emerald-500/20 rounded-xl px-4 py-3">
-            <p className="text-[11px] font-mono text-emerald-400 uppercase tracking-wider mb-1.5">Explanation</p>
-            <p className="text-sm font-mono text-foreground/80 leading-relaxed">{current.explanation}</p>
+          <div className="mx-5 mb-5 bg-emerald-500/5 border border-emerald-500/20 rounded-xl px-4 py-4">
+            <p className="text-[11px] font-mono text-emerald-400 uppercase tracking-wider mb-2">Explanation</p>
+            <p className="text-base font-mono text-foreground/80 leading-relaxed">{current.explanation}</p>
           </div>
         )}
       </div>
@@ -433,6 +433,7 @@ export function PYQBank({ onCorrect, onWrong }: PYQBankProps = {}) {
   const [adaptivePool,  setAdaptivePool]  = useState<UnifiedQuestion[] | null>(null);
   const [drillMode,     setDrillMode]     = useState<boolean>(false);
   const [qConfidence,   setQConfidence]   = useState<Record<string, 1|2|3>>(() => safeLoad("neetpg_q_confidence", {}));
+  const [filtersOpen,   setFiltersOpen]   = useState<boolean>(false);
 
   const allQuestions = useMemo<UnifiedQuestion[]>(() => {
     const base = QUESTIONS.map(localToUnified);
@@ -621,119 +622,140 @@ export function PYQBank({ onCorrect, onWrong }: PYQBankProps = {}) {
         </div>
       </div>
 
-      {/* Search */}
-      <div className="relative shrink-0">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
-        <input
-          value={search}
-          onChange={e => { setSearch(e.target.value); setQIndex(0); setSelectedOpt(null); if (adaptiveMode) deactivateAdaptive(); }}
-          placeholder="Search questions, topics, subjects…"
-          className="w-full bg-card border border-border rounded-lg pl-8 pr-3 py-2 text-xs font-mono focus:outline-none focus:ring-1 focus:ring-primary"
-        />
+      {/* Search + Filter toggle row */}
+      <div className="flex gap-2 shrink-0">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+          <input
+            value={search}
+            onChange={e => { setSearch(e.target.value); setQIndex(0); setSelectedOpt(null); if (adaptiveMode) deactivateAdaptive(); }}
+            placeholder="Search questions, topics, subjects…"
+            className="w-full bg-card border border-border rounded-lg pl-8 pr-3 py-2.5 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-primary"
+          />
+        </div>
+        <button
+          onClick={() => setFiltersOpen(o => !o)}
+          className={`flex items-center gap-1.5 px-3 py-2.5 text-xs font-mono rounded-lg border transition-colors shrink-0 ${
+            filtersOpen ? "bg-secondary text-secondary-foreground border-secondary" : "bg-card border-border text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          <SlidersHorizontal className="w-3.5 h-3.5" />
+          Filters
+          <ChevronDown className={`w-3 h-3 transition-transform ${filtersOpen ? "rotate-180" : ""}`} />
+        </button>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-col gap-2 shrink-0">
-        {/* Subject */}
-        <div className="flex flex-wrap gap-1.5">
-          {["All", ...QUESTION_SUBJECTS].map(s => {
-            const cov = s !== "All" ? subjectCoverage[s] : null;
-            return (
+      {/* Active filter summary (always visible) */}
+      <div className="flex flex-wrap gap-1.5 shrink-0 -mt-1">
+        {subject !== "All" && (
+          <span className="px-2 py-0.5 text-[10px] font-mono bg-secondary text-secondary-foreground rounded-full">{subject}</span>
+        )}
+        {sourceFilter !== "all" && (
+          <span className="px-2 py-0.5 text-[10px] font-mono bg-rose-500/20 text-rose-400 rounded-full">{sourceFilter}</span>
+        )}
+        {mode !== "all" && (
+          <span className="px-2 py-0.5 text-[10px] font-mono bg-card border border-border text-foreground rounded-full">{mode === "unattempted" ? "New" : "Wrong"}</span>
+        )}
+        {difficulty !== "all" && (
+          <span className="px-2 py-0.5 text-[10px] font-mono bg-yellow-500/20 text-yellow-400 rounded-full capitalize">{difficulty}</span>
+        )}
+        {adaptiveMode && (
+          <span className="px-2 py-0.5 text-[10px] font-mono bg-primary/20 text-primary rounded-full flex items-center gap-1">
+            <Zap className="w-2.5 h-2.5" /> Adaptive
+          </span>
+        )}
+      </div>
+
+      {/* Collapsible Filters panel */}
+      {filtersOpen && (
+        <div className="flex flex-col gap-2 shrink-0 bg-card border border-border rounded-xl p-3">
+          {/* Subject */}
+          <div className="flex flex-wrap gap-1.5">
+            {["All", ...QUESTION_SUBJECTS].map(s => {
+              const cov = s !== "All" ? subjectCoverage[s] : null;
+              return (
+                <button
+                  key={s}
+                  onClick={() => { setSubject(s); setQIndex(0); setSelectedOpt(null); deactivateAdaptive(); }}
+                  className={`px-2.5 py-1 text-[11px] font-mono rounded-full border transition-colors ${
+                    subject === s && !adaptiveMode ? "bg-secondary text-secondary-foreground border-secondary" : "text-muted-foreground border-border hover:border-muted-foreground"
+                  }`}
+                >
+                  {s}
+                  {cov && cov.done > 0 && (
+                    <span className="text-[9px] opacity-60 ml-0.5">{cov.done}/{cov.total}</span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Exam source filter */}
+          <div className="flex flex-wrap gap-1.5">
+            {(["all", ...EXAM_SOURCES] as SourceFilter[]).map(s => (
               <button
                 key={s}
-                onClick={() => { setSubject(s); setQIndex(0); setSelectedOpt(null); deactivateAdaptive(); }}
+                onClick={() => { setSourceFilter(s); setQIndex(0); setSelectedOpt(null); deactivateAdaptive(); }}
                 className={`px-2.5 py-1 text-[11px] font-mono rounded-full border transition-colors ${
-                  subject === s && !adaptiveMode ? "bg-secondary text-secondary-foreground border-secondary" : "text-muted-foreground border-border hover:border-muted-foreground"
+                  sourceFilter === s && !adaptiveMode
+                    ? s === "NEET-PG" ? "bg-rose-500/20 text-rose-400 border-rose-500/40"
+                      : s === "AIIMS" ? "bg-blue-500/20 text-blue-400 border-blue-500/40"
+                      : s === "PGIMER" ? "bg-violet-500/20 text-violet-400 border-violet-500/40"
+                      : s === "JIPMER" ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/40"
+                      : s === "INI-CET" ? "bg-amber-500/20 text-amber-400 border-amber-500/40"
+                      : "bg-secondary text-secondary-foreground border-secondary"
+                    : "text-muted-foreground border-border hover:border-muted-foreground"
                 }`}
               >
-                {s}
-                {cov && cov.done > 0 && (
-                  <span className="text-[9px] opacity-60 ml-0.5">{cov.done}/{cov.total}</span>
-                )}
+                {s === "all" ? "All Sources" : s}
               </button>
-            );
-          })}
-        </div>
+            ))}
+          </div>
 
-        {/* Exam source filter */}
-        <div className="flex flex-wrap gap-1.5">
-          {(["all", ...EXAM_SOURCES] as SourceFilter[]).map(s => (
+          {/* Mode + Difficulty + Adaptive */}
+          <div className="flex gap-1.5 flex-wrap">
             <button
-              key={s}
-              onClick={() => { setSourceFilter(s); setQIndex(0); setSelectedOpt(null); deactivateAdaptive(); }}
-              className={`px-2.5 py-1 text-[11px] font-mono rounded-full border transition-colors ${
-                sourceFilter === s && !adaptiveMode
-                  ? s === "NEET-PG" ? "bg-rose-500/20 text-rose-400 border-rose-500/40"
-                    : s === "AIIMS" ? "bg-blue-500/20 text-blue-400 border-blue-500/40"
-                    : s === "PGIMER" ? "bg-violet-500/20 text-violet-400 border-violet-500/40"
-                    : s === "JIPMER" ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/40"
-                    : s === "INI-CET" ? "bg-amber-500/20 text-amber-400 border-amber-500/40"
-                    : "bg-secondary text-secondary-foreground border-secondary"
-                  : "text-muted-foreground border-border hover:border-muted-foreground"
-              }`}
-            >
-              {s === "all" ? "All Sources" : s}
-            </button>
-          ))}
-        </div>
-
-        {/* Mode + Difficulty + Adaptive */}
-        <div className="flex gap-1.5 flex-wrap">
-          {/* Adaptive button */}
-          <button
-            onClick={() => adaptiveMode ? deactivateAdaptive() : activateAdaptive()}
-            className={`flex items-center gap-1 px-2.5 py-1 text-[11px] font-mono rounded-full border transition-colors ${
-              adaptiveMode
-                ? "bg-primary/20 text-primary border-primary/40"
-                : "text-muted-foreground border-border/50 hover:border-muted-foreground"
-            }`}
-          >
-            <Zap className="w-2.5 h-2.5" /> Adaptive
-          </button>
-          <div className="w-px h-5 bg-border self-center mx-1" />
-          {(["all", "unattempted", "wrong"] as FilterMode[]).map(m => (
-            <button
-              key={m}
-              onClick={() => { setMode(m); setQIndex(0); setSelectedOpt(null); if (adaptiveMode) deactivateAdaptive(); }}
-              className={`px-2.5 py-1 text-[11px] font-mono rounded-full border transition-colors ${
-                mode === m && !adaptiveMode ? "bg-card text-foreground border-border" : "text-muted-foreground border-border/50 hover:border-muted-foreground"
-              }`}
-            >
-              {m === "unattempted" ? "New" : m === "wrong" ? "Wrong" : "All"}
-            </button>
-          ))}
-          <div className="w-px h-5 bg-border self-center mx-1" />
-          {(["all", "easy", "medium", "hard"] as DifficultyFilter[]).map(d => (
-            <button
-              key={d}
-              onClick={() => { setDifficulty(d); setQIndex(0); setSelectedOpt(null); if (adaptiveMode) deactivateAdaptive(); }}
-              className={`px-2.5 py-1 text-[11px] font-mono rounded-full border transition-colors capitalize ${
-                difficulty === d && !adaptiveMode
-                  ? d === "all"    ? "bg-secondary text-secondary-foreground border-secondary"
-                  : d === "easy"   ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/40"
-                  : d === "medium" ? "bg-yellow-500/20 text-yellow-400 border-yellow-500/40"
-                  :                  "bg-destructive/20 text-destructive border-destructive/40"
+              onClick={() => adaptiveMode ? deactivateAdaptive() : activateAdaptive()}
+              className={`flex items-center gap-1 px-2.5 py-1 text-[11px] font-mono rounded-full border transition-colors ${
+                adaptiveMode
+                  ? "bg-primary/20 text-primary border-primary/40"
                   : "text-muted-foreground border-border/50 hover:border-muted-foreground"
               }`}
             >
-              {d}
+              <Zap className="w-2.5 h-2.5" /> Adaptive
             </button>
-          ))}
-        </div>
-
-        {/* Adaptive mode banner */}
-        {adaptiveMode && (
-          <div className="flex items-center justify-between px-3 py-2 bg-primary/10 border border-primary/30 rounded-lg">
-            <div className="flex items-center gap-2">
-              <Zap className="w-3.5 h-3.5 text-primary" />
-              <span className="text-xs font-mono text-primary">Adaptive mode — {pool.length} questions weighted to your weakest subjects</span>
-            </div>
-            <button onClick={deactivateAdaptive} className="text-[10px] font-mono text-muted-foreground hover:text-foreground transition-colors">
-              Clear
-            </button>
+            <div className="w-px h-5 bg-border self-center mx-1" />
+            {(["all", "unattempted", "wrong"] as FilterMode[]).map(m => (
+              <button
+                key={m}
+                onClick={() => { setMode(m); setQIndex(0); setSelectedOpt(null); if (adaptiveMode) deactivateAdaptive(); }}
+                className={`px-2.5 py-1 text-[11px] font-mono rounded-full border transition-colors ${
+                  mode === m && !adaptiveMode ? "bg-card text-foreground border-border" : "text-muted-foreground border-border/50 hover:border-muted-foreground"
+                }`}
+              >
+                {m === "unattempted" ? "New" : m === "wrong" ? "Wrong" : "All"}
+              </button>
+            ))}
+            <div className="w-px h-5 bg-border self-center mx-1" />
+            {(["all", "easy", "medium", "hard"] as DifficultyFilter[]).map(d => (
+              <button
+                key={d}
+                onClick={() => { setDifficulty(d); setQIndex(0); setSelectedOpt(null); if (adaptiveMode) deactivateAdaptive(); }}
+                className={`px-2.5 py-1 text-[11px] font-mono rounded-full border transition-colors capitalize ${
+                  difficulty === d && !adaptiveMode
+                    ? d === "all"    ? "bg-secondary text-secondary-foreground border-secondary"
+                    : d === "easy"   ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/40"
+                    : d === "medium" ? "bg-yellow-500/20 text-yellow-400 border-yellow-500/40"
+                    :                  "bg-destructive/20 text-destructive border-destructive/40"
+                    : "text-muted-foreground border-border/50 hover:border-muted-foreground"
+                }`}
+              >
+                {d}
+              </button>
+            ))}
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Empty state */}
       {pool.length === 0 ? (
@@ -803,29 +825,29 @@ export function PYQBank({ onCorrect, onWrong }: PYQBankProps = {}) {
 
             {/* Stem */}
             <div className="px-5 py-5">
-              <p className="font-serif text-base text-foreground leading-relaxed">{current.stem}</p>
+              <p className="font-serif text-lg md:text-xl text-foreground leading-relaxed">{current.stem}</p>
             </div>
 
             {/* Options */}
-            <div className="px-5 pb-5 space-y-2.5">
+            <div className="px-5 pb-5 space-y-3">
               {current.options.map((opt, i) => (
                 <button
                   key={i}
                   onClick={() => select(i)}
                   disabled={revealed}
-                  className={`w-full text-left px-4 py-3 rounded-xl border-2 transition-all text-sm font-mono flex items-start gap-3 ${optClass(i)}`}
+                  className={`w-full text-left px-4 py-4 rounded-xl border-2 transition-all text-base font-mono flex items-start gap-3 ${optClass(i)}`}
                 >
-                  <span className="font-bold shrink-0">{OPTION_LABELS[i]}.</span>
-                  <span>{opt}</span>
+                  <span className="font-bold shrink-0 text-base">{OPTION_LABELS[i]}.</span>
+                  <span className="leading-snug">{opt}</span>
                 </button>
               ))}
             </div>
 
             {/* Explanation */}
             {revealed && (
-              <div className="mx-5 mb-3 bg-emerald-500/5 border border-emerald-500/20 rounded-xl px-4 py-3">
-                <p className="text-[11px] font-mono text-emerald-400 uppercase tracking-wider mb-1.5">Explanation</p>
-                <p className="text-sm font-mono text-foreground/80 leading-relaxed">{current.explanation}</p>
+              <div className="mx-5 mb-3 bg-emerald-500/5 border border-emerald-500/20 rounded-xl px-4 py-4">
+                <p className="text-[11px] font-mono text-emerald-400 uppercase tracking-wider mb-2">Explanation</p>
+                <p className="text-base font-mono text-foreground/80 leading-relaxed">{current.explanation}</p>
               </div>
             )}
 
