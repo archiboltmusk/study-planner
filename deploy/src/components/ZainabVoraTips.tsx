@@ -3,8 +3,9 @@ import {
   Sparkles, Star, BookOpen, Target, Brain, AlertTriangle,
   ChevronDown, ChevronUp, Flame, Heart, Trophy, Clock,
   Lightbulb, Shield, XCircle, Zap, Layers, Users, Phone,
-  Moon, Coffee, BarChart2, CheckCircle2,
+  Moon, Coffee, BarChart2, CheckCircle2, ArrowRight,
 } from "lucide-react";
+import type { NavGroup, MainTab } from "@/lib/nav-config";
 
 interface Tip { id: number; text: string; }
 
@@ -344,7 +345,11 @@ function DistractionOS() {
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
-export function ZainabVoraTips() {
+interface ZainabVoraTipsProps {
+  onNavigate?: (group: NavGroup, tab: MainTab) => void;
+}
+
+export function ZainabVoraTips({ onNavigate }: ZainabVoraTipsProps) {
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     ecosystem: true,
     donts: true,
@@ -502,6 +507,38 @@ export function ZainabVoraTips() {
                 </p>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* Practice Quick Actions */}
+      {onNavigate && (
+        <div className="bg-card border border-emerald-500/30 rounded-xl p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Target className="w-4 h-4 text-emerald-400" />
+            <span className="text-xs font-mono font-bold text-emerald-400">Put These Tips Into Practice</span>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              onClick={() => onNavigate('practice', 'drills')}
+              className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-3 py-3 text-left hover:bg-emerald-500/20 transition-colors group"
+            >
+              <div className="flex items-center justify-between mb-1">
+                <p className="text-xs font-mono font-bold text-emerald-400">Subject Drills</p>
+                <ArrowRight className="w-3 h-3 text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
+              <p className="text-[10px] font-mono text-muted-foreground">Targeted MCQs by subject</p>
+            </button>
+            <button
+              onClick={() => onNavigate('practice', 'pyq')}
+              className="bg-violet-500/10 border border-violet-500/30 rounded-xl px-3 py-3 text-left hover:bg-violet-500/20 transition-colors group"
+            >
+              <div className="flex items-center justify-between mb-1">
+                <p className="text-xs font-mono font-bold text-violet-400">PYQ Bank</p>
+                <ArrowRight className="w-3 h-3 text-violet-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
+              <p className="text-[10px] font-mono text-muted-foreground">Past year question practice</p>
+            </button>
           </div>
         </div>
       )}

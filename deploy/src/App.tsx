@@ -735,7 +735,7 @@ function StudyApp({ prefix, user }: StudyAppProps) {
         </div>
         <div hidden={activeGroup !== 'insights' || activeTab !== 'zainabvora'}>
           {visitedTabs.has('zainabvora') && <Suspense fallback={<TabFallback />}>
-            <ZainabVoraTips />
+            <ZainabVoraTips onNavigate={handleNavigate} />
           </Suspense>}
         </div>
 
