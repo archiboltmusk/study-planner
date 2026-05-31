@@ -55,8 +55,6 @@ function countdownLabel(target: Date, today: Date): string {
 
 // ─── Schedule Data ────────────────────────────────────────────────────────────
 
-const TODAY = new Date(); // live date — do NOT hardcode
-
 const SCHEDULE: ScheduleEntry[] = [
   // MILESTONE
   {
@@ -533,7 +531,7 @@ export function CoreBTRSchedule() {
   const [phaseFilter, setPhaseFilter] = useState<Phase | "all">("all");
   const [collapsed, setCollapsed]     = useState<Record<string, boolean>>({});
 
-  const today = TODAY;
+  const today = new Date();
 
   const filteredEntries = useMemo(() =>
     phaseFilter === "all"
