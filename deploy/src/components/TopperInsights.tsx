@@ -5,7 +5,7 @@ interface Topper {
   name: string;
   rank: string;
   exam: string;
-  examType: "NEET PG" | "INI-CET";
+  examType: "NEET PG" | "INI-CET" | "Educator";
   college: string;
   quote: string;
   strategy: string[];
@@ -15,6 +15,42 @@ interface Topper {
 }
 
 const TOPPERS: Topper[] = [
+  // ── Featured Mentor ──────────────────────────────────────────────────────────
+  {
+    name: "Zainab Vora",
+    rank: "Core BTR Creator",
+    exam: "NEET PG Educator",
+    examType: "Educator",
+    college: "Creator — Core BTR NEET PG Programme & Grand Test Series",
+    quote: "Consistency beats intensity. One hour daily for 100 days beats 10-hour cramming every weekend. Your rank is built in the boring, invisible, daily sessions — not the dramatic all-nighters.",
+    strategy: [
+      "Use Marrow as your primary content source for every subject — videos, notes, high-yield points. Nothing replaces this for a structured first reading. Don't skip modules.",
+      "Reflex MCQs are the gold standard MCQ platform. After each Marrow module, immediately do Reflex subject tests. Target 70%+ accuracy before moving to the next topic — never leave a topic without doing its questions the same day.",
+      "Grand Tests are simulations, not tests. Treat every GT like the real exam: silent room, full 3.5 hours, no phone interruptions. Analyse every single mistake on the buffer day — this is where ranks are made.",
+      "Maintain a personal mistake logbook — write every wrong MCQ with the correct answer and one-line reasoning. Review it every Sunday. This document is worth more than any textbook in the final week.",
+      "Three revisions minimum before the exam. First read is understanding. Second is connection. Third is ownership. Students who do only one pass never fully consolidate.",
+      "No new topics after August 1st. Your brain needs consolidation, not new overload. The last 30 days are the great equaliser — students who revise smartly in this window move 1000+ ranks.",
+      "Image MCQs are 15–20 guaranteed marks. 20 images every night before sleep — visual pattern recognition consolidates overnight. Never skip the image section.",
+      "Daily discipline beats motivation every time. You cannot think your way to Rank 1 — you have to act your way there, one session at a time.",
+    ],
+    subjectTips: [
+      { subject: "High-Yield Priority", tip: "Surgery, Medicine, OBG, Paeds — master these four first. They carry 60% of marks. Don't spread effort equally across 19 subjects. Dominate the big four, then sweep the small ones." },
+      { subject: "Pharmacology", tip: "DOC (Drug of Choice) master table covers the majority of Pharmacology marks. Build it on Day 1 and revise it every 3rd day. It is the highest-yield subject for effort invested." },
+      { subject: "PSM & India Content", tip: "India-specific content — NFHS-5 stats, national programmes, legal acts (NDPS, MHCA) — treat this as a separate mini-subject. 30 focused minutes daily. These are nearly free marks for prepared students." },
+      { subject: "Pathology & Images", tip: "Histopathology images are 8–10 guaranteed marks. 20 slides every night — H&E pattern recognition is a trainable skill, not inborn talent. Commit to it daily." },
+      { subject: "MCQ Technique", tip: "Read the explanation every single time — even for correct answers. Lucky guesses are your biggest blind spot. That's how you stop guessing and start knowing." },
+      { subject: "Weak Subjects", tip: "Don't avoid weak subjects — face them early, revise them more. Rank 1 is built on averages, not peak scores in your favourite subjects. A 45% in a weak subject costs more than a 90% in your favourite gains." },
+    ],
+    routine: "Morning → Marrow video (1 module) → Reflex MCQs on that module (same subject, same day) → Evening → Core BTR-aligned revision (this app's schedule) → Night → 20 image MCQs → Flashcards → Review mistake logbook → Write 5 high-yield points → Sleep by 10 PM → Sunday → GT in real exam conditions (full 3.5 hrs) → Monday (buffer) → Full mistake analysis",
+    resources: [
+      "Marrow App (primary content — video lectures + subject notes + HY points)",
+      "Reflex MCQ Platform (gold standard — 10,000+ Qs with detailed explanations)",
+      "Core BTR Grand Tests GT-4 through GT-8 (most realistic NEET PG simulations)",
+      "Personal mistake logbook (handwritten — most valuable revision resource in final week)",
+      "This app (aligns Marrow revision days with BTR subjects + predicted 2026 Qs + progress tracking)",
+      "NEET PG PYQ 2010–2026 (pattern recognition for question framing)",
+    ],
+  },
   {
     name: "Abhishek Singh",
     rank: "AIR 1",
@@ -309,7 +345,7 @@ const SUBJECT_WEIGHTAGE = [
   { subject: "Others",       weight: 7,  color: "#6c757d" },
 ];
 
-type ExamFilter = "All" | "NEET PG" | "INI-CET";
+type ExamFilter = "All" | "NEET PG" | "INI-CET" | "Educator";
 
 export function TopperInsights() {
   const [examFilter, setExamFilter] = useState<ExamFilter>("All");
@@ -351,7 +387,7 @@ export function TopperInsights() {
       {/* Exam Filter */}
       <div className="flex items-center gap-2 flex-wrap">
         <span className="text-[10px] font-mono text-muted-foreground uppercase mr-1">Exam:</span>
-        {(["All", "NEET PG", "INI-CET"] as ExamFilter[]).map(f => (
+        {(["All", "NEET PG", "INI-CET", "Educator"] as ExamFilter[]).map(f => (
           <button
             key={f}
             onClick={() => handleFilterChange(f)}
@@ -361,6 +397,8 @@ export function TopperInsights() {
                   ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/50"
                   : f === "NEET PG"
                   ? "bg-violet-500/20 text-violet-300 border-violet-500/50"
+                  : f === "Educator"
+                  ? "bg-amber-500/20 text-amber-300 border-amber-500/50"
                   : "bg-secondary text-secondary-foreground border-secondary"
                 : "text-muted-foreground border-border hover:border-muted-foreground"
             }`}
@@ -405,6 +443,8 @@ export function TopperInsights() {
               safeIdx === i
                 ? t.examType === "INI-CET"
                   ? "border-cyan-500/60 bg-cyan-500/10"
+                  : t.examType === "Educator"
+                  ? "border-amber-500/60 bg-amber-500/10"
                   : "border-yellow-500/60 bg-yellow-500/10"
                 : "border-border bg-card hover:border-yellow-500/30"
             }`}
@@ -418,11 +458,15 @@ export function TopperInsights() {
                 <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
                   t.examType === "INI-CET"
                     ? "bg-cyan-500/20 text-cyan-400"
+                    : t.examType === "Educator"
+                    ? "bg-amber-500/20 text-amber-400"
                     : "bg-yellow-500/20 text-yellow-400"
                 }`}>{t.rank}</span>
                 <span className={`px-1.5 py-0.5 rounded text-[9px] font-mono ${
                   t.examType === "INI-CET"
                     ? "bg-cyan-500/10 text-cyan-400/80"
+                    : t.examType === "Educator"
+                    ? "bg-amber-500/10 text-amber-400/80"
                     : "bg-violet-500/10 text-violet-400/80"
                 }`}>{t.examType}</span>
               </div>
@@ -439,14 +483,16 @@ export function TopperInsights() {
           <div className={`px-6 py-5 border-b ${
             topper.examType === "INI-CET"
               ? "bg-cyan-500/5 border-cyan-500/20"
+              : topper.examType === "Educator"
+              ? "bg-amber-500/5 border-amber-500/20"
               : "bg-yellow-500/5 border-yellow-500/20"
           }`}>
             <div className="flex gap-3">
-              <Star className={`w-4 h-4 shrink-0 mt-0.5 ${topper.examType === "INI-CET" ? "text-cyan-400" : "text-yellow-400"}`} />
+              <Star className={`w-4 h-4 shrink-0 mt-0.5 ${topper.examType === "INI-CET" ? "text-cyan-400" : topper.examType === "Educator" ? "text-amber-400" : "text-yellow-400"}`} />
               <p className="text-sm font-serif text-foreground/90 italic leading-relaxed">"{topper.quote}"</p>
             </div>
-            <p className={`text-[10px] font-mono mt-2 ml-7 ${topper.examType === "INI-CET" ? "text-cyan-400" : "text-yellow-400"}`}>
-              — {topper.name}, {topper.rank} {topper.exam}
+            <p className={`text-[10px] font-mono mt-2 ml-7 ${topper.examType === "INI-CET" ? "text-cyan-400" : topper.examType === "Educator" ? "text-amber-400" : "text-yellow-400"}`}>
+              — {topper.name} · {topper.rank} · {topper.exam}
             </p>
           </div>
 
@@ -505,7 +551,7 @@ export function TopperInsights() {
                 <ul className="space-y-1.5">
                   {topper.resources.map((r, i) => (
                     <li key={i} className="flex items-center gap-2.5">
-                      <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${topper.examType === "INI-CET" ? "bg-cyan-400" : "bg-yellow-400"}`} />
+                      <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${topper.examType === "INI-CET" ? "bg-cyan-400" : topper.examType === "Educator" ? "bg-amber-400" : "bg-yellow-400"}`} />
                       <span className="text-sm font-mono text-foreground/80">{r}</span>
                     </li>
                   ))}
