@@ -1,29 +1,8 @@
 import { useState, useMemo } from "react";
 import { CalendarDays, Clock, Trophy, ChevronDown, ChevronUp, CheckCircle2, Circle, Zap, BookOpen, RotateCcw } from "lucide-react";
-
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-type EntryType = "grandtest" | "study" | "revision";
-type Phase = "milestone" | "phase1" | "phase2" | "phase3" | "phase4" | "final";
-
-interface ScheduleEntry {
-  id: number;
-  phase: Phase;
-  phaseLabel: string;
-  startDate: Date;
-  endDate: Date;
-  subjects: string;
-  testDate?: Date;
-  testLabel?: string;
-  type: EntryType;
-  gtNumber?: string;
-}
+import { BTR_SCHEDULE, type ScheduleEntry, type EntryType, type Phase } from "@/data/btr-schedule";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
-
-function parseDate(y: number, m: number, d: number) {
-  return new Date(y, m - 1, d);
-}
 
 function formatDate(d: Date) {
   return d.toLocaleDateString("en-IN", { day: "numeric", month: "short" });
@@ -52,266 +31,6 @@ function countdownLabel(target: Date, today: Date): string {
   if (diff === 1) return "Tomorrow";
   return `${diff}d away`;
 }
-
-// ─── Schedule Data ────────────────────────────────────────────────────────────
-
-const SCHEDULE: ScheduleEntry[] = [
-  // MILESTONE
-  {
-    id: 1,
-    phase: "milestone",
-    phaseLabel: "Milestone",
-    startDate: parseDate(2026, 5, 23),
-    endDate:   parseDate(2026, 5, 26),
-    subjects:  "Baseline Grand Test",
-    type:      "grandtest",
-    gtNumber:  "GT-4",
-  },
-  // PHASE 1
-  {
-    id: 2,
-    phase: "phase1",
-    phaseLabel: "Phase 1",
-    startDate: parseDate(2026, 5, 27),
-    endDate:   parseDate(2026, 5, 30),
-    subjects:  "Surgery",
-    testDate:  parseDate(2026, 5, 30),
-    type:      "study",
-  },
-  {
-    id: 3,
-    phase: "phase1",
-    phaseLabel: "Phase 1",
-    startDate: parseDate(2026, 5, 31),
-    endDate:   parseDate(2026, 6, 1),
-    subjects:  "Orthopaedics",
-    testDate:  parseDate(2026, 6, 4),
-    type:      "study",
-  },
-  {
-    id: 4,
-    phase: "phase1",
-    phaseLabel: "Phase 1",
-    startDate: parseDate(2026, 6, 2),
-    endDate:   parseDate(2026, 6, 3),
-    subjects:  "Radiology",
-    testDate:  parseDate(2026, 6, 4),
-    type:      "study",
-  },
-  {
-    id: 5,
-    phase: "phase1",
-    phaseLabel: "Phase 1",
-    startDate: parseDate(2026, 6, 5),
-    endDate:   parseDate(2026, 6, 7),
-    subjects:  "Microbiology",
-    testDate:  parseDate(2026, 6, 7),
-    type:      "study",
-  },
-  {
-    id: 6,
-    phase: "phase1",
-    phaseLabel: "Phase 1",
-    startDate: parseDate(2026, 6, 8),
-    endDate:   parseDate(2026, 6, 10),
-    subjects:  "Anatomy",
-    testDate:  parseDate(2026, 6, 11),
-    type:      "study",
-  },
-  {
-    id: 7,
-    phase: "phase1",
-    phaseLabel: "Phase 1",
-    startDate: parseDate(2026, 6, 9),
-    endDate:   parseDate(2026, 6, 12),
-    subjects:  "Core BTR GT-5",
-    type:      "grandtest",
-    gtNumber:  "GT-5",
-  },
-  // PHASE 2
-  {
-    id: 8,
-    phase: "phase2",
-    phaseLabel: "Phase 2",
-    startDate: parseDate(2026, 6, 13),
-    endDate:   parseDate(2026, 6, 16),
-    subjects:  "CVS + Renal + Haematology + GI",
-    testDate:  parseDate(2026, 6, 16),
-    testLabel: "Integrated Systems-1 Test",
-    type:      "study",
-  },
-  {
-    id: 9,
-    phase: "phase2",
-    phaseLabel: "Phase 2",
-    startDate: parseDate(2026, 6, 17),
-    endDate:   parseDate(2026, 6, 20),
-    subjects:  "Neuro + Endocrine + Rheumatology + Respiratory",
-    type:      "study",
-  },
-  {
-    id: 10,
-    phase: "phase2",
-    phaseLabel: "Phase 2",
-    startDate: parseDate(2026, 6, 21),
-    endDate:   parseDate(2026, 6, 22),
-    subjects:  "General Pathology + Pharmacology + Physiology + Immunology",
-    testDate:  parseDate(2026, 6, 23),
-    testLabel: "Integrated Systems-2 Test",
-    type:      "study",
-  },
-  {
-    id: 11,
-    phase: "phase2",
-    phaseLabel: "Phase 2",
-    startDate: parseDate(2026, 6, 21),
-    endDate:   parseDate(2026, 6, 24),
-    subjects:  "Core BTR GT-6",
-    type:      "grandtest",
-    gtNumber:  "GT-6",
-  },
-  // PHASE 3
-  {
-    id: 12,
-    phase: "phase3",
-    phaseLabel: "Phase 3",
-    startDate: parseDate(2026, 6, 25),
-    endDate:   parseDate(2026, 6, 28),
-    subjects:  "OBG",
-    testDate:  parseDate(2026, 6, 28),
-    type:      "study",
-  },
-  {
-    id: 13,
-    phase: "phase3",
-    phaseLabel: "Phase 3",
-    startDate: parseDate(2026, 6, 29),
-    endDate:   parseDate(2026, 6, 30),
-    subjects:  "Paediatrics",
-    testDate:  parseDate(2026, 7, 1),
-    type:      "study",
-  },
-  {
-    id: 14,
-    phase: "phase3",
-    phaseLabel: "Phase 3",
-    startDate: parseDate(2026, 7, 2),
-    endDate:   parseDate(2026, 7, 5),
-    subjects:  "PSM / Community Medicine",
-    testDate:  parseDate(2026, 7, 5),
-    type:      "study",
-  },
-  {
-    id: 15,
-    phase: "phase3",
-    phaseLabel: "Phase 3",
-    startDate: parseDate(2026, 7, 6),
-    endDate:   parseDate(2026, 7, 7),
-    subjects:  "Dermatology",
-    testDate:  parseDate(2026, 7, 10),
-    type:      "study",
-  },
-  {
-    id: 16,
-    phase: "phase3",
-    phaseLabel: "Phase 3",
-    startDate: parseDate(2026, 7, 8),
-    endDate:   parseDate(2026, 7, 9),
-    subjects:  "Anaesthesia",
-    testDate:  parseDate(2026, 7, 10),
-    type:      "study",
-  },
-  {
-    id: 17,
-    phase: "phase3",
-    phaseLabel: "Phase 3",
-    startDate: parseDate(2026, 7, 8),
-    endDate:   parseDate(2026, 7, 11),
-    subjects:  "Core BTR GT-7",
-    type:      "grandtest",
-    gtNumber:  "GT-7",
-  },
-  // PHASE 4
-  {
-    id: 18,
-    phase: "phase4",
-    phaseLabel: "Phase 4",
-    startDate: parseDate(2026, 7, 12),
-    endDate:   parseDate(2026, 7, 14),
-    subjects:  "Biochemistry",
-    testDate:  parseDate(2026, 7, 15),
-    type:      "study",
-  },
-  {
-    id: 19,
-    phase: "phase4",
-    phaseLabel: "Phase 4",
-    startDate: parseDate(2026, 7, 16),
-    endDate:   parseDate(2026, 7, 17),
-    subjects:  "Forensic Medicine & Toxicology",
-    testDate:  parseDate(2026, 7, 19),
-    type:      "study",
-  },
-  {
-    id: 20,
-    phase: "phase4",
-    phaseLabel: "Phase 4",
-    startDate: parseDate(2026, 7, 18),
-    endDate:   parseDate(2026, 7, 19),
-    subjects:  "Psychiatry",
-    testDate:  parseDate(2026, 7, 19),
-    type:      "study",
-  },
-  {
-    id: 21,
-    phase: "phase4",
-    phaseLabel: "Phase 4",
-    startDate: parseDate(2026, 7, 20),
-    endDate:   parseDate(2026, 7, 21),
-    subjects:  "ENT",
-    testDate:  parseDate(2026, 7, 25),
-    type:      "study",
-  },
-  {
-    id: 22,
-    phase: "phase4",
-    phaseLabel: "Phase 4",
-    startDate: parseDate(2026, 7, 22),
-    endDate:   parseDate(2026, 7, 24),
-    subjects:  "Ophthalmology",
-    testDate:  parseDate(2026, 7, 25),
-    type:      "study",
-  },
-  {
-    id: 23,
-    phase: "phase4",
-    phaseLabel: "Phase 4",
-    startDate: parseDate(2026, 7, 23),
-    endDate:   parseDate(2026, 7, 26),
-    subjects:  "Core BTR GT-8",
-    type:      "grandtest",
-    gtNumber:  "GT-8",
-  },
-  // FINAL
-  {
-    id: 24,
-    phase: "final",
-    phaseLabel: "Final",
-    startDate: parseDate(2026, 7, 27),
-    endDate:   parseDate(2026, 8, 22),
-    subjects:  "Revision Cycle #2",
-    type:      "revision",
-  },
-  {
-    id: 25,
-    phase: "final",
-    phaseLabel: "Final",
-    startDate: parseDate(2026, 8, 23),
-    endDate:   parseDate(2026, 8, 30),
-    subjects:  "Revision Cycle #3 — Mega-NEET BTR",
-    type:      "revision",
-  },
-];
 
 // ─── Styling Config ───────────────────────────────────────────────────────────
 
@@ -354,7 +73,7 @@ function getStatus(entry: ScheduleEntry, today: Date): "done" | "active" | "upco
 // ─── Next Upcoming Test ───────────────────────────────────────────────────────
 
 function getNextTest(today: Date): { label: string; date: Date; countdown: string } | null {
-  const upcoming = SCHEDULE
+  const upcoming = BTR_SCHEDULE
     .filter(e => e.testDate && e.testDate >= today)
     .sort((a, b) => a.testDate!.getTime() - b.testDate!.getTime());
   if (!upcoming.length) return null;
@@ -535,8 +254,8 @@ export function CoreBTRSchedule() {
 
   const filteredEntries = useMemo(() =>
     phaseFilter === "all"
-      ? SCHEDULE
-      : SCHEDULE.filter(e => e.phase === phaseFilter),
+      ? BTR_SCHEDULE
+      : BTR_SCHEDULE.filter(e => e.phase === phaseFilter),
     [phaseFilter]
   );
 
@@ -561,9 +280,9 @@ export function CoreBTRSchedule() {
   };
 
   // Progress stats
-  const totalEntries = SCHEDULE.length;
-  const doneEntries  = SCHEDULE.filter(e => getStatus(e, today) === "done").length;
-  const activeEntry  = SCHEDULE.find(e => getStatus(e, today) === "active");
+  const totalEntries = BTR_SCHEDULE.length;
+  const doneEntries  = BTR_SCHEDULE.filter(e => getStatus(e, today) === "done").length;
+  const activeEntry  = BTR_SCHEDULE.find(e => getStatus(e, today) === "active");
   const nextTest     = getNextTest(today);
 
   const toggleCollapse = (phase: string) =>
@@ -643,7 +362,7 @@ export function CoreBTRSchedule() {
 
       {/* ── Today Banner ────────────────────────────────────────────────────── */}
       {(() => {
-        const todayEntry = SCHEDULE.find(e => isInRange(today, e.startDate, e.endDate));
+        const todayEntry = BTR_SCHEDULE.find(e => isInRange(today, e.startDate, e.endDate));
         if (!todayEntry) return null;
         return (
           <div className="flex items-center gap-3 px-4 py-2.5 bg-yellow-500/10 border border-yellow-500/30 rounded-xl">
