@@ -7,12 +7,11 @@ import { useSubscription, startCheckout, PLANS, type Plan } from "@/lib/subscrip
 import { useAuth } from "@/lib/auth";
 
 const PREMIUM_FEATURES = [
-  { icon: Sparkles,      label: "Clinical Socratic Engine",            desc: "An AI tutor that grills you on clinical scenarios until you own the concept — server-funded, no API key needed. Free users read static notes; you get interrogated until the answer is instinctive." },
   { icon: CalendarCheck, label: "Dynamic Retention Protocol",          desc: "SM-2 flashcards scheduled by your memory decay curve, not gut feeling — pings you exactly on the day a topic hits the critical threshold. Micro, Pharma, Patho included." },
   { icon: BarChart2,     label: "Vulnerability Heatmap & Diagnostics", desc: "Actively diagnoses where you are bleeding marks. Visual heatmap of high-yield subjects that need immediate triage." },
   { icon: Brain,         label: "Knowledge Gap Diagnostic",            desc: "Pinpoints the topics you think you know but don't — before the exam does it for you." },
   { icon: FlaskConical,  label: "High-Fidelity Exam Drills",           desc: "Adaptive, timed INI-CET simulations that replicate the exact cognitive fatigue of the real exam — not casual practice." },
-  { icon: Zap,           label: "Auto Mistake Cloud Sync",             desc: "Every wrong answer is logged and synced across devices, feeding the AI tutor your personal weak points." },
+  { icon: Zap,           label: "Auto Mistake Cloud Sync",             desc: "Every wrong answer is logged automatically and synced across devices, building a personal map of your weak points." },
 ];
 
 // Replace with your real support inbox before going live on Razorpay
@@ -21,11 +20,11 @@ const SUPPORT_EMAIL = "support@inicetplanner.app";
 const LEGAL_SECTIONS = [
   {
     title: "Terms of Service",
-    body: `INICET Planner Premium grants access to the premium feature set (AI tutor, retention scheduling, diagnostics, exam drills) for the duration purchased — 30 days (Monthly Pulse) or 180 days (INI-CET Cycle Pass). Subscriptions are personal, tied to your signed-in account, and may not be shared or resold. Study content is provided for exam preparation only and is not medical advice. We may suspend accounts that abuse the service (e.g. automated scraping or credential sharing).`,
+    body: `INICET Planner Premium grants access to the premium feature set (retention scheduling, diagnostics, exam drills, cloud mistake sync) for the duration purchased — 30 days (Monthly Pulse) or 180 days (INI-CET Cycle Pass). Subscriptions are personal, tied to your signed-in account, and may not be shared or resold. Study content is provided for exam preparation only and is not medical advice. We may suspend accounts that abuse the service (e.g. automated scraping or credential sharing).`,
   },
   {
     title: "Privacy Policy",
-    body: `We store your account email, study progress, and subscription status in Supabase to sync your data across devices. Payment card / UPI details are handled entirely by Razorpay — they never touch our servers. Questions you ask the AI tutor are sent to the AI provider to generate a response and are not used to train models. We do not sell your data. You can request deletion of your account and all associated data at any time via the support email below.`,
+    body: `We store your account email, study progress, and subscription status in Supabase to sync your data across devices. Payment card / UPI details are handled entirely by Razorpay — they never touch our servers. We do not sell your data. You can request deletion of your account and all associated data at any time via the support email below.`,
   },
   {
     title: "Refund & Cancellation Policy",
