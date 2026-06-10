@@ -14,8 +14,7 @@ const PREMIUM_FEATURES = [
   { icon: Zap,           label: "Auto Mistake Cloud Sync",             desc: "Every wrong answer is logged automatically and synced across devices, building a personal map of your weak points." },
 ];
 
-// Replace with your real support inbox before going live on Razorpay
-const SUPPORT_EMAIL = "support@inicetplanner.app";
+const SUPPORT_EMAIL = "thelosthillproject@gmail.com";
 
 const LEGAL_SECTIONS = [
   {
