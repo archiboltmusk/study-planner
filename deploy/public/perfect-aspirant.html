@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Perfect Aspirant — NEET PG, INI-CET &amp; CMS</title>
+<meta name="description" content="The method, routine, and mindset that separates rank 1 from everyone else who worked just as hard. NEET PG, INI-CET, CMS.">
+<meta name="theme-color" content="#0A0E14">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,400&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap');
+
+:root{
+  --ink:#0A0E14;
+  --paper:#F2EDE3;
+  --paper-dim:#E4DDCD;
+  --crimson:#C42847;
+  --blood:#8E1B2F;
+  --gold:#E8A93D;
+  --amber:#C1832E;
+  --line:rgba(10,14,20,0.14);
+  --line-strong:rgba(10,14,20,0.35);
+  --grid-red:rgba(196,40,71,0.08);
+  --grid-red-strong:rgba(196,40,71,0.16);
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth;}
+body{ background:var(--paper); color:var(--ink); font-family:'Inter',sans-serif; overflow-x:hidden; }
+::selection{ background:var(--gold); color:var(--ink); }
+:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+
+/* ---------- NAV ---------- */
+.nav{
+  position:sticky; top:0; z-index:100;
+  display:flex; align-items:center; gap:1.5rem;
+  padding:0.8rem 6vw;
+  background:rgba(10,14,20,0.92);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid rgba(232,169,61,0.25);
+  overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;
+}
+.nav::-webkit-scrollbar{ display:none; }
+.nav .logo{
+  font-family:'IBM Plex Mono',monospace; font-size:0.72rem; font-weight:600;
+  letter-spacing:0.15em; color:var(--gold); white-space:nowrap; text-decoration:none;
+}
+.nav .logo .pulse{
+  display:inline-block; width:7px; height:7px; border-radius:50%;
+  background:var(--crimson); margin-right:0.5rem; animation:pulse 1.4s ease-in-out infinite;
+}
+@keyframes pulse{
+  0%,100%{ opacity:1; box-shadow:0 0 0 0 rgba(196,40,71,0.6); }
+  50%{ opacity:0.6; box-shadow:0 0 0 6px rgba(196,40,71,0); }
+}
+.nav a.nl{
+  font-family:'IBM Plex Mono',monospace; font-size:0.66rem; letter-spacing:0.1em;
+  text-transform:uppercase; color:rgba(242,237,227,0.55); text-decoration:none;
+  white-space:nowrap; transition:color 0.15s ease; padding:0.2rem 0;
+}
+.nav a.nl:hover{ color:var(--gold); }
+.nav a.nl .n{ color:var(--crimson); margin-right:0.3rem; }
+
+/* ---------- HERO ---------- */
+.hero{
+  position:relative; min-height:70vh;
+  display:flex; flex-direction:column; justify-content:center;
+  padding:10vh 6vw 14vh;
+  background:radial-gradient(ellipse 80% 60% at 70% 20%, rgba(196,40,71,0.12), transparent 60%), var(--ink);
+  color:var(--paper); overflow:hidden;
+}
+.hero::before{
+  content:""; position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(196,40,71,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(196,40,71,0.05) 1px, transparent 1px),
+    linear-gradient(rgba(196,40,71,0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(196,40,71,0.1) 1px, transparent 1px);
+  background-size: 8px 8px, 8px 8px, 40px 40px, 40px 40px;
+  -webkit-mask-image:linear-gradient(to bottom, transparent, black 25%, black 75%, transparent);
+          mask-image:linear-gradient(to bottom, transparent, black 25%, black 75%, transparent);
+}
+.hero > *{ position:relative; }
+.hero .eyebrow{
+  font-family:'IBM Plex Mono',monospace; font-size:0.7rem; letter-spacing:0.28em;
+  text-transform:uppercase; color:var(--gold); margin-bottom:1.6rem;
+  display:flex; align-items:center; gap:0.8rem;
+}
+.hero .eyebrow::before{ content:""; width:36px; height:1px; background:var(--crimson); }
+.hero h1{
+  font-family:'Fraunces',serif; font-weight:600; font-size:clamp(2.6rem,7vw,5.6rem);
+  line-height:1.02; letter-spacing:-0.02em; max-width:16ch;
+}
+.hero h1 em{
+  font-style:italic; font-weight:300; color:transparent;
+  background:linear-gradient(100deg, var(--gold), var(--crimson));
+  -webkit-background-clip:text; background-clip:text;
+}
+.hero p.sub{
+  font-family:'Inter',sans-serif; font-size:clamp(1rem,1.5vw,1.15rem);
+  max-width:52ch; margin-top:2rem; color:rgba(242,237,227,0.7); line-height:1.65;
+}
+
+/* ---------- SECTION SHARED ---------- */
+.sec{ padding:9vh 6vw; }
+.sec.dark{ background:var(--ink); color:var(--paper); }
+.sec.light{ background:var(--paper); color:var(--ink); }
+.eyebrow2{
+  font-family:'IBM Plex Mono',monospace; font-size:0.7rem; letter-spacing:0.24em;
+  text-transform:uppercase; margin-bottom:1rem; display:flex; align-items:center; gap:0.8rem;
+  color:var(--crimson);
+}
+.eyebrow2::before{ content:""; width:28px; height:1px; background:currentColor; opacity:0.6; }
+.sec h2{
+  font-family:'Fraunces',serif; font-weight:600; font-size:clamp(1.8rem,4vw,3rem);
+  max-width:24ch; margin-bottom:0.9rem; letter-spacing:-0.015em;
+}
+.sec p.lede{ max-width:56ch; line-height:1.65; font-size:0.95rem; margin-bottom:3rem; opacity:0.68; }
+
+.reveal{ opacity:0; transform:translateY(22px); transition:opacity 0.7s ease, transform 0.7s ease; }
+.reveal.in{ opacity:1; transform:none; }
+
+/* ---------- METHOD CARDS ---------- */
+.method-grid{
+  display:grid; grid-template-columns:repeat(5,1fr); gap:1.2rem;
+}
+.method-grid-4{ grid-template-columns:repeat(4,1fr); }
+.method-grid-3{ grid-template-columns:repeat(3,1fr); }
+.sit-label{
+  display:block; font-family:'Fraunces',serif; font-weight:700; font-size:1.25rem;
+  color:var(--crimson); margin-bottom:0.5rem;
+}
+.method-card{
+  border:1px solid var(--line-strong); padding:1.6rem 1.3rem;
+  background:rgba(255,255,255,0.4); position:relative;
+  transition:transform 0.25s ease, box-shadow 0.25s ease;
+}
+.method-card:hover{ transform:translateY(-4px); box-shadow:0 12px 28px rgba(10,14,20,0.1); }
+.method-card::before{
+  content:""; position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg, var(--gold), var(--crimson));
+}
+.method-num{
+  font-family:'Fraunces',serif; font-weight:700; font-size:2rem; color:var(--crimson);
+  margin-bottom:0.6rem; display:block;
+}
+.method-card h3{
+  font-family:'Fraunces',serif; font-weight:600; font-size:1.05rem; margin-bottom:0.6rem;
+}
+.method-card p{ font-size:0.84rem; line-height:1.55; opacity:0.75; }
+
+/* ---------- EXAM COMPARISON ---------- */
+.exam-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; }
+.exam-grid-2{ grid-template-columns:repeat(2,1fr); max-width:900px; }
+.exam-card{
+  border:1px solid rgba(242,237,227,0.2); padding:1.8rem 1.6rem;
+  background:rgba(242,237,227,0.04);
+}
+.exam-name{
+  font-family:'Fraunces',serif; font-weight:700; font-size:1.5rem; color:var(--gold);
+  margin-bottom:0.3rem;
+}
+.exam-tag{
+  font-family:'IBM Plex Mono',monospace; font-size:0.68rem; opacity:0.5;
+  text-transform:uppercase; letter-spacing:0.08em; margin-bottom:1.3rem; display:block;
+}
+.exam-row{ margin-bottom:1rem; }
+.exam-row .ek{
+  display:block; font-family:'IBM Plex Mono',monospace; font-size:0.63rem;
+  letter-spacing:0.1em; text-transform:uppercase; opacity:0.5; margin-bottom:0.3rem;
+}
+.exam-row .ev{ font-size:0.86rem; line-height:1.55; color:rgba(242,237,227,0.85); }
+
+/* ---------- TIMELINE ---------- */
+.timeline{ position:relative; padding-left:2.2rem; }
+.timeline::before{
+  content:""; position:absolute; left:0.35rem; top:0.4rem; bottom:0.4rem; width:2px;
+  background:linear-gradient(to bottom, var(--gold), var(--crimson));
+}
+.tl-item{ position:relative; padding-bottom:2rem; }
+.tl-item:last-child{ padding-bottom:0; }
+.tl-item::before{
+  content:""; position:absolute; left:-2.2rem; top:0.25rem; width:9px; height:9px;
+  border-radius:50%; background:var(--crimson); box-shadow:0 0 0 3px var(--paper), 0 0 0 4px var(--line-strong);
+}
+.tl-time{
+  font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--crimson);
+  font-weight:600; margin-bottom:0.3rem;
+}
+.tl-title{ font-family:'Fraunces',serif; font-weight:600; font-size:1.05rem; margin-bottom:0.3rem; }
+.tl-desc{ font-size:0.86rem; line-height:1.55; opacity:0.72; max-width:60ch; }
+
+/* ---------- MISTAKES LIST ---------- */
+.mistake-grid{ display:grid; grid-template-columns:1fr 1fr; gap:1rem 2.5rem; }
+.mistake{
+  display:flex; gap:1rem; padding:1rem 0; border-bottom:1px solid rgba(242,237,227,0.1);
+}
+.mistake .mx{
+  font-family:'IBM Plex Mono',monospace; font-size:1.1rem; color:var(--crimson);
+  flex-shrink:0; line-height:1.4;
+}
+.mistake .mtext{ font-size:0.87rem; line-height:1.6; color:rgba(242,237,227,0.8); }
+.mistake .mtext strong{ color:var(--paper); }
+
+/* ---------- STRATEGY / SUPPORT NOTE ---------- */
+.strategy-note{
+  border-top:2px solid var(--crimson);
+  padding-top:1.4rem;
+  max-width:72ch;
+}
+
+/* ---------- LAST MONTH BANNER ---------- */
+.banner{
+  border:2px solid var(--crimson); padding:2.5rem 2.2rem; text-align:center;
+  background:rgba(196,40,71,0.05); position:relative; overflow:hidden;
+}
+.banner::before{
+  content:""; position:absolute; inset:0;
+  background-image:
+    linear-gradient(var(--grid-red) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-red) 1px, transparent 1px);
+  background-size:16px 16px; pointer-events:none;
+}
+.banner > *{ position:relative; }
+.banner .btag{
+  font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.2em;
+  text-transform:uppercase; color:var(--crimson); margin-bottom:0.8rem;
+}
+.banner h3{
+  font-family:'Fraunces',serif; font-weight:600; font-size:clamp(1.4rem,3vw,2.1rem);
+  max-width:26ch; margin:0 auto 1rem;
+}
+.banner p{ max-width:56ch; margin:0 auto; font-size:0.9rem; line-height:1.65; opacity:0.75; }
+
+/* ---------- FOOTNOTE ---------- */
+.footnote{
+  padding:6vh 6vw 9vh; max-width:64ch; font-family:'IBM Plex Mono',monospace;
+  font-size:0.76rem; line-height:1.75; opacity:0.62; border-top:1px solid var(--line);
+}
+.footnote a{ color:var(--crimson); }
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width:1000px){
+  .method-grid{ grid-template-columns:repeat(2,1fr); }
+  .method-grid-4{ grid-template-columns:repeat(2,1fr); }
+  .method-grid-3{ grid-template-columns:repeat(2,1fr); }
+  .exam-grid{ grid-template-columns:1fr; }
+}
+
+/* ---------- READINESS ENGINE ---------- */
+.planner{
+  display:grid; grid-template-columns:1.1fr 1fr; gap:2.5rem; margin-top:1rem;
+}
+.planner-inputs{ display:grid; grid-template-columns:1fr 1fr; gap:1.6rem 2rem; }
+.pin.pin-full{ grid-column:1 / -1; }
+.pin label{
+  display:block; font-family:'IBM Plex Mono',monospace; font-size:0.74rem;
+  letter-spacing:0.02em; margin-bottom:0.6rem; color:rgba(242,237,227,0.85);
+}
+.pin label .pv{ color:var(--gold); font-weight:600; }
+.pin input[type="range"]{
+  -webkit-appearance:none; appearance:none; width:100%; height:2px;
+  background:rgba(242,237,227,0.22); outline:none;
+}
+.pin input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none; width:18px; height:18px; border-radius:50%;
+  background:var(--gold); cursor:pointer; border:2px solid var(--ink);
+  box-shadow:0 0 0 1.5px var(--gold), 0 0 12px rgba(232,169,61,0.4);
+  transition:transform 0.15s ease;
+}
+.pin input[type="range"]::-webkit-slider-thumb:hover{ transform:scale(1.15); }
+.pin input[type="range"]::-moz-range-thumb{
+  width:18px; height:18px; border-radius:50%; background:var(--gold);
+  cursor:pointer; border:2px solid var(--ink); box-shadow:0 0 0 1.5px var(--gold);
+}
+.phint{
+  display:flex; justify-content:space-between; font-family:'IBM Plex Mono',monospace;
+  font-size:0.6rem; opacity:0.4; margin-top:0.5rem; text-transform:uppercase; letter-spacing:0.06em;
+}
+.phelp{ margin-top:0.7rem; }
+.phelp summary{
+  font-family:'IBM Plex Mono',monospace; font-size:0.64rem; letter-spacing:0.04em;
+  color:var(--gold); cursor:pointer; opacity:0.75; list-style:none;
+  transition:opacity 0.15s ease;
+}
+.phelp summary::-webkit-details-marker{ display:none; }
+.phelp summary::before{ content:"? "; font-weight:600; }
+.phelp summary:hover{ opacity:1; }
+.phelp[open] summary{ margin-bottom:0.6rem; opacity:1; }
+.phelp p{
+  font-size:0.76rem; line-height:1.6; color:rgba(242,237,227,0.7);
+  margin-bottom:0.5rem; padding-left:0.8rem; border-left:1px solid rgba(232,169,61,0.3);
+}
+.phelp p:last-child{ margin-bottom:0; }
+.phelp strong{ color:var(--paper); }
+.ptoggle{ display:flex; gap:0.6rem; flex-wrap:wrap; }
+.popt{
+  font-family:'IBM Plex Mono',monospace; font-size:0.72rem; padding:0.55rem 1rem;
+  border:1px solid rgba(242,237,227,0.3); background:transparent; color:var(--paper);
+  cursor:pointer; border-radius:2px; transition:all 0.18s ease;
+}
+.popt:hover{ border-color:var(--gold); transform:translateY(-1px); }
+.popt.active{ background:var(--crimson); border-color:var(--crimson); box-shadow:0 0 16px rgba(196,40,71,0.35); }
+.planner-out{
+  border:1px solid rgba(232,169,61,0.25); padding:2rem 1.8rem;
+  background:rgba(232,169,61,0.04); border-radius:3px;
+}
+.po-score-wrap{ position:relative; width:150px; height:150px; margin:0 auto 1rem; }
+.po-ring{ width:100%; height:100%; transform:rotate(-90deg); }
+.po-ring-bg{ fill:none; stroke:rgba(242,237,227,0.12); stroke-width:8; }
+.po-ring-fill{
+  fill:none; stroke:var(--gold); stroke-width:8; stroke-linecap:round;
+  stroke-dasharray:326.7; stroke-dashoffset:326.7; transition:stroke-dashoffset 0.7s cubic-bezier(0.25,1,0.4,1), stroke 0.4s ease;
+}
+.po-score-num{
+  position:absolute; inset:0; display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+}
+.po-score-num span:first-child{ font-family:'Fraunces',serif; font-weight:700; font-size:2.6rem; color:var(--paper); }
+.po-score-label{ font-family:'IBM Plex Mono',monospace; font-size:0.6rem; letter-spacing:0.14em; text-transform:uppercase; opacity:0.5; }
+.po-band{
+  text-align:center; font-family:'Fraunces',serif; font-weight:600; font-size:1.05rem;
+  color:var(--gold); margin-bottom:1.6rem; line-height:1.4; min-height:2.8em;
+  display:flex; align-items:center; justify-content:center;
+}
+.po-lever{ border-top:1px solid rgba(242,237,227,0.12); padding-top:1.2rem; margin-bottom:1.2rem; }
+.po-lever-tag{
+  font-family:'IBM Plex Mono',monospace; font-size:0.62rem; letter-spacing:0.14em;
+  text-transform:uppercase; color:var(--crimson); margin-bottom:0.5rem;
+}
+.po-lever-text{ font-size:0.88rem; line-height:1.6; color:rgba(242,237,227,0.85); }
+.po-plan{ border-top:1px solid rgba(242,237,227,0.12); padding-top:1.2rem; margin-bottom:1.2rem; }
+.po-plan-tag{
+  font-family:'IBM Plex Mono',monospace; font-size:0.62rem; letter-spacing:0.14em;
+  text-transform:uppercase; color:var(--gold); margin-bottom:0.6rem;
+}
+.po-plan-body{ font-size:0.84rem; line-height:1.7; color:rgba(242,237,227,0.8); }
+.po-plan-body .pb-row{ display:flex; gap:0.6rem; margin-bottom:0.4rem; }
+.po-plan-body .pb-row::before{ content:"→"; color:var(--crimson); flex-shrink:0; }
+.po-disclaimer{
+  font-family:'IBM Plex Mono',monospace; font-size:0.68rem; line-height:1.6;
+  opacity:0.5; border-top:1px solid rgba(242,237,227,0.1); padding-top:1rem;
+}
+@media (max-width:900px){
+  .planner{ grid-template-columns:1fr; }
+}
+@media (max-width:720px){
+  .planner-inputs{ grid-template-columns:1fr; }
+}
+
+@media (max-width:720px){
+  .method-grid{ grid-template-columns:1fr; }
+  .method-grid-4{ grid-template-columns:1fr; }
+  .method-grid-3{ grid-template-columns:1fr; }
+  .mistake-grid{ grid-template-columns:1fr; }
+}
+
+/* ---------- SHARED TOOL CARD ---------- */
+.tool-card{
+  border:1px solid var(--line-strong); background:rgba(255,255,255,0.45);
+  padding:2rem 1.8rem; border-radius:3px;
+}
+.tool-card-dark{ border-color:rgba(232,169,61,0.25); background:rgba(232,169,61,0.04); }
+.tool-add{ display:flex; gap:0.8rem; margin-bottom:1.5rem; flex-wrap:wrap; }
+.tool-add-3{ display:grid; grid-template-columns:1.6fr 1fr auto; gap:0.8rem; }
+.tool-input{
+  flex:1; min-width:200px; font-family:'Inter',sans-serif; font-size:0.88rem;
+  padding:0.7rem 0.9rem; border:1px solid var(--line-strong); background:var(--paper);
+  color:var(--ink); border-radius:2px; outline:none; transition:border-color 0.15s ease;
+}
+.tool-input:focus{ border-color:var(--crimson); }
+.tool-input-dark{
+  background:rgba(242,237,227,0.06); border-color:rgba(242,237,227,0.25); color:var(--paper);
+}
+.tool-input-dark:focus{ border-color:var(--gold); }
+.tool-btn{
+  font-family:'IBM Plex Mono',monospace; font-size:0.78rem; font-weight:600;
+  padding:0.7rem 1.4rem; background:var(--crimson); color:var(--paper); border:none;
+  border-radius:2px; cursor:pointer; transition:transform 0.15s ease, background 0.15s ease;
+  white-space:nowrap;
+}
+.tool-btn:hover{ background:var(--blood); transform:translateY(-1px); }
+.tool-tabs{ display:flex; gap:0.5rem; margin-bottom:1.2rem; flex-wrap:wrap; }
+.tool-tab{
+  font-family:'IBM Plex Mono',monospace; font-size:0.72rem; padding:0.5rem 0.9rem;
+  border:1px solid var(--line-strong); background:transparent; color:var(--ink);
+  cursor:pointer; border-radius:2px; transition:all 0.15s ease; display:flex; align-items:center; gap:0.4rem;
+}
+.tool-tab:hover{ background:rgba(10,14,20,0.06); }
+.tool-tab.active{ background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.tool-count{
+  font-size:0.66rem; background:rgba(196,40,71,0.15); color:var(--crimson);
+  padding:0.1rem 0.4rem; border-radius:8px; font-weight:600;
+}
+.tool-tab.active .tool-count{ background:var(--gold); color:var(--ink); }
+.tool-list{ min-height:60px; margin-bottom:1.2rem; }
+.tool-list-dark{ color:var(--paper); }
+.tool-empty{
+  font-family:'IBM Plex Mono',monospace; font-size:0.8rem; opacity:0.45;
+  text-align:center; padding:1.5rem 0;
+}
+.tool-item{
+  display:flex; align-items:center; justify-content:space-between; gap:1rem;
+  padding:0.9rem 0.2rem; border-bottom:1px solid var(--line); flex-wrap:wrap;
+}
+.tool-item-dark{ border-color:rgba(242,237,227,0.1); }
+.ti-main{ flex:1; min-width:180px; }
+.ti-topic{ font-family:'Fraunces',serif; font-weight:600; font-size:1rem; }
+.ti-meta{
+  font-family:'IBM Plex Mono',monospace; font-size:0.68rem; opacity:0.55; margin-top:0.2rem;
+}
+.ti-meta.overdue{ color:var(--crimson); opacity:1; font-weight:600; }
+.ti-rate{ display:flex; gap:0.35rem; align-items:center; }
+.ti-rate-btn{
+  width:30px; height:30px; border-radius:50%; border:1px solid var(--line-strong);
+  background:transparent; color:var(--ink); font-family:'IBM Plex Mono',monospace;
+  font-size:0.72rem; cursor:pointer; transition:all 0.15s ease;
+}
+.ti-rate-btn:hover{ background:var(--gold); border-color:var(--gold); }
+.ti-del{
+  background:none; border:none; color:var(--crimson); cursor:pointer; font-size:1rem;
+  opacity:0.5; transition:opacity 0.15s ease; padding:0.2rem 0.5rem;
+}
+.ti-del:hover{ opacity:1; }
+.tool-footnote{
+  font-family:'IBM Plex Mono',monospace; font-size:0.7rem; opacity:0.55; line-height:1.6;
+  display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap;
+}
+.tool-footnote-dark{ color:rgba(242,237,227,0.6); }
+.tool-reset{
+  font-family:'IBM Plex Mono',monospace; font-size:0.68rem; background:transparent;
+  border:1px solid var(--line-strong); color:var(--ink); padding:0.4rem 0.8rem;
+  border-radius:2px; cursor:pointer; white-space:nowrap; transition:all 0.15s ease;
+}
+.tool-reset:hover{ background:var(--crimson); border-color:var(--crimson); color:var(--paper); }
+.tool-reset-dark{ border-color:rgba(242,237,227,0.3); color:var(--paper); }
+.tool-reset-dark:hover{ background:var(--crimson); border-color:var(--crimson); }
+
+/* ---------- ERROR LOG STATS ---------- */
+.err-stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:1.6rem; }
+.err-stat{
+  text-align:center; padding:1.2rem 0.8rem; border:1px solid rgba(242,237,227,0.15);
+  border-radius:2px;
+}
+.err-stat-num{
+  font-family:'Fraunces',serif; font-weight:700; font-size:1.6rem; color:var(--gold);
+  margin-bottom:0.3rem; word-break:break-word;
+}
+.err-stat-label{
+  font-family:'IBM Plex Mono',monospace; font-size:0.62rem; letter-spacing:0.08em;
+  text-transform:uppercase; opacity:0.55;
+}
+.err-bars{ margin-bottom:1.5rem; }
+.err-bar-row{ display:flex; align-items:center; gap:0.8rem; margin-bottom:0.6rem; }
+.err-bar-label{
+  font-family:'IBM Plex Mono',monospace; font-size:0.7rem; width:110px; flex-shrink:0;
+  color:rgba(242,237,227,0.7);
+}
+.err-bar-track{ flex:1; height:10px; background:rgba(242,237,227,0.1); border-radius:1px; overflow:hidden; }
+.err-bar-fill{ height:100%; background:linear-gradient(90deg, var(--gold), var(--crimson)); border-radius:1px; transition:width 0.5s ease; }
+.err-bar-num{ font-family:'IBM Plex Mono',monospace; font-size:0.7rem; width:28px; text-align:right; color:rgba(242,237,227,0.7); }
+
+/* ---------- SYNC STATUS ---------- */
+.sync-status{
+  font-family:'IBM Plex Mono',monospace; font-size:0.62rem; letter-spacing:0.06em;
+  display:inline-flex; align-items:center; gap:0.4rem; opacity:0.55;
+}
+.sync-dot{
+  width:6px; height:6px; border-radius:50%; background:var(--gold);
+  animation:none; flex-shrink:0;
+}
+.sync-dot.saving{ background:var(--crimson); animation:pulse 1s ease-in-out infinite; }
+.sync-dot.saved{ background:#4caf50; }
+.sync-dot.error{ background:var(--crimson); }
+
+@media (max-width:720px){
+  .tool-add-3{ grid-template-columns:1fr; }
+  .err-stats{ grid-template-columns:1fr; }
+  .tool-footnote{ flex-direction:column; align-items:flex-start; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto; }
+  *, *::before, *::after{ animation:none !important; transition:none !important; }
+  .reveal{ opacity:1; transform:none; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="#top" class="logo"><span class="pulse"></span>THE PERFECT ASPIRANT</a>
+  <a class="nl" href="#method"><span class="n">01</span>The Method</a>
+  <a class="nl" href="#exams"><span class="n">02</span>Exam by Exam</a>
+  <a class="nl" href="#routine"><span class="n">03</span>The Daily Shape</a>
+  <a class="nl" href="#planner"><span class="n">04</span>Your Readiness Engine</a>
+  <a class="nl" href="#revision"><span class="n">05</span>Revision Queue</a>
+  <a class="nl" href="#errorlog"><span class="n">06</span>Error Log Analytics</a>
+  <a class="nl" href="#mistakes"><span class="n">07</span>What Kills Ranks</a>
+  <a class="nl" href="#resources"><span class="n">08</span>Marrow vs Core BTR</a>
+  <a class="nl" href="#amboss"><span class="n">09</span>Amboss &amp; Rank Signal</a>
+  <a class="nl" href="#situation"><span class="n">10</span>Built For You</a>
+  <a class="nl" href="#restart"><span class="n">11</span>The Full-Time Restart</a>
+  <a class="nl" href="#tricks"><span class="n">12</span>Hidden Tricks &amp; Health</a>
+  <a class="nl" href="#subjectnotes"><span class="n">13</span>Notes by Subject</a>
+  <a class="nl" href="#foodplan"><span class="n">14</span>What to Eat</a>
+  <a class="nl" href="#mojo"><span class="n">15</span>Finding Your Mojo</a>
+  <a class="nl" href="#lastmonth"><span class="n">16</span>The Last Month</a>
+</nav>
+
+<section class="hero" id="top">
+  <div class="eyebrow">A Study Protocol // NEET PG · INI-CET · CMS</div>
+  <h1>Toppers don't study <em>harder</em>. They study <em>narrower</em>.</h1>
+  <p class="sub">Same core discipline drives rank 1 across all three exams — fewer resources, ruthless PYQ focus, and honest error review. The differences between exams are smaller than most aspirants think. Here's what actually separates a topper from someone who just worked hard.</p>
+</section>
+
+<section class="sec light reveal" id="method">
+  <div class="eyebrow2">The Core Method</div>
+  <h2>Five habits, not fifty hacks.</h2>
+  <p class="lede">This is the same underlying method whether you're prepping NEET PG, INI-CET, or CMS. The exam changes the emphasis, not the method.</p>
+
+  <div class="method-grid">
+    <div class="method-card">
+      <span class="method-num">01</span>
+      <h3>PYQs before QBank</h3>
+      <p>10+ years of previous papers, done before random question banks. Concepts repeat — sometimes verbatim. This is the single highest-ROI move in any of the three exams.</p>
+    </div>
+    <div class="method-card">
+      <span class="method-num">02</span>
+      <h3>One resource per subject</h3>
+      <p>Pick your primary — Marrow, PrepLadder, DAMS, whatever fits how you learn — and finish it fully. Resource-hopping mid-prep loses more time than any single resource's weak spots cost you.</p>
+    </div>
+    <div class="method-card">
+      <span class="method-num">03</span>
+      <h3>Weight hours to marks</h3>
+      <p>Medicine, Surgery, OBG, Pediatrics, PSM carry over half the marks across all three exams. Time goes there in proportion — not spread evenly across every subject.</p>
+    </div>
+    <div class="method-card">
+      <span class="method-num">04</span>
+      <h3>Tests + honest error logs</h3>
+      <p>The test itself teaches nothing. Reviewing exactly why each wrong answer was wrong — silly mistake, concept gap, or pure guess — is what actually moves the score.</p>
+    </div>
+    <div class="method-card">
+      <span class="method-num">05</span>
+      <h3>Daily image practice</h3>
+      <p>Radiology, path slides, derm, ophtho images are a growing share of marks. Most aspirants ignore this until the final month. Small daily doses from day one instead.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec dark reveal" id="exams">
+  <div class="eyebrow2" style="color:var(--gold);">Where They Actually Differ</div>
+  <h2>Same method, three different exams.</h2>
+  <p class="lede">The core discipline is identical. What changes is the shape of the question — and that changes how you should spend your last few months.</p>
+
+  <div class="exam-grid">
+    <div class="exam-card">
+      <div class="exam-name">NEET PG</div>
+      <span class="exam-tag">Recall &amp; recognition, speed test</span>
+      <div class="exam-row"><span class="ek">What it rewards</span><span class="ev">Have you seen this exact question, or one shaped like it, before — and can you answer it fast</span></div>
+      <div class="exam-row"><span class="ek">What wins</span><span class="ev">Rapid revision notes plus deep PYQ pattern-matching. Less reasoning depth needed, more sheer volume of exposure</span></div>
+      <div class="exam-row"><span class="ek">Trap to avoid</span><span class="ev">Over-investing in obscure topics at the expense of high-yield repeats — this exam rewards breadth of recognition over depth of reasoning</span></div>
+    </div>
+    <div class="exam-card">
+      <div class="exam-name">INI-CET</div>
+      <span class="exam-tag">Application-based, harder distractors</span>
+      <div class="exam-row"><span class="ek">What it rewards</span><span class="ev">Real conceptual depth — memorized answers alone get eliminated by deliberately close distractors</span></div>
+      <div class="exam-row"><span class="ek">What wins</span><span class="ev">The last 10 years of AIIMS PYQs specifically. PGI's multi-correct and matching-format questions need separate, dedicated practice — a genuinely different skill from single-best-answer MCQs</span></div>
+      <div class="exam-row"><span class="ek">Trap to avoid</span><span class="ev">Treating it like NEET PG with harder questions — the format itself demands a different practice style, not just more revision</span></div>
+    </div>
+    <div class="exam-card">
+      <div class="exam-name">CMS</div>
+      <span class="exam-tag">Medical + General Ability paper</span>
+      <div class="exam-row"><span class="ek">What it rewards</span><span class="ev">Static, more predictable medical syllabus — but a General Ability section that most aspirants under-prepare for entirely</span></div>
+      <div class="exam-row"><span class="ek">What wins</span><span class="ev">Separate, dedicated GA/current-affairs prep time, budgeted from early on — not squeezed in during the last week</span></div>
+      <div class="exam-row"><span class="ek">Trap to avoid</span><span class="ev">Assuming medical prep alone is sufficient — CMS has genuinely cost strong medical scorers a good rank purely on the GA paper</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec light reveal" id="routine">
+  <div class="eyebrow2">The Daily Shape</div>
+  <h2>What a real prep day actually looks like.</h2>
+  <p class="lede">Not a rigid schedule to copy exactly — a shape to adapt. The structure matters more than the specific hours.</p>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-time">Morning block</div>
+      <div class="tl-title">New content or weak-area study</div>
+      <div class="tl-desc">Freshest mental energy goes to the hardest material — new topics or the subjects you're consistently weak in, not passive video-watching.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">Midday</div>
+      <div class="tl-title">Question practice — subject-wise</div>
+      <div class="tl-desc">Focused QBank sets on whatever you studied that morning, immediately, while it's still fresh. Active recall beats re-reading notes every time.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">Afternoon</div>
+      <div class="tl-title">Revision of older material</div>
+      <div class="tl-desc">Spaced repetition on subjects covered days or weeks ago — this is what actually builds retention, not the first pass through material.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">Evening</div>
+      <div class="tl-title">Grand test or timed mixed set (2-3x/week)</div>
+      <div class="tl-desc">Full-length or sectional tests under real time pressure. Not every day — enough days need to go to review, not just test-taking.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">Night</div>
+      <div class="tl-title">Error log review — 30-45 min, non-negotiable</div>
+      <div class="tl-desc">Every wrong answer from that day's test or QBank gets tagged: silly mistake, concept gap, or guess. This single habit separates toppers from everyone else more than any other single practice.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">Every day</div>
+      <div class="tl-title">Image practice — 15-20 min</div>
+      <div class="tl-desc">A small, consistent dose, never skipped, rather than a panicked cram in the final weeks.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">Non-negotiable</div>
+      <div class="tl-title">Sleep and one physical reset</div>
+      <div class="tl-desc">7 hours minimum, and at least one short walk or stretch break daily. Burnout doesn't announce itself — it shows up as declining test scores that people mistake for needing to study more, when what's actually needed is rest.</div>
+    </div>
+  </div>
+</section>
+
+<section class="sec dark reveal" id="planner">
+  <div class="eyebrow2" style="color:var(--gold);">Built For You, Actually</div>
+  <h2>Your readiness engine — real inputs, real projection.</h2>
+  <p class="lede">Not a generic rank predictor. Enter your actual situation and it estimates where you stand, projects a percentile band, names your single highest-leverage fix, and builds a weekly plan shaped to you. Everything runs in your browser — nothing is sent anywhere.</p>
+
+  <div class="planner">
+    <div class="planner-inputs">
+      <div class="pin">
+        <label>Months left until your exam <span class="pv" id="pv-months">6</span></label>
+        <input type="range" id="p-months" min="1" max="18" value="6">
+        <div class="phint"><span>1 month</span><span>18 months</span></div>
+      </div>
+      <div class="pin">
+        <label>Focused study hours per day <span class="pv" id="pv-hours">6</span></label>
+        <input type="range" id="p-hours" min="1" max="14" value="6">
+        <div class="phint"><span>1 hr</span><span>14 hrs</span></div>
+        <details class="phelp">
+          <summary>What counts as a "focused" hour?</summary>
+          <p>Hours where you were <strong>actively recalling</strong> — solving questions, blank-page recall, or explaining concepts out loud.</p>
+          <p><strong>Doesn't count:</strong> passive video-watching, re-reading notes, or hours where the phone was in reach. Sitting at a desk for 10 hours while genuinely focused for 5 means the honest answer here is 5, not 10.</p>
+        </details>
+      </div>
+      <div class="pin">
+        <label>Current QBank accuracy <span class="pv" id="pv-acc">60</span>%</label>
+        <input type="range" id="p-acc" min="20" max="95" value="60">
+        <div class="phint"><span>20%</span><span>95%</span></div>
+        <details class="phelp">
+          <summary>How do I find this?</summary>
+          <p>Every platform (Marrow, PrepLadder, Amboss, DAMS) shows it in its performance dashboard — correct ÷ attempted × 100.</p>
+          <p><strong>Use the honest version:</strong> your overall accuracy across a large sample (1000+ questions), on <em>fresh first-attempt</em> questions only. Repeat attempts on questions you've already seen inflate the number into uselessness.</p>
+          <p><strong>Haven't done enough QBank yet?</strong> Do 100-200 mixed questions first, then come back. Guessing this input makes the whole projection meaningless.</p>
+        </details>
+      </div>
+      <div class="pin">
+        <label>Subjects you're genuinely strong in <span class="pv" id="pv-strong">8</span> <span style="opacity:0.5;">/ 19</span></label>
+        <input type="range" id="p-strong" min="0" max="19" value="8">
+        <div class="phint"><span>0</span><span>all 19</span></div>
+        <details class="phelp">
+          <summary>What counts as "genuinely strong"?</summary>
+          <p>Not "I've read it." Not "I finished the videos." A subject only counts if all three are true:</p>
+          <p>→ You score <strong>70%+ on that subject's QBank</strong>, consistently<br>
+             → You can <strong>explain its core topics out loud</strong>, without notes<br>
+             → <strong>PYQs from it don't surprise you</strong> — you recognize the patterns</p>
+          <p>If you've read a subject but score 55% on it, it isn't strong — it's <em>covered</em>. That distinction is exactly where people overestimate themselves and get a falsely inflated readiness score here.</p>
+        </details>
+      </div>
+      <div class="pin">
+        <label>Daily consistency, honestly <span class="pv" id="pv-cons">3</span> <span style="opacity:0.5;">/ 5</span></label>
+        <input type="range" id="p-cons" min="1" max="5" value="3">
+        <div class="phint"><span>Erratic</span><span>Clockwork</span></div>
+        <details class="phelp">
+          <summary>How do I score myself honestly?</summary>
+          <p>This measures how <em>reliably</em> you study on a planned day — not how hard.</p>
+          <p><strong>The test:</strong> over the last 14 days, how many did you actually study your planned amount?</p>
+          <p>→ 0-4 days = <strong>1</strong> (erratic, days vanish)<br>
+             → 5-7 days = <strong>2</strong> (frequent gaps, no fixed start)<br>
+             → 8-10 days = <strong>3</strong> (most days, but timing drifts)<br>
+             → 11-12 days = <strong>4</strong> (fixed schedule, rare misses)<br>
+             → 13-14 days = <strong>5</strong> (clockwork, essentially never miss)</p>
+        </details>
+      </div>
+      <div class="pin pin-full">
+        <label style="margin-bottom:0.7rem;">Your situation right now</label>
+        <div class="ptoggle">
+          <button class="popt" data-sit="fresh">Final year / fresh time</button>
+          <button class="popt active" data-sit="intern">Intern, fragmented</button>
+          <button class="popt" data-sit="housestaff">Housestaff / full-time restart</button>
+          <button class="popt" data-sit="repeater">Repeater</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="planner-out">
+      <div class="po-score-wrap">
+        <svg viewBox="0 0 120 120" class="po-ring">
+          <circle cx="60" cy="60" r="52" class="po-ring-bg"/>
+          <circle cx="60" cy="60" r="52" class="po-ring-fill" id="po-ring-fill"/>
+        </svg>
+        <div class="po-score-num"><span id="po-score">0</span><span class="po-score-label">readiness</span></div>
+      </div>
+      <div class="po-band" id="po-band">—</div>
+      <div class="po-lever">
+        <div class="po-lever-tag" id="po-lever-title">Your highest-leverage fix</div>
+        <div class="po-lever-text" id="po-lever-text">Adjust the sliders above to see your personalized projection.</div>
+      </div>
+      <div class="po-plan">
+        <div class="po-plan-tag">Your weekly shape</div>
+        <div class="po-plan-body" id="po-plan-body"></div>
+      </div>
+      <div class="po-disclaimer">This is a directional estimate from your own inputs, not a guaranteed rank. It has no access to real cutoff data or your actual test scores — treat it as a planning mirror, not a prophecy. Your error log and real grand-test percentiles always override this number.</div>
+    </div>
+  </div>
+</section>
+
+<section class="sec light reveal" id="revision">
+  <div class="eyebrow2">The Missing Tool</div>
+  <h2>A real spaced-repetition revision queue.</h2>
+  <p class="lede" style="color:rgba(10,14,20,0.68);">No coaching platform actually schedules your revision for you. This does — add a topic after you study it, and it tells you exactly when to revisit it next, based on how well you actually recalled it. Synced to Supabase — your queue persists across devices.</p>
+
+  <div class="tool-card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;flex-wrap:wrap;gap:0.5rem;">
+      <span class="sync-status" id="rev-sync"><span class="sync-dot" id="rev-sync-dot"></span><span id="rev-sync-text">Connecting…</span></span>
+    </div>
+    <div class="tool-add">
+      <input type="text" id="rev-topic" placeholder="Topic — e.g. 'Nephrotic syndrome, Pediatrics'" class="tool-input">
+      <button id="rev-add-btn" class="tool-btn">Add to queue</button>
+    </div>
+    <div class="tool-tabs">
+      <button class="tool-tab active" data-view="due">Due now <span class="tool-count" id="rev-count-due">0</span></button>
+      <button class="tool-tab" data-view="upcoming">Upcoming <span class="tool-count" id="rev-count-upcoming">0</span></button>
+      <button class="tool-tab" data-view="all">All topics <span class="tool-count" id="rev-count-all">0</span></button>
+    </div>
+    <div id="rev-list" class="tool-list">
+      <div class="tool-empty">Connecting to your revision queue…</div>
+    </div>
+    <div class="tool-footnote">Spaced on a simplified SM-2 curve — rate your recall honestly (1 = blanked, 5 = instant) and the interval adjusts. Synced across devices via Supabase.
+      <button id="rev-reset" class="tool-reset">Reset queue</button>
+    </div>
+  </div>
+</section>
+
+<section class="sec dark reveal" id="errorlog">
+  <div class="eyebrow2" style="color:var(--gold);">Turn The Habit Into A System</div>
+  <h2>Error log analytics — see your actual mistake pattern.</h2>
+  <p class="lede">The nightly error-log habit only compounds if you can see the pattern across weeks, not just log entries into a void. Tag each wrong answer, and this shows you where the real bleeding is.</p>
+
+  <div class="tool-card tool-card-dark">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;flex-wrap:wrap;gap:0.5rem;">
+      <span class="sync-status tool-footnote-dark" id="err-sync"><span class="sync-dot" id="err-sync-dot"></span><span id="err-sync-text">Connecting…</span></span>
+    </div>
+    <div class="tool-add tool-add-3">
+      <input type="text" id="err-subject" placeholder="Subject — e.g. Pharmacology" class="tool-input tool-input-dark">
+      <select id="err-type" class="tool-input tool-input-dark">
+        <option value="concept">Concept gap</option>
+        <option value="silly">Silly mistake</option>
+        <option value="guess">Pure guess</option>
+      </select>
+      <button id="err-add-btn" class="tool-btn">Log it</button>
+    </div>
+
+    <div class="err-stats" id="err-stats">
+      <div class="err-stat"><div class="err-stat-num" id="err-total">0</div><div class="err-stat-label">Total logged</div></div>
+      <div class="err-stat"><div class="err-stat-num" id="err-top-type">—</div><div class="err-stat-label">Most common type</div></div>
+      <div class="err-stat"><div class="err-stat-num" id="err-top-subject">—</div><div class="err-stat-label">Weakest subject</div></div>
+    </div>
+
+    <div class="err-bars" id="err-bars"></div>
+
+    <div id="err-list" class="tool-list tool-list-dark"></div>
+    <div class="tool-footnote tool-footnote-dark">Tag every wrong answer honestly — the value here is entirely in the pattern, not any single entry.
+      <button id="err-reset" class="tool-reset tool-reset-dark">Reset log</button>
+    </div>
+  </div>
+</section>
+
+<section class="sec dark reveal" id="mistakes">
+  <div class="eyebrow2" style="color:var(--gold);">What Kills Ranks</div>
+  <h2>The mistakes that quietly cost the most marks.</h2>
+  <p class="lede">None of these feel like mistakes while you're making them — that's exactly why they're dangerous.</p>
+
+  <div class="mistake-grid">
+    <div class="mistake"><span class="mx">→</span><span class="mtext"><strong>Resource hopping.</strong> Switching QBanks or notes mid-prep because a friend's resource looks better. The switching cost is almost always higher than the resource's actual quality gap.</span></div>
+    <div class="mistake"><span class="mx">→</span><span class="mtext"><strong>Passive re-reading.</strong> Highlighting and re-reading notes feels productive and isn't. Active recall — closing the book and testing yourself — is what actually builds retrievable memory.</span></div>
+    <div class="mistake"><span class="mx">→</span><span class="mtext"><strong>Skipping the error log.</strong> Taking test after test without ever asking why each wrong answer was wrong. The test becomes a ritual instead of a diagnostic.</span></div>
+    <div class="mistake"><span class="mx">→</span><span class="mtext"><strong>Uneven subject time.</strong> Spending equal hours on high-yield and low-yield subjects because it "feels balanced," instead of weighting time to actual mark distribution.</span></div>
+    <div class="mistake"><span class="mx">→</span><span class="mtext"><strong>Ignoring images until the end.</strong> Radiology and pathology images get crammed in the final month instead of practiced daily from the start, when they're a genuine and growing share of marks.</span></div>
+    <div class="mistake"><span class="mx">→</span><span class="mtext"><strong>Sacrificing sleep for hours.</strong> Trading sleep for extra study time feels like more effort. Past a point, it's a net loss — tired brains retain and recall worse, regardless of hours logged.</span></div>
+    <div class="mistake"><span class="mx">→</span><span class="mtext"><strong>No mock exam conditions.</strong> Practicing questions untimed, at a desk with snacks and music, then being blindsided by real exam-hall time pressure and fatigue.</span></div>
+    <div class="mistake"><span class="mx">→</span><span class="mtext"><strong>Comparing your prep to others'.</strong> Everyone's baseline, learning speed, and weak areas differ. Comparing raw hours or resources to a topper's routine without your own diagnostic data is just noise.</span></div>
+  </div>
+</section>
+
+<section class="sec dark reveal" id="resources">
+  <div class="eyebrow2" style="color:var(--gold);">First Read, Not Revision</div>
+  <h2>Marrow vs Core BTR — they're not doing the same job.</h2>
+  <p class="lede">The real question isn't "which is better" — it's which job you actually need done right now.</p>
+
+  <div class="exam-grid exam-grid-2">
+    <div class="exam-card">
+      <div class="exam-name">Marrow</div>
+      <span class="exam-tag">Video-based, teaches from zero</span>
+      <div class="exam-row"><span class="ek">Format</span><span class="ev">Full conceptual videos with animations and clinical correlation — one topic can take 45-60 minutes</span></div>
+      <div class="exam-row"><span class="ek">Best for</span><span class="ev">Someone who hasn't grasped the topic yet and has the runway to build a real foundation</span></div>
+      <div class="exam-row"><span class="ek">Trade-off</span><span class="ev">Depth costs time. Grand Tests also run tougher than PrepLadder's — same prep level scores roughly 20-30 marks lower on Marrow GTs, so calibrate your own benchmark against the platform you're using</span></div>
+    </div>
+    <div class="exam-card">
+      <div class="exam-name">Core BTR</div>
+      <span class="exam-tag">Condensed annotated notes, built for cramming</span>
+      <div class="exam-row"><span class="ek">Format</span><span class="ev">Static high-yield notes — PYQs, mnemonics, flowcharts — "BTR" literally stands for rapid revision, not concept-teaching</span></div>
+      <div class="exam-row"><span class="ek">Best for</span><span class="ev">Someone with some existing foundation who needs high-yield facts fast, or genuinely short on time</span></div>
+      <div class="exam-row"><span class="ek">Trade-off</span><span class="ev">Using it as a true first read is unconventional — you're trading depth for speed, and need to fill concept gaps through QBank explanations as you go instead of a teaching video</span></div>
+    </div>
+  </div>
+  <div style="margin-top:2.5rem; max-width:70ch;">
+    <div class="exam-row"><span class="ek" style="color:var(--gold);">The practical split</span>
+    <span class="ev" style="margin-top:0.4rem; display:block;">Strong foundation, months of runway → Marrow first read, Core BTR for revision passes later. Repeater or genuinely short on time → Core BTR as the direct first read, treating wrong-answer QBank explanations as your concept-filler instead of a video lecture. Don't run both as a first read at the same time — that's resource-hopping, and it's the single most common mistake toppers avoid.</span></div>
+  </div>
+</section>
+
+<section class="sec light reveal" id="amboss">
+  <div class="eyebrow2">A Newer Signal</div>
+  <h2>Amboss's rank prediction — what it actually is, and how to use it.</h2>
+  <p class="lede" style="color:rgba(10,14,20,0.68);">Amboss built a dedicated NEET-PG crash course for this exact 2026 cycle — worth understanding on its own terms before folding it into your routine.</p>
+
+  <div class="exam-grid exam-grid-2">
+    <div class="exam-card" style="border-color:var(--line-strong); background:rgba(255,255,255,0.4);">
+      <div class="exam-name" style="color:var(--crimson);">What it actually offers</div>
+      <span class="exam-tag" style="color:rgba(10,14,20,0.5);">4 Grand Tests, every 2 weeks, starting July 11</span>
+      <div class="exam-row"><span class="ek" style="color:rgba(10,14,20,0.5);">Rank prediction</span><span class="ev" style="color:rgba(10,14,20,0.85);">After each Grand Test, an algorithm-based rank prediction benchmarked against the real NEET-PG exam — not just your percentile among however many people happened to sit that specific test, which is how most mock rank predictors actually work</span></div>
+      <div class="exam-row"><span class="ek" style="color:rgba(10,14,20,0.5);">Gap report</span><span class="ev" style="color:rgba(10,14,20,0.85);">A subject-by-subject breakdown of exactly where you lost marks, with direct links to the questions that fix each weak spot</span></div>
+      <div class="exam-row"><span class="ek" style="color:rgba(10,14,20,0.5);">The catch</span><span class="ev" style="color:rgba(10,14,20,0.85);">You must finish the Grand Test inside its designated window to be counted in that report — no late completions, no partial credit</span></div>
+    </div>
+    <div class="exam-card" style="border-color:var(--line-strong); background:rgba(255,255,255,0.4);">
+      <div class="exam-name" style="color:var(--crimson);">The honest caveat</div>
+      <span class="exam-tag" style="color:rgba(10,14,20,0.5);">Newly launched for this exact cycle</span>
+      <div class="exam-row"><span class="ek" style="color:rgba(10,14,20,0.5);">No long track record</span><span class="ev" style="color:rgba(10,14,20,0.85);">Unlike DAMS AITS, which has years of cross-cohort data behind its percentile mapping, this is a first-cycle product. Treat the rank number as a useful directional signal, not gospel — the same disclaimer every rank predictor carries, including established ones</span></div>
+      <div class="exam-row"><span class="ek" style="color:rgba(10,14,20,0.5);">No single tool is your rank predictor</span><span class="ev" style="color:rgba(10,14,20,0.85);">Amboss's gap report tells you what to study next. DAMS AITS gives you the cross-cohort percentile Amboss alone can't. Your own error log ties both together — the combination is the actual system, not any one piece of it</span></div>
+    </div>
+  </div>
+
+  <div style="margin-top:2.5rem;">
+    <div class="eyebrow2" style="color:var(--crimson);">Daily Routine, With Amboss Folded In</div>
+    <div class="timeline" style="margin-top:1.5rem;">
+      <div class="tl-item"><div class="tl-time">Morning, 3-4 hrs</div><div class="tl-title">New or weak subject via BTR</div><div class="tl-desc">Freshest hours go to the hardest material — same as always.</div></div>
+      <div class="tl-item"><div class="tl-time">Same session, immediately after</div><div class="tl-title">Subject-wise QBank on that exact chapter</div><div class="tl-desc">Amboss's question style is built specifically for NEET-PG-level clinical reasoning now — a solid fit here.</div></div>
+      <div class="tl-item"><div class="tl-time">Afternoon, 2-3 hrs</div><div class="tl-title">Revision of the last 2-3 days</div><div class="tl-desc">Spaced repetition — not new content.</div></div>
+      <div class="tl-item"><div class="tl-time">Evening, every other week</div><div class="tl-title">Amboss Grand Test — inside its window, no exceptions</div><div class="tl-desc">This is your real biweekly diagnostic. Missing the window means missing the rank prediction entirely for that test.</div></div>
+      <div class="tl-item"><div class="tl-time">Evening, the other weeks</div><div class="tl-title">DAMS AITS or a timed mixed QBank set</div><div class="tl-desc">For the cross-cohort percentile benchmarking Amboss's newer cohort can't yet give you.</div></div>
+      <div class="tl-item"><div class="tl-time">Night, 30-45 min, non-negotiable</div><div class="tl-title">Error log — every wrong answer, from every source</div><div class="tl-desc">Including Amboss's own gap report. This is what actually decides tomorrow's morning block.</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec light reveal" id="situation">
+  <div class="eyebrow2">Built For Your Situation</div>
+  <h2>The right stack changes with how much time you actually have.</h2>
+  <p class="lede">A final year student and a working housestaff are not doing the same exam prep, even though they're sitting the same exam. Match the stack to your real constraint.</p>
+
+  <div class="method-grid method-grid-4">
+    <div class="method-card"><span class="sit-label">Final Year</span><h3>Most runway — 8-12 months</h3><p><strong>Stack:</strong> Marrow full first read, subject by subject. PYQs from day one, alongside the videos, not after. Core BTR enters later, purely for revision passes.</p><p style="margin-top:0.6rem;"><strong>Priority:</strong> Build real depth now — this is the only phase where you have time to. Don't rush into cramming mode early; you'll need that depth later when time compresses.</p></div>
+    <div class="method-card"><span class="sit-label">Intern</span><h3>Rotating duty, fragmented hours</h3><p><strong>Stack:</strong> Core BTR or a condensed rapid-revision video series as first read — not full Marrow. Subject-wise QBank in whatever free blocks you get. Weekend grand tests to keep exam-condition practice alive.</p><p style="margin-top:0.6rem;"><strong>Priority:</strong> Consistency over depth. A daily 45-minute session that never gets skipped beats an occasional 4-hour binge on a post-duty off day.</p></div>
+    <div class="method-card"><span class="sit-label">Housestaff</span><h3>Least free time, most clinical exposure</h3><p><strong>Stack:</strong> Core BTR directly, skip re-teaching subjects you already know cold from ward experience. Mobile-based QBank for commute and break-time micro-sessions. Skip full video lectures almost entirely.</p><p style="margin-top:0.6rem;"><strong>Priority:</strong> Convert clinical exposure into exam recall — you already know more than you think in subjects you've rotated through. Spend your scarce hours on subjects you haven't touched clinically.</p></div>
+    <div class="method-card"><span class="sit-label">Repeater</span><h3>Already knows the content — the enemy is burnout</h3><p><strong>Stack:</strong> Skip first read entirely. Go straight to error-log-driven revision using your last attempt's actual mistake pattern. Core BTR for gaps, heavy grand test cadence, redo every previously wrong question.</p><p style="margin-top:0.6rem;"><strong>Priority:</strong> The bottleneck usually isn't knowledge — it's motivation and a rigid, protected routine. Treat burnout prevention as seriously as content revision.</p></div>
+  </div>
+</section>
+
+<section class="sec dark reveal" id="fastpath">
+  <div class="eyebrow2" style="color:var(--gold);">Minimum Viable Prep</div>
+  <h2>The fastest honest path to a good rank.</h2>
+  <p class="lede">If you genuinely have limited months, this is the priority order — not everything, just what actually moves rank per hour spent.</p>
+  <div class="timeline">
+    <div class="tl-item"><div class="tl-time">Priority 1</div><div class="tl-title">Triage, don't complete</div><div class="tl-desc">Skip full re-study of subjects you're already strong in. A compressed timeline can't afford equal treatment of every subject — spend time where you're actually weak.</div></div>
+    <div class="tl-item"><div class="tl-time">Priority 2</div><div class="tl-title">PYQs before anything else, from week one</div><div class="tl-desc">Not after finishing content — alongside it, from the very start. This is the highest-yield single habit at any timeline length, and even more critical the less time you have.</div></div>
+    <div class="tl-item"><div class="tl-time">Priority 3</div><div class="tl-title">One test per week, non-negotiable</div><div class="tl-desc">Even if it feels premature. Testing under real time pressure early exposes weak areas faster than any amount of passive reading — and you need that signal early when time is short.</div></div>
+    <div class="tl-item"><div class="tl-time">Priority 4</div><div class="tl-title">Error log, every single day, no exceptions</div><div class="tl-desc">On a compressed timeline this isn't optional polish — it's the mechanism that stops you from repeating the same mistake three separate times across three months.</div></div>
+    <div class="tl-item"><div class="tl-time">Priority 5</div><div class="tl-title">Weight time to Medicine, Surgery, OBG, Pediatrics, PSM</div><div class="tl-desc">These carry over half the marks across NEET PG, INI-CET, and CMS. On a short timeline, under-weighting them is the costliest possible time allocation error.</div></div>
+    <div class="tl-item"><div class="tl-time">Priority 6</div><div class="tl-title">Daily images, small dose, no exceptions</div><div class="tl-desc">15-20 minutes, every day, from day one. Cramming this in the final month when time is already short is the single most avoidable mistake on a compressed timeline.</div></div>
+    <div class="tl-item"><div class="tl-time">Priority 7</div><div class="tl-title">Protect sleep, even now</div><div class="tl-desc">A compressed timeline tempts people to cut sleep for more hours. Past a point this is a net loss — a tired brain retains and recalls worse regardless of hours logged, and you can't afford that inefficiency when time is already scarce.</div></div>
+    <div class="tl-item"><div class="tl-time">Priority 8</div><div class="tl-title">Last 3-4 weeks: revision only, whatever the timeline</div><div class="tl-desc">Even on a short prep cycle, stop adding new material in the closing weeks. Incomplete revision of what you know beats incomplete first-exposure to what you don't.</div></div>
+  </div>
+</section>
+
+<section class="sec dark reveal" id="restart">
+  <div class="eyebrow2" style="color:var(--gold);">One Path, Followed</div>
+  <h2>The full-time restart — leaving a clinical job to prepare properly.</h2>
+  <p class="lede">A real, replicable path: finish a housestaff posting in a specialty, bank the clinical exposure it gives you, then leave the job entirely to prepare full-time. Done right, this is one of the more effective and least-discussed routes to a good rank.</p>
+  <div class="timeline">
+    <div class="tl-item"><div class="tl-time">What you carry forward</div><div class="tl-title">Clinical exposure is banked knowledge, not lost time</div><div class="tl-desc">Whatever specialty you did housestaff in — ortho, medicine, surgery, anything — you already know it clinically. That subject becomes revision-only from day one of full-time prep: BTR skim plus PYQs, no fresh video or deep reading. The time that saves goes straight into subjects you had less exposure to.</div></div>
+    <div class="tl-item"><div class="tl-time">The real risk of leaving the job</div><div class="tl-title">Unstructured days are the actual danger, not lack of time</div><div class="tl-desc">Full unclaimed days sound like an advantage — and they are — but they're also the biggest failure mode for people in this exact position. No duty roster means no external structure. Days quietly expand and contract unless you build your own fixed schedule and defend it like a job: same wake time, same start time, every single day, non-negotiable.</div></div>
+    <div class="tl-item"><div class="tl-time">Hours vs focus</div><div class="tl-title">6-7 focused hours beats 12 unfocused ones</div><div class="tl-desc">With no shift constraints anymore, there's a real temptation to "make up for" leaving the job with marathon study days. Diminishing returns hit hard past 6-7 genuinely focused hours. Hours logged and hours learned are not the same number — track the second one.</div></div>
+    <div class="tl-item"><div class="tl-time">The actual upside</div><div class="tl-title">Full days let you do it properly, not just faster</div><div class="tl-desc">No rushing between duty and study means the blank-page recall, same-day QBank pairing, and honest error-log review — the habits that actually separate toppers — can be done properly instead of squeezed into fragments. This is the one genuine advantage of the restart. Use it deliberately.</div></div>
+    <div class="tl-item"><div class="tl-time">The quiet danger</div><div class="tl-title">Isolation is where the "I remember nothing" spiral hits hardest</div><div class="tl-desc">Solo full-time prep, with no colleagues or ward rounds nearby, is exactly when the plateau feeling described in "Finding Your Mojo" bites the deepest — because there's no one nearby to say "same, it passes." Keep at least one active peer or study-group check-in, even just a daily message thread. Don't do this entirely alone just because you're doing it full-time.</div></div>
+  </div>
+  <div class="strategy-note" style="border-top-color:var(--gold); margin-top:2.5rem;">
+    <p style="color:rgba(242,237,227,0.7); font-size:0.9rem; line-height:1.65;">If you're reading this from inside that exact decision — clinical background banked, job left, full-time prep just starting — this isn't a hypothetical case study. It's a genuinely sound path when it's structured deliberately instead of drifted into. The advantage is real. So is the discipline it demands to actually use it.</p>
+  </div>
+</section>
+
+<section class="sec light reveal" id="tricks">
+  <div class="eyebrow2">The Unpopular Tricks</div>
+  <h2>What toppers do that nobody puts in the standard advice.</h2>
+  <p class="lede">Not another list of "study hard, revise often." These are the specific, less-obvious habits that actually separate the top ranks.</p>
+  <div class="method-grid method-grid-3">
+    <div class="method-card"><span class="method-num" style="font-size:1.5rem;">✎</span><h3>Blank-page recall first</h3><p>Before opening notes on a topic, spend 2 minutes writing everything you remember on blank paper. Then check gaps against the notes. This forces retrieval instead of recognition — far stronger than reading first.</p></div>
+    <div class="method-card"><span class="method-num" style="font-size:1.5rem;">⇄</span><h3>Interleave, don't block</h3><p>Six straight hours of Medicine feels productive but is weaker than rotating Medicine → Surgery → Medicine → Pharm in shorter blocks. Interleaving builds the discrimination MCQ distractors are specifically designed to exploit.</p></div>
+    <div class="method-card"><span class="method-num" style="font-size:1.5rem;">🗣</span><h3>Teach it out loud</h3><p>Explain the concept as if teaching a junior — even to nobody, out loud. Fake understanding cannot survive an out-loud explanation. If you fumble, that's the gap, and now you know exactly where it is.</p></div>
+    <div class="method-card"><span class="method-num" style="font-size:1.5rem;">①②③</span><h3>Three-pass test strategy</h3><p>Don't answer in question order. Pass one: everything you're certain of. Pass two: calculated guesses. Pass three: genuinely unknown ones, last. This alone recovers marks that panic and poor time management otherwise cost you.</p></div>
+    <div class="method-card"><span class="method-num" style="font-size:1.5rem;">%</span><h3>Track percentile, not score</h3><p>Raw scores drift with test difficulty and mean little test to test. Your percentile trend across the last 8-10 grand tests is the only honest signal of whether you're actually improving.</p></div>
+    <div class="method-card"><span class="method-num" style="font-size:1.5rem;">⏰</span><h3>Fixed wake time, not fixed sleep time</h3><p>Circadian consistency — the same wake time every single day — stabilizes energy and retention better than just chasing "7 hours." Irregular sleep timing quietly wrecks retention even at identical total hours.</p></div>
+  </div>
+</section>
+
+<section class="sec dark reveal" id="diet">
+  <div class="eyebrow2" style="color:var(--gold);">Fuel, Not Hacks</div>
+  <h2>What actually helps — no food makes you smarter for an exam.</h2>
+  <p class="lede">There's no diet that boosts recall on exam day. What genuinely moves the needle is unglamorous and consistent.</p>
+  <div class="mistake-grid">
+    <div class="mistake"><span class="mx">→</span><span class="mtext"><strong>Regular meal timing.</strong> Skipped meals cause blood sugar crashes and brain fog mid-study-block — more disruptive to a session than most aspirants realize.</span></div>
+    <div class="mistake"><span class="mx">→</span><span class="mtext"><strong>Avoid heavy, high-glycemic meals before studying.</strong> Large rice meals, parathas, sweets right before a study block cause real post-meal drowsiness that costs your best hours.</span></div>
+    <div class="mistake"><span class="mx">→</span><span class="mtext"><strong>Protein and slow carbs at breakfast.</strong> Tea and biscuits alone don't stabilize energy through the morning study block the way a proper breakfast does.</span></div>
+    <div class="mistake"><span class="mx">→</span><span class="mtext"><strong>Hydration, tracked not assumed.</strong> Mild dehydration measurably hurts concentration, and most aspirants under-drink water across a long study day without noticing.</span></div>
+    <div class="mistake"><span class="mx">→</span><span class="mtext"><strong>Caffeine timing over caffeine quantity.</strong> Stop by early afternoon regardless of how much you drink — the sleep damage from late caffeine compounds into worse retention the next day, which outweighs any short-term alertness gained.</span></div>
+    <div class="mistake"><span class="mx">→</span><span class="mtext"><strong>Stimulants and nootropics — a real caution, not a tip.</strong> Some aspirants misuse prescription stimulants for focus. Unprescribed use carries real cardiac and dependency risk and doesn't substitute for sleep. If focus is a genuine problem, raise it with a doctor directly rather than self-medicating.</span></div>
+  </div>
+</section>
+
+<section class="sec light reveal" id="commonmistakes2">
+  <div class="eyebrow2">What Most People Actually Get Wrong</div>
+  <h2>Beyond the obvious mistakes — the quieter ones.</h2>
+  <div class="method-grid method-grid-4">
+    <div class="method-card"><h3>Hoarding PDFs never touched</h3><p>Collecting resources feels like progress. It isn't — unused material is just digital clutter with a guilt tax attached.</p></div>
+    <div class="method-card"><h3>Watching lectures passively</h3><p>Eyes on screen, nothing retained, because there's no active recall happening during passive video-watching.</p></div>
+    <div class="method-card"><h3>Breaks with no hard boundary</h3><p>The break itself isn't the problem — the lack of a fixed end time is what quietly turns 10 minutes into an hour of scrolling.</p></div>
+    <div class="method-card"><h3>All-nighters before the exam</h3><p>The single most self-defeating decision aspirants make in the final 48 hours — and it happens constantly, purely out of panic.</p></div>
+  </div>
+</section>
+
+<section class="sec dark reveal" id="subjectnotes">
+  <div class="eyebrow2" style="color:var(--gold);">Subject by Subject</div>
+  <h2>The specific notes most toppers actually build their first read around.</h2>
+  <p class="lede">These are the long-standing standard references across NEET PG/INI-CET prep circles — not a single official list, and editions/preferences shift, so cross-check with current seniors before committing. What matters more than the exact title is picking one per subject and finishing it.</p>
+  <div class="mistake-grid">
+    <div class="mistake"><span class="mx">→</span><span class="mtext"><strong>Anatomy:</strong> BD Chaurasia's short notes or a condensed Bhatia-style summary — full textbooks are rarely worth first-read time here.</span></div>
+    <div class="mistake"><span class="mx">→</span><span class="mtext"><strong>Physiology:</strong> Guyton short notes for concepts, Ganong only for filling specific gaps — not a full first read.</span></div>
+    <div class="mistake"><span class="mx">→</span><span class="mtext"><strong>Biochemistry:</strong> A condensed short-notes set (Rebecca James style) over the full U Satyanarayan textbook for first read.</span></div>
+    <div class="mistake"><span class="mx">→</span><span class="mtext"><strong>Pathology:</strong> Robbins Basic Pathology for concepts, paired with Goljan's high-yield notes for exam-specific recall.</span></div>
+    <div class="mistake"><span class="mx">→</span><span class="mtext"><strong>Pharmacology:</strong> KD Tripathi for concept-building, condensed pharm short notes for revision passes — this subject rewards depth once, then pure repetition.</span></div>
+    <div class="mistake"><span class="mx">→</span><span class="mtext"><strong>Microbiology:</strong> Apurba Sastry's review is the current standard first read for most aspirants.</span></div>
+    <div class="mistake"><span class="mx">→</span><span class="mtext"><strong>Forensic Medicine:</strong> Reddy's forensic notes — this subject is short and high-yield per hour invested, don't over-allocate time here.</span></div>
+    <div class="mistake"><span class="mx">→</span><span class="mtext"><strong>PSM / Community Medicine:</strong> Park's textbook for concepts, paired with a condensed PSM short-notes set for the numbers and program details that actually get tested.</span></div>
+    <div class="mistake"><span class="mx">→</span><span class="mtext"><strong>Medicine:</strong> Harrison only for reference, not first read — most toppers use platform notes (Marrow/DAMS) or a dedicated medicine short-notes set as the actual first read.</span></div>
+    <div class="mistake"><span class="mx">→</span><span class="mtext"><strong>Surgery:</strong> A condensed surgery recall/short-notes set — Bailey and Sabiston are reference texts, not first-read material at this stage.</span></div>
+    <div class="mistake"><span class="mx">→</span><span class="mtext"><strong>OBG:</strong> DC Dutta for concepts, paired with condensed OBG short notes for the protocol-heavy, frequently-tested details.</span></div>
+    <div class="mistake"><span class="mx">→</span><span class="mtext"><strong>Pediatrics:</strong> OP Ghai for concepts, Nelson Essentials only for specific gap-filling.</span></div>
+    <div class="mistake"><span class="mx">→</span><span class="mtext"><strong>Ophthalmology, ENT, Orthopedics, Dermatology, Psychiatry:</strong> These are lower-weightage subjects — a single condensed short-notes set per subject (AK Khurana for ophtho, Dhingra for ENT, Maheshwari for ortho) is enough; don't over-invest time here relative to the high-yield core subjects.</span></div>
+  </div>
+</section>
+
+<section class="sec light reveal" id="foodplan">
+  <div class="eyebrow2">What to Actually Eat</div>
+  <h2>A realistic daily eating shape, not a diet plan.</h2>
+  <p class="lede" style="color:rgba(10,14,20,0.68);">No food makes you smarter. This is just what keeps blood sugar and energy stable through long study days — ordinary meals, timed sensibly.</p>
+  <div class="timeline">
+    <div class="tl-item"><div class="tl-time">Breakfast</div><div class="tl-title">Protein + slow carbs, not just tea and biscuits</div><div class="tl-desc">Eggs or paneer with roti/toast, or a bowl of poha/upma with nuts, plus a piece of fruit. This holds energy through the morning study block far better than tea-and-biscuits alone.</div></div>
+    <div class="tl-item"><div class="tl-time">Mid-morning</div><div class="tl-title">A small handful of nuts or a banana</div><div class="tl-desc">Not a full meal — just enough to prevent the pre-lunch energy dip that derails a study block.</div></div>
+    <div class="tl-item"><div class="tl-time">Lunch</div><div class="tl-title">Dal, rice or roti, vegetables, curd — moderate portion</div><div class="tl-desc">A normal balanced meal, not a large or heavy one. Overeating at lunch is what causes the post-lunch drowsiness that wipes out an entire afternoon study block.</div></div>
+    <div class="tl-item"><div class="tl-time">Afternoon</div><div class="tl-title">Roasted chana, sprouts, or a light snack</div><div class="tl-desc">Keeps you through the second study block without needing sugar or caffeine to push through a slump.</div></div>
+    <div class="tl-item"><div class="tl-time">Dinner</div><div class="tl-title">Light, and early if possible</div><div class="tl-desc">A heavy, late dinner disrupts sleep quality — and sleep quality is what determines how well today's revision actually consolidates into memory.</div></div>
+    <div class="tl-item"><div class="tl-time">Exam day specifically</div><div class="tl-title">Eat what your body already knows, nothing new</div><div class="tl-desc">A familiar, moderate breakfast with some protein — not a new food, not an empty stomach, not a heavy one. Exam day is the wrong day to test a new diet idea.</div></div>
+  </div>
+</section>
+
+<section class="sec dark reveal" id="mojo">
+  <div class="eyebrow2" style="color:var(--gold);">When It Feels Like You Know Nothing</div>
+  <h2>Finding your mojo again when your brain feels blank.</h2>
+  <p class="lede">This feeling — "I've studied all this and I remember nothing" — is one of the most common experiences in long exam prep, not a sign you've actually lost knowledge. Here's what to do when it hits.</p>
+  <div class="method-grid method-grid-3">
+    <div class="method-card"><h3>Name it for what it is</h3><p>This is a plateau, not memory loss. Under stress and fatigue, retrieval feels harder even when the knowledge is still there. Recognizing the pattern takes some of its power away.</p></div>
+    <div class="method-card"><h3>Get one easy win first</h3><p>Open a subject you're genuinely strong in and solve 10-15 easy questions. Proving to yourself the knowledge is still there resets the panic faster than anything else.</p></div>
+    <div class="method-card"><h3>Move your body, don't scroll</h3><p>A 10-15 minute walk resets mental fatigue better than a break spent on the phone — screen breaks don't actually rest the part of your brain that's tired.</p></div>
+    <div class="method-card"><h3>Shrink the session</h3><p>Stop trying to force a 3-hour block when you're blanking. Do one focused 25-minute round instead. A small completed session rebuilds momentum; a long failed one deepens the panic.</p></div>
+    <div class="method-card"><h3>Reconnect with your reason</h3><p>Whatever got you into this — the branch you want, the life you're building toward — spend two minutes actually sitting with that, not the fear. Motivation dips are about direction, not just discipline.</p></div>
+    <div class="method-card"><h3>Say it out loud to a peer</h3><p>Nearly every aspirant hits this exact feeling at some point. Saying it out loud to a batchmate almost always gets a "same, it passes" — because it does, and hearing that from someone else genuinely helps.</p></div>
+  </div>
+  <div class="strategy-note" style="border-top-color:var(--gold); margin-top:2.5rem;">
+    <p style="color:rgba(242,237,227,0.7); font-size:0.9rem; line-height:1.65;">If this feeling is constant rather than occasional — lasting more than a couple of weeks, or coming with real changes in sleep, appetite, or a sense of hopelessness about the exam or beyond it — that's worth talking through with a counsellor or someone you trust, not just pushing through alone. Most medical colleges have a counselling cell, and it exists for exactly this.</p>
+  </div>
+</section>
+
+<section class="sec light reveal" id="lastmonth">
+  <div class="eyebrow2">The Final Stretch</div>
+  <h2>What separates toppers in the last month.</h2>
+  <p class="lede" style="margin-bottom:2rem;">This is the single clearest behavioral difference between top ranks and everyone else.</p>
+  <div class="banner">
+    <div class="btag">The One Rule</div>
+    <h3>Stop adding new material 3-4 weeks out. Pure revision and tests only.</h3>
+    <p>Most aspirants panic in the final stretch and cram new topics right up to exam day — which is a net loss of score, not a gain. Toppers do the opposite: they narrow to pure revision of what they already know, timed practice, and error-log review. Familiarity and speed under pressure beat breadth of exposure in the closing weeks, every time.</p>
+  </div>
+</section>
+
+<section class="footnote">
+  This reflects consistently reported patterns across NEET PG, INI-CET, and CMS toppers — not a guarantee, and not a substitute for adapting the method to your own weak areas and learning pace. Pair this with your own error-log data, not a generic schedule.
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+/* ── Scroll reveal ── */
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const revealTargets = document.querySelectorAll('.reveal');
+if(reduceMotion){
+  revealTargets.forEach(el=> el.classList.add('in'));
+}else{
+  const io = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:0.1});
+  revealTargets.forEach(el=> io.observe(el));
+}
+
+/* ── Readiness Engine (no Supabase — pure client calculation) ── */
+(function(){
+  const S = {
+    months: document.getElementById('p-months'),
+    hours: document.getElementById('p-hours'),
+    acc: document.getElementById('p-acc'),
+    strong: document.getElementById('p-strong'),
+    cons: document.getElementById('p-cons'),
+  };
+  if(!S.months) return;
+  let situation = 'intern';
+  const RING = 2 * Math.PI * 52;
+
+  function project(){
+    const months=+S.months.value, hours=+S.hours.value, acc=+S.acc.value,
+          strong=+S.strong.value, cons=+S.cons.value;
+    let eff = Math.min(hours,8)*(0.5+cons*0.1);
+    const sitMult = {fresh:1.0,intern:0.75,housestaff:0.7,repeater:1.05}[situation];
+    eff *= sitMult;
+    const weeks=months*4.3, capacity=weeks*6*eff, base=(strong/19)*100;
+    const improvement=100*(1-Math.exp(-capacity/900));
+    let readiness=Math.min(0.45*acc+0.15*base+0.40*improvement,99);
+    readiness=Math.round(readiness);
+
+    let band;
+    if(readiness>=85) band="Top 1-2 percentile — clinical branch / top govt college territory";
+    else if(readiness>=75) band="Top 5 percentile — competitive for most clinical branches";
+    else if(readiness>=62) band="Top 15 percentile — solid government seat range";
+    else if(readiness>=48) band="Top 30 percentile — state quota & DNB range";
+    else band="Below median — these are your highest-leverage months; focus beats hours now";
+
+    let lever;
+    if(acc<55) lever=["Accuracy is your bottleneck","Your QBank accuracy is the limiting factor right now — piling on new content won't move your rank until recall converts into correct answers. Shift weight to error-log review and blank-page active recall."];
+    else if(cons<=2) lever=["Consistency is your bottleneck","Erratic days are costing you more than any resource gap. A fixed daily schedule you defend like a job is your single highest-leverage change — more than any QBank or note switch."];
+    else if(hours>10) lever=["You're over-studying","Past roughly 8 focused hours, returns collapse and sleep debt quietly erodes retention. Cut hours, protect sleep — a rested brain out-scores an exhausted one at the same content level."];
+    else if(strong<6&&months<4) lever=["Triage ruthlessly, starting now","Limited time plus a narrow strong-subject base means you cannot cover everything. Weight hard toward Medicine, Surgery, OBG, Pediatrics and PSM — they carry over half the marks."];
+    else if(months>=10&&strong<8) lever=["Build real depth while you can","You have the rare luxury of time. Use it on genuine concept-building now — you'll be grateful for that depth when the timeline compresses in the final months."];
+    else lever=["Stay the course","No single glaring bottleneck. Your job now is disciplined consistency, honest weekly testing, and error-log review — the unglamorous levers that compound."];
+
+    const plan=[];
+    if(months<=3){ plan.push("Triage mode: revision-only on strong subjects, new content only where you're weak"); plan.push("PYQs from day one, alongside content — never after"); }
+    else { plan.push("Morning: new/weak subject content, freshest hours"); plan.push("Same session: subject-wise QBank on that exact chapter"); }
+    plan.push("Afternoon: spaced revision of the last 2-3 days");
+    if(situation==='repeater') plan.push("Skip first-read; drive revision off your last attempt's error pattern");
+    plan.push((eff>=5?"2-3":"1-2")+" grand tests / week, tracked by percentile trend not raw score");
+    plan.push("Nightly: 30-45 min error log — this decides tomorrow's focus");
+    plan.push("Daily: 15-20 min image practice, no exceptions");
+    if(cons<=3) plan.push("Fix a wake time and a start time — protect them like a duty roster");
+
+    document.getElementById('pv-months').textContent=months;
+    document.getElementById('pv-hours').textContent=hours;
+    document.getElementById('pv-acc').textContent=acc;
+    document.getElementById('pv-strong').textContent=strong;
+    document.getElementById('pv-cons').textContent=cons;
+    document.getElementById('po-score').textContent=readiness;
+    const ring=document.getElementById('po-ring-fill');
+    ring.style.strokeDashoffset=RING*(1-readiness/100);
+    ring.style.stroke=readiness>=75?'var(--gold)':readiness>=48?'#D49A48':'var(--crimson)';
+    document.getElementById('po-band').textContent=band;
+    document.getElementById('po-lever-title').textContent=lever[0];
+    document.getElementById('po-lever-text').textContent=lever[1];
+    document.getElementById('po-plan-body').innerHTML=plan.map(p=>`<div class="pb-row">${p}</div>`).join('');
+  }
+
+  Object.values(S).forEach(el=>el.addEventListener('input',project));
+  document.querySelectorAll('.popt').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.popt').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active'); situation=btn.dataset.sit; project();
+    });
+  });
+  project();
+})();
+
+/* ── Supabase anonymous storage ── */
+const SUPA_URL  = 'https://fkqazoltrxmwlareblpi.supabase.co';
+const SUPA_ANON = 'sb_publishable_r_YTJolEVNR9vQR7oTVENA_7ZADmY3o';
+
+function getDeviceId(){
+  const m = document.cookie.match(/(?:^|;\s*)aspirant_did=([^;]+)/);
+  if(m) return m[1];
+  const id = 'did_' + Math.random().toString(36).slice(2,10) + Date.now().toString(36);
+  const exp = new Date(Date.now() + 365*24*60*60*1000).toUTCString();
+  document.cookie = `aspirant_did=${id}; expires=${exp}; path=/; SameSite=Strict`;
+  return id;
+}
+
+const deviceId = getDeviceId();
+const supa = window.supabase.createClient(SUPA_URL, SUPA_ANON, {
+  global: { headers: { 'x-device-id': deviceId } }
+});
+
+async function kget(key){
+  const { data, error } = await supa.from('aspirant_kv')
+    .select('value').eq('device_id', deviceId).eq('key', key).maybeSingle();
+  if(error) throw error;
+  return data?.value ?? null;
+}
+async function kset(key, value){
+  const { error } = await supa.from('aspirant_kv')
+    .upsert({ device_id: deviceId, key, value, updated_at: new Date().toISOString() },
+            { onConflict: 'device_id,key' });
+  if(error) throw error;
+}
+
+function setSyncStatus(dotId, textId, state, msg){
+  const dot = document.getElementById(dotId);
+  const txt = document.getElementById(textId);
+  if(!dot||!txt) return;
+  dot.className = 'sync-dot ' + state;
+  txt.textContent = msg;
+}
+
+/* ── Revision Queue ── */
+(function(){
+  const listEl = document.getElementById('rev-list');
+  if(!listEl) return;
+  const addBtn = document.getElementById('rev-add-btn');
+  const input  = document.getElementById('rev-topic');
+  const resetBtn = document.getElementById('rev-reset');
+  const tabs   = document.querySelectorAll('#revision .tool-tab');
+  const DAY    = 86400000;
+  let items = [], view = 'due', saving = false;
+
+  async function load(){
+    setSyncStatus('rev-sync-dot','rev-sync-text','saving','Loading…');
+    try{
+      const data = await kget('rev:items');
+      items = Array.isArray(data) ? data : [];
+      setSyncStatus('rev-sync-dot','rev-sync-text','saved','Synced');
+    }catch(e){
+      console.error('rev load', e);
+      setSyncStatus('rev-sync-dot','rev-sync-text','error','Offline — changes may not save');
+      items = [];
+    }
+    render();
+  }
+
+  async function save(){
+    if(saving) return;
+    saving = true;
+    setSyncStatus('rev-sync-dot','rev-sync-text','saving','Saving…');
+    try{
+      await kset('rev:items', items);
+      setSyncStatus('rev-sync-dot','rev-sync-text','saved','Saved');
+    }catch(e){
+      console.error('rev save', e);
+      setSyncStatus('rev-sync-dot','rev-sync-text','error','Save failed');
+    }
+    saving = false;
+  }
+
+  function addTopic(name){
+    if(!name.trim()) return;
+    items.push({
+      id: Date.now()+Math.random().toString(36).slice(2,7),
+      topic: name.trim(), added: Date.now(),
+      interval: 1, ease: 2.3, due: Date.now()+DAY, reps: 0,
+    });
+    save(); render();
+  }
+
+  function rate(id, quality){
+    const it = items.find(i=>i.id===id);
+    if(!it) return;
+    if(quality<3){ it.interval=1; it.ease=Math.max(1.3,it.ease-0.2); }
+    else{ it.interval=it.reps===0?1:Math.round(it.interval*it.ease); it.ease=Math.min(2.8,it.ease+(quality-3)*0.1); }
+    it.reps+=1; it.due=Date.now()+it.interval*DAY;
+    save(); render();
+  }
+
+  function remove(id){ items=items.filter(i=>i.id!==id); save(); render(); }
+
+  function fmtDue(due){
+    const diff=Math.round((due-Date.now())/DAY);
+    if(diff<0) return {text:`Overdue ${Math.abs(diff)}d`,cls:'overdue'};
+    if(diff===0) return {text:'Due today',cls:'overdue'};
+    if(diff===1) return {text:'Due tomorrow',cls:''};
+    return {text:`Due in ${diff}d`,cls:''};
+  }
+
+  function render(){
+    const now=Date.now();
+    let filtered;
+    if(view==='due') filtered=items.filter(i=>i.due<=now).sort((a,b)=>a.due-b.due);
+    else if(view==='upcoming') filtered=items.filter(i=>i.due>now).sort((a,b)=>a.due-b.due);
+    else filtered=[...items].sort((a,b)=>a.due-b.due);
+    document.getElementById('rev-count-due').textContent=items.filter(i=>i.due<=now).length;
+    document.getElementById('rev-count-upcoming').textContent=items.filter(i=>i.due>now).length;
+    document.getElementById('rev-count-all').textContent=items.length;
+    if(filtered.length===0){
+      listEl.innerHTML=`<div class="tool-empty">${items.length===0?'Nothing queued yet — add a topic you studied today above.':view==='due'?'Nothing due right now — you\'re caught up.':'Nothing here.'}</div>`;
+      return;
+    }
+    listEl.innerHTML=filtered.map(it=>{
+      const d=fmtDue(it.due);
+      return `<div class="tool-item">
+        <div class="ti-main">
+          <div class="ti-topic">${esc(it.topic)}</div>
+          <div class="ti-meta ${d.cls}">${d.text} · reviewed ${it.reps}x · interval ${it.interval}d</div>
+        </div>
+        <div class="ti-rate">
+          ${[1,2,3,4,5].map(q=>`<button class="ti-rate-btn" data-id="${it.id}" data-q="${q}" title="Recall quality ${q}">${q}</button>`).join('')}
+          <button class="ti-del" data-del="${it.id}" title="Remove">✕</button>
+        </div>
+      </div>`;
+    }).join('');
+    listEl.querySelectorAll('.ti-rate-btn').forEach(b=>b.addEventListener('click',()=>rate(b.dataset.id,+b.dataset.q)));
+    listEl.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>remove(b.dataset.del)));
+  }
+
+  addBtn.addEventListener('click',()=>{ addTopic(input.value); input.value=''; input.focus(); });
+  input.addEventListener('keydown',e=>{ if(e.key==='Enter'){ addTopic(input.value); input.value=''; } });
+  tabs.forEach(t=>t.addEventListener('click',()=>{ tabs.forEach(x=>x.classList.remove('active')); t.classList.add('active'); view=t.dataset.view; render(); }));
+  resetBtn.addEventListener('click',()=>{ if(confirm('Clear your entire revision queue? This cannot be undone.')){ items=[]; save(); render(); } });
+  load();
+})();
+
+/* ── Error Log ── */
+(function(){
+  const listEl = document.getElementById('err-list');
+  if(!listEl) return;
+  const addBtn = document.getElementById('err-add-btn');
+  const subjInput = document.getElementById('err-subject');
+  const typeSelect = document.getElementById('err-type');
+  const resetBtn  = document.getElementById('err-reset');
+  let entries = [], saving = false;
+
+  const typeLabel = {concept:'Concept gap',silly:'Silly mistake',guess:'Pure guess'};
+
+  async function load(){
+    setSyncStatus('err-sync-dot','err-sync-text','saving','Loading…');
+    try{
+      const data = await kget('errlog:items');
+      entries = Array.isArray(data) ? data : [];
+      setSyncStatus('err-sync-dot','err-sync-text','saved','Synced');
+    }catch(e){
+      console.error('errlog load', e);
+      setSyncStatus('err-sync-dot','err-sync-text','error','Offline — changes may not save');
+      entries = [];
+    }
+    render();
+  }
+
+  async function save(){
+    if(saving) return;
+    saving = true;
+    setSyncStatus('err-sync-dot','err-sync-text','saving','Saving…');
+    try{
+      await kset('errlog:items', entries);
+      setSyncStatus('err-sync-dot','err-sync-text','saved','Saved');
+    }catch(e){
+      console.error('errlog save', e);
+      setSyncStatus('err-sync-dot','err-sync-text','error','Save failed');
+    }
+    saving = false;
+  }
+
+  function addEntry(subject, type){
+    if(!subject.trim()) return;
+    entries.push({ id: Date.now()+Math.random().toString(36).slice(2,7), subject: subject.trim(), type, date: Date.now() });
+    save(); render();
+  }
+  function remove(id){ entries=entries.filter(e=>e.id!==id); save(); render(); }
+
+  function render(){
+    document.getElementById('err-total').textContent=entries.length;
+    if(entries.length===0){
+      document.getElementById('err-top-type').textContent='—';
+      document.getElementById('err-top-subject').textContent='—';
+      document.getElementById('err-bars').innerHTML='';
+      listEl.innerHTML='<div class="tool-empty">No entries yet — log your first wrong answer above.</div>';
+      return;
+    }
+    const byType={}, bySubject={};
+    entries.forEach(e=>{ byType[e.type]=(byType[e.type]||0)+1; bySubject[e.subject]=(bySubject[e.subject]||0)+1; });
+    const topType=Object.entries(byType).sort((a,b)=>b[1]-a[1])[0];
+    const topSubj=Object.entries(bySubject).sort((a,b)=>b[1]-a[1])[0];
+    document.getElementById('err-top-type').textContent=typeLabel[topType[0]];
+    document.getElementById('err-top-subject').textContent=topSubj[0];
+    const maxC=Math.max(...Object.values(byType));
+    document.getElementById('err-bars').innerHTML=['concept','silly','guess'].map(t=>{
+      const n=byType[t]||0, pct=maxC?(n/maxC)*100:0;
+      return `<div class="err-bar-row"><div class="err-bar-label">${typeLabel[t]}</div><div class="err-bar-track"><div class="err-bar-fill" style="width:${pct}%;"></div></div><div class="err-bar-num">${n}</div></div>`;
+    }).join('');
+    const recent=[...entries].sort((a,b)=>b.date-a.date).slice(0,8);
+    listEl.innerHTML=recent.map(e=>`
+      <div class="tool-item tool-item-dark">
+        <div class="ti-main">
+          <div class="ti-topic">${esc(e.subject)}</div>
+          <div class="ti-meta">${typeLabel[e.type]} · ${new Date(e.date).toLocaleDateString()}</div>
+        </div>
+        <button class="ti-del" data-del="${e.id}" title="Remove">✕</button>
+      </div>`).join('')+(entries.length>8?`<div class="tool-empty">+ ${entries.length-8} more logged</div>`:'');
+    listEl.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>remove(b.dataset.del)));
+  }
+
+  addBtn.addEventListener('click',()=>{ addEntry(subjInput.value,typeSelect.value); subjInput.value=''; subjInput.focus(); });
+  subjInput.addEventListener('keydown',e=>{ if(e.key==='Enter'){ addEntry(subjInput.value,typeSelect.value); subjInput.value=''; } });
+  resetBtn.addEventListener('click',()=>{ if(confirm('Clear your entire error log? This cannot be undone.')){ entries=[]; save(); render(); } });
+  load();
+})();
+
+function esc(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+</script>
+</body>
+</html>
