@@ -5,9 +5,10 @@ import {
   Lock, Pencil, Plus, Trash2, RotateCcw, Save, X, GraduationCap,
 } from "lucide-react";
 import {
-  MARROW_SCHEDULE, MARROW_PHASE_LABELS, NEXT_TESTS, getTodayMarrowDay,
+  MARROW_SCHEDULE, MARROW_PHASE_LABELS, NEXT_TESTS, getTodayMarrowDay, getSupplementInfo,
   type MarrowDay, type MarrowActivity, type MarrowPhase,
 } from "@/data/marrow-schedule";
+import { getCoreBTREntry } from "@/data/btr-schedule";
 import { safeLoad, safeSave } from "@/lib/storage";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -68,12 +69,18 @@ function saveCustom(store: CustomScheduleStore) {
 
 function getEffectiveActivities(day: MarrowDay, custom: CustomScheduleStore): MarrowActivity[] {
   if (custom[day.day]) {
-    return custom[day.day].map(a => ({
-      subject: a.subject,
-      hours: a.hours,
-      revision: a.revision || undefined,
-      drillSubject: SUBJECT_MAP[a.subject],
-    }));
+    return custom[day.day].map(a => {
+      const info = getSupplementInfo(a.subject);
+      return {
+        subject: a.subject,
+        hours: a.hours,
+        revision: a.revision || undefined,
+        drillSubject: SUBJECT_MAP[a.subject],
+        topics: info.topics,
+        note: info.note,
+        optional: info.optional,
+      };
+    });
   }
   return day.activities;
 }
@@ -354,21 +361,30 @@ function TodayCard({
       {activities.length > 0 && (
         <div className="space-y-2">
           {activities.map((a, i) => (
-            <div key={i} className="flex items-center justify-between bg-background/30 rounded-lg px-3 py-2">
-              <div className="flex items-center gap-2 min-w-0">
-                <span className={`text-[9px] px-1.5 py-0.5 rounded border font-mono ${SUBJECT_COLORS[a.subject] ?? "bg-muted/30 text-muted-foreground border-border"}`}>
-                  {a.revision ? `${a.subject} ${a.revision}` : a.subject}
-                </span>
-                <span className="text-[10px] font-mono text-muted-foreground">{hoursLabel(a.hours)}</span>
+            <div key={i} className="bg-background/30 rounded-lg px-3 py-2 space-y-1">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className={`text-[9px] px-1.5 py-0.5 rounded border font-mono ${SUBJECT_COLORS[a.subject] ?? "bg-muted/30 text-muted-foreground border-border"}`}>
+                    {a.revision ? `${a.subject} ${a.revision}` : a.subject}
+                  </span>
+                  <span className="text-[10px] font-mono text-muted-foreground">{hoursLabel(a.hours)}</span>
+                  {a.optional && (
+                    <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                      Optional — BTR covers this
+                    </span>
+                  )}
+                </div>
+                {a.drillSubject && (
+                  <button
+                    onClick={() => onDrill(a.drillSubject!)}
+                    className="flex items-center gap-1 text-[9px] font-mono px-2 py-1 rounded bg-primary/20 border border-primary/30 text-primary hover:bg-primary/30 transition-colors shrink-0"
+                  >
+                    <Zap className="w-3 h-3" /> Practice
+                  </button>
+                )}
               </div>
-              {a.drillSubject && (
-                <button
-                  onClick={() => onDrill(a.drillSubject!)}
-                  className="flex items-center gap-1 text-[9px] font-mono px-2 py-1 rounded bg-primary/20 border border-primary/30 text-primary hover:bg-primary/30 transition-colors shrink-0"
-                >
-                  <Zap className="w-3 h-3" /> Practice
-                </button>
-              )}
+              {a.topics && <p className="text-[10px] font-mono text-foreground/80">{a.topics}</p>}
+              {a.note && <p className="text-[9px] font-mono text-muted-foreground italic">{a.note}</p>}
             </div>
           ))}
         </div>
@@ -465,11 +481,13 @@ function DayRow({
       </div>
 
       {expanded && activities.length > 0 && (
-        <div className="px-3 pb-3 pt-0 space-y-1.5 border-t border-border/40">
+        <div className="px-3 pb-3 pt-0 space-y-2 border-t border-border/40">
           {activities.map((a, i) => (
-            <div key={i} className="flex items-center justify-between text-[10px] font-mono">
+            <div key={i} className="pt-1.5 space-y-1">
+            <div className="flex items-center justify-between text-[10px] font-mono">
               <span className={`px-1.5 py-0.5 rounded border ${SUBJECT_COLORS[a.subject] ?? "bg-muted/30 text-muted-foreground border-border"}`}>
                 {a.revision ? `${a.subject} (${a.revision})` : a.subject}
+                {a.optional && " · Optional"}
               </span>
               <div className="flex items-center gap-2">
                 <span className="text-muted-foreground">{hoursLabel(a.hours)}</span>
@@ -483,6 +501,9 @@ function DayRow({
                 )}
               </div>
             </div>
+            {a.topics && <p className="text-[10px] font-mono text-foreground/80">{a.topics}</p>}
+            {a.note && <p className="text-[9px] font-mono text-muted-foreground italic">{a.note}</p>}
+            </div>
           ))}
         </div>
       )}
@@ -491,76 +512,23 @@ function DayRow({
 }
 
 // ─── Core BTR Complement Box ──────────────────────────────────────────────────
-// Shows the matching Core BTR subject for today so both schedules stay in sync.
-
-const BTR_START_ISO = "2026-05-23"; // Core BTR Day 1
-
-const BTR_SUBJECTS: string[] = [
-  "Medicine","Medicine","Medicine","Medicine",
-  "Surgery","Surgery",
-  "Pathology","Pathology",
-  "Pharmacology","Pharmacology",
-  "OBG","OBG",
-  "Paediatrics",
-  "PSM","PSM",
-  "Microbiology","Microbiology",
-  "Forensic Medicine",
-  "Revision","Revision","Revision","Revision","Revision","Revision",
-  "Image Bank",
-  "Full Mock","Full Mock","Full Mock",
-  "Exam Eve",
-];
-
-const SUBJECT_FOCUS: Record<string, string[]> = {
-  "Medicine":         ["Cardiology • Respiratory • Nephrology • Neuro • Endocrinology • GI • Haematology",
-                       "Solve 30+ Medicine PYQs on today's topics", "Write 5 high-yield one-liners"],
-  "Surgery":          ["GI Surgery • Hernias • Trauma • Oncosurgery • Vascular",
-                       "Solve 30+ Surgery PYQs", "Revise surgical anatomy landmarks"],
-  "Pathology":        ["General Path • Haematopathology • Systemic Pathology",
-                       "Solve 30+ Pathology PYQs", "Revise tumour markers & autoantibody chart"],
-  "Pharmacology":     ["ANS • CVS • CNS • Antimicrobials • Anticancer",
-                       "Solve 30+ Pharmacology PYQs", "Revise drug of choice list"],
-  "OBG":              ["Obstetrics: APH, PPH, pre-eclampsia • Gynaecology: cervical, ovarian, PCOS",
-                       "Solve 30+ OBG PYQs", "Revise Bishop score & PPH 4Ts"],
-  "Paediatrics":      ["Neonatology • Malnutrition • UIP 2024 • Paediatric infections",
-                       "Solve 30+ Paediatrics PYQs", "Revise developmental milestones"],
-  "PSM":              ["Epidemiology • Biostatistics • National Programmes • Vector-borne",
-                       "Solve 30+ PSM PYQs", "Revise NFHS-5 key stats"],
-  "Microbiology":     ["Bacteriology • Virology • Parasitology • Mycology",
-                       "Solve 30+ Microbiology PYQs", "Revise staining techniques"],
-  "Forensic Medicine":["Thanatology • Wounds • Toxicology • Sexual offences • Legal",
-                       "Solve 30+ Forensic PYQs", "Revise NDPS & MHCA 2017 sections"],
-  "Revision":         ["Re-attempt all incorrect MCQs", "80-Q timed subject mock",
-                       "India-specific one-pager review"],
-  "Image Bank":       ["50 histopathology images rapid ID", "30 radiology CXR/CT/X-ray",
-                       "20 clinical photos & peripheral smears"],
-  "Full Mock":        ["200-Q strict timed exam simulation", "Tag answers: SURE/UNSURE/GUESS",
-                       "Post-mock: analyse weak areas immediately"],
-  "Exam Eve":         ["Read cheat sheets only — max 2 hours", "Pack bag, valid ID, admit card",
-                       "Sleep by 9:30 PM — you are ready"],
-};
-
-function getBTRSubjectForDate(isoDate: string): string | null {
-  const start = new Date(BTR_START_ISO + "T00:00:00");
-  const target = new Date(isoDate + "T00:00:00");
-  const dayIdx = Math.round((target.getTime() - start.getTime()) / 86400000);
-  if (dayIdx < 0 || dayIdx >= BTR_SUBJECTS.length) return null;
-  return BTR_SUBJECTS[dayIdx];
-}
+// Shows the real Core BTR entry for today (from btr-schedule.ts — the single
+// source of truth also used by CoreBTRSchedule) so the two views never drift.
 
 function BTRComplementBox() {
   const today = getTodayMarrowDay();
   if (!today) return null;
 
-  const btrSubject = getBTRSubjectForDate(today.iso);
+  const entry = getCoreBTREntry(new Date(today.iso + "T00:00:00"));
   const marrowSubjects = [...new Set(today.activities.map(a => a.subject))];
 
-  // Check alignment — same subjects on both schedules
-  const isAligned = btrSubject && marrowSubjects.some(s =>
-    s === btrSubject || (btrSubject === "PSM" && s === "Community Medicine")
+  const isAligned = !!entry && marrowSubjects.some(s =>
+    entry.subjects.includes(s) || (entry.subjects.includes("PSM") && s === "Community Medicine")
   );
 
-  const focusTips = btrSubject ? (SUBJECT_FOCUS[btrSubject] ?? []) : [];
+  const focusTips = entry?.focus
+    ? entry.focus.split(/[•;]|(?<=\.)\s+/).map(t => t.trim()).filter(Boolean)
+    : [];
 
   return (
     <div className="rounded-xl border border-violet-500/30 bg-violet-500/5 p-4">
@@ -568,25 +536,27 @@ function BTRComplementBox() {
         <Star className="w-4 h-4 text-violet-400" />
         <p className="text-xs font-mono font-bold text-violet-400">Core BTR · Today</p>
         <span className="text-[9px] font-mono text-violet-400/60 ml-auto border border-violet-500/30 px-1.5 py-0.5 rounded-full">
-          🔒 Completely fixed plan
+          🔒 100% syllabus — the backbone plan
         </span>
       </div>
 
-      {btrSubject && (
+      {entry && (
         <div className={`flex items-center gap-2 mb-3 px-3 py-2 rounded-lg border ${
           isAligned
             ? "bg-emerald-500/10 border-emerald-500/30"
-            : "bg-amber-500/10 border-amber-500/30"
+            : "bg-sky-500/10 border-sky-500/30"
         }`}>
           <span className="text-sm">{isAligned ? "✅" : "📌"}</span>
           <div className="min-w-0">
-            <p className={`text-[10px] font-mono font-bold ${isAligned ? "text-emerald-400" : "text-amber-400"}`}>
-              BTR today: <span className="font-normal">{btrSubject}</span>
-              {isAligned && " · Aligned with Marrow ✓"}
+            <p className={`text-[10px] font-mono font-bold ${isAligned ? "text-emerald-400" : "text-sky-400"}`}>
+              BTR today: <span className="font-normal">{entry.subjects}</span>
+              {isAligned && " · Same subject as today's Marrow supplement ✓"}
             </p>
-            {!isAligned && marrowSubjects.length > 0 && (
+            {!isAligned && (
               <p className="text-[9px] font-mono text-muted-foreground">
-                Marrow: {marrowSubjects.join(", ")} · You can customise Marrow to match BTR
+                {marrowSubjects.length > 0
+                  ? `Marrow supplement today: ${marrowSubjects.join(", ")} — different subject is fine, both plans stay on schedule independently.`
+                  : "No Marrow supplement scheduled today — BTR alone covers this day fully."}
               </p>
             )}
           </div>
@@ -603,7 +573,7 @@ function BTRComplementBox() {
         </ul>
       )}
 
-      {!btrSubject && (
+      {!entry && (
         <p className="text-[10px] font-mono text-muted-foreground">Core BTR plan starts May 23, 2026.</p>
       )}
     </div>
@@ -665,7 +635,7 @@ export function MarrowSchedule({ onNavigateToDrill }: Props) {
         <div className="flex items-center justify-between gap-2 mb-1">
           <div className="flex items-center gap-2">
             <GraduationCap className="w-5 h-5 text-primary" />
-            <h2 className="text-base font-bold text-foreground">Marrow NEET PG 2026</h2>
+            <h2 className="text-base font-bold text-foreground">Marrow Supplement Plan</h2>
           </div>
           <div className="flex items-center gap-2">
             {editMode && customCount > 0 && (
@@ -691,6 +661,18 @@ export function MarrowSchedule({ onNavigateToDrill }: Props) {
         <p className="text-[11px] font-mono text-muted-foreground">
           100-day schedule · Revision days editable · Grand tests 🔒 fixed
           {customCount > 0 && ` · ${customCount} day${customCount > 1 ? "s" : ""} customised`}
+        </p>
+      </div>
+
+      {/* Philosophy banner — prevents FOMO about "not watching enough Marrow" */}
+      <div className="mx-4 rounded-xl border border-sky-500/30 bg-sky-500/5 px-4 py-3">
+        <p className="text-xs font-mono font-bold text-sky-400 mb-1">This is a supplement, not a duplicate of BTR</p>
+        <p className="text-[10px] font-mono text-muted-foreground leading-relaxed">
+          Core BTR already gives you 100% syllabus coverage — condensed facts, classifications, and Grand Tests.
+          Everything below is a short, bounded Marrow block for ONLY the images, procedure videos, and mechanism
+          animations that BTR's notes can't show in text. Blocks marked <span className="text-emerald-400 font-bold">Optional</span> mean
+          BTR's notes are already sufficient — skipping them is not falling behind. You do not need to rewatch
+          the full Marrow course alongside BTR.
         </p>
       </div>
 

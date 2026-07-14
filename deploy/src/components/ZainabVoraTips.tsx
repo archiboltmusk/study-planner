@@ -48,12 +48,12 @@ const TIP_SECTIONS: TipSection[] = [
     borderColor: "border-sky-500/30",
     iconBg: "bg-sky-500/20",
     tips: [
-      { id: 1, text: "MARROW APP: Your primary content source. Video lectures, subject notes, high-yield points, and Marrow's own Reflex MCQ bank. Nothing replaces this. Use it for every R1 reading." },
-      { id: 2, text: "REFLEX (Marrow's MCQ platform): The gold standard for MCQ practice. Do every Reflex subject test after each Marrow module. Target 70%+ accuracy before moving forward." },
-      { id: 3, text: "CORE BTR (Zainab Vora): A 28-day structured blitz that converts reading into exam-ready application. Grand Tests are the most realistic NEET PG simulations available. Non-negotiable." },
-      { id: 4, text: "THIS APP: Unifies all three timelines on one dashboard. Aligns Marrow revision days with BTR subjects so you reinforce the same topic simultaneously. Also adds predicted 2026 questions, image MCQs, ZV tips, and progress tracking." },
-      { id: 5, text: "WHAT THIS APP CANNOT REPLACE: Marrow video lectures, Reflex's full question bank (~10,000 Qs), BTR's actual Grand Test environment, and your own handwritten notes. Use all four together." },
-      { id: 6, text: "DAILY WORKFLOW: Morning → Marrow video (1 module) → Reflex MCQs on that module → Evening → BTR-aligned revision on this app → Night → Flashcards + this app's daily quiz. Repeat." },
+      { id: 1, text: "CORE BTR (Zainab Vora): A 100-day structured plan (May 23 – Aug 30) that converts reading into exam-ready application — condensed high-yield facts, classifications, and Grand Tests covering 100% of the syllabus. This is your backbone, not a side resource." },
+      { id: 2, text: "REFLEX (Marrow's MCQ platform): The gold standard for MCQ practice. Do a Reflex subject test after every BTR subject block. Target 70%+ accuracy before moving forward." },
+      { id: 3, text: "MARROW APP: A supplement, not a parallel primary source at this stage. BTR's notes are text-only — Marrow is for the specific images, procedure videos, and mechanism animations BTR can't show. See this app's Marrow tab for exactly what's bounded to each day; most subjects need well under 2 hours." },
+      { id: 4, text: "THIS APP: Unifies BTR, Marrow, and Reflex on one dashboard. The Marrow tab lists only the curated image/video supplement for each BTR subject block — never a full parallel rewatch — plus predicted 2026 questions, image MCQs, ZV tips, and progress tracking." },
+      { id: 5, text: "WHAT THIS APP CANNOT REPLACE: Marrow's actual video lectures and image bank, Reflex's full question bank (~10,000 Qs), BTR's actual Grand Test environment, and your own handwritten notes. Use all four together." },
+      { id: 6, text: "DAILY WORKFLOW: Morning → BTR subject block (handwritten notes) → Reflex MCQs on that subject → bounded Marrow supplement only for flagged image/video gaps → Evening → BTR deep-revision pass → Night → Flashcards + this app's daily quiz. Repeat." },
       { id: 7, text: "GRAND TEST SUNDAYS: Skip Marrow video. Attempt GT in real exam conditions (silent room, full 3.5 hours, no phone). Spend Monday (buffer day) analysing every wrong answer in the mistake logbook." },
     ],
   },
@@ -278,9 +278,9 @@ const DAILY_AFFIRMATIONS = [
 
 function Rank1Blueprint() {
   const tools = [
-    { name: "Marrow App", role: "Primary content — videos, notes, HY points", color: "text-blue-400", bg: "bg-blue-500/10 border-blue-500/30", icon: "📚" },
+    { name: "Core BTR",   role: "100-day exam-ready plan — 100% syllabus + Grand Tests (fixed)", color: "text-amber-400", bg: "bg-amber-500/10 border-amber-500/30", icon: "🏆" },
     { name: "Reflex",     role: "MCQ platform — 10,000+ Qs, detailed explanations", color: "text-violet-400", bg: "bg-violet-500/10 border-violet-500/30", icon: "⚡" },
-    { name: "Core BTR",   role: "Grand Tests + 28-day exam-ready blitz (fixed)", color: "text-amber-400", bg: "bg-amber-500/10 border-amber-500/30", icon: "🏆" },
+    { name: "Marrow App", role: "Bounded supplement — images/videos BTR can't show, not a full rewatch", color: "text-blue-400", bg: "bg-blue-500/10 border-blue-500/30", icon: "📚" },
     { name: "This App",   role: "Unified tracker · predicted Qs · ZV tips · alignment", color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/30", icon: "📱" },
   ];
 

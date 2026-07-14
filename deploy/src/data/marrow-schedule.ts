@@ -1,12 +1,35 @@
 // Marrow NEET PG 2026 Study Schedule
 // INI-CET May 2026: May 16 | NEET-PG 2026: Aug 30
-// Revision subjects aligned day-for-day with Core BTR schedule for maximum complementarity.
-
+//
+// ── Why this isn't a full Marrow rewatch schedule ──────────────────────────────
+// Core BTR (Zainab Vora's "BTR 2.0") is a condensed rapid-revision workbook —
+// volatile facts, classifications, and Grand Tests. By design it's meant to be
+// used ALONGSIDE a Qbank/video resource, not as a replacement for one — BTR's own
+// materials say this explicitly, and it's the same conclusion the wider NEET-PG/
+// INICET prep community lands on when comparing the two: BTR text covers "what
+// to know" fully, but has almost no images, procedure footage, or mechanism
+// animations. Marrow's actual edge over BTR's condensed notes is narrow and
+// specific — spot-diagnosis image banks (Dermatology, Ophthalmology, Radiology,
+// Pathology), procedure/OT videos (Surgery, OBG, Anaesthesia), and mechanism
+// animations (Pharmacology MOA, Biochemistry pathways) that don't survive being
+// compressed into one-liners. For fact/formula-dense subjects (PSM, Forensic,
+// Psychiatry, Physiology) BTR's notes are already close to sufficient on their
+// own, per community consensus and this app's own Zainab Vora tips.
+//
+// So instead of mirroring every BTR subject block hour-for-hour (which used to
+// imply you must rewatch the *entire* Marrow course in parallel with BTR — a
+// guaranteed source of burnout/FOMO), each day below lists only the specific,
+// bounded Marrow supplement for that subject: what to watch, why BTR's notes
+// don't cover it, and whether it's optional. Subjects marked `optional: true`
+// are BTR-sufficient — skipping them is not falling behind.
 export type MarrowPhase = 1 | 2 | 3 | 4 | 5;
 
 export interface MarrowActivity {
   subject: string;          // display name
-  hours: number;
+  hours: number;            // realistic supplement time, not a full-day mirror
+  topics: string;           // exactly what to watch/review in Marrow
+  note: string;             // why this needs Marrow — what BTR's notes don't cover
+  optional?: boolean;       // true = BTR's notes are already sufficient here
   revision?: string;        // "R2" | "R3" | "R4"
   drillSubject?: string;    // maps to QUESTION_SUBJECTS
 }
@@ -24,29 +47,179 @@ export interface MarrowDay {
   activities: MarrowActivity[];
 }
 
-function act(subject: string, hours: number, revision?: string): MarrowActivity {
-  const map: Record<string, string> = {
-    "Anatomy":            "Anatomy",
-    "Biochemistry":       "Biochemistry",
-    "Physiology":         "Physiology",
-    "Pharmacology":       "Pharmacology",
-    "Microbiology":       "Microbiology",
-    "Pathology":          "Pathology",
-    "Community Medicine": "PSM/Community Medicine",
-    "Forensic Medicine":  "Forensic Medicine",
-    "Ophthalmology":      "ENT/Ophthalmology",
-    "ENT":                "ENT/Ophthalmology",
-    "Medicine":           "Medicine",
-    "Surgery":            "Surgery",
-    "Paediatrics":        "Paediatrics",
-    "OBG":                "OBG",
-    "Orthopaedics":       "Surgery",
-    "Dermatology":        "Medicine",
-    "Psychiatry":         "Medicine",
-    "Radiology":          "Medicine",
-    "Anaesthesia":        "Medicine",
+const DRILL_SUBJECT_MAP: Record<string, string> = {
+  "Anatomy":            "Anatomy",
+  "Biochemistry":       "Biochemistry",
+  "Physiology":         "Physiology",
+  "Pharmacology":       "Pharmacology",
+  "Microbiology":       "Microbiology",
+  "Pathology":          "Pathology",
+  "Community Medicine": "PSM/Community Medicine",
+  "Forensic Medicine":  "Forensic Medicine",
+  "Ophthalmology":      "ENT/Ophthalmology",
+  "ENT":                "ENT/Ophthalmology",
+  "Medicine":           "Medicine",
+  "Surgery":            "Surgery",
+  "Paediatrics":        "Paediatrics",
+  "OBG":                "OBG",
+  "Orthopaedics":       "Surgery",
+  "Dermatology":        "Medicine",
+  "Psychiatry":         "Medicine",
+  "Radiology":          "Medicine",
+  "Anaesthesia":        "Medicine",
+};
+
+// Curated Marrow supplement per subject — only the image/video/procedure content
+// that BTR's condensed notes genuinely can't replace. `optional: true` subjects
+// are fact/formula-heavy and already well covered by BTR alone.
+interface SupplementPack {
+  hours: number;
+  topics: string;
+  note: string;
+  optional?: boolean;
+}
+
+const SUPPLEMENT_PACKS: Record<string, SupplementPack> = {
+  "Surgery": {
+    hours: 2,
+    topics: "OT technique videos (hernia repair, stoma types, thyroidectomy steps) + surgical instrument photo bank",
+    note: "BTR's Surgery notes are indications/classifications as text only. Marrow is the only source with OT footage and instrument photos — the two things that trip people up in image-based Surgery questions.",
+  },
+  "Orthopaedics": {
+    hours: 1.5,
+    topics: "Annotated fracture X-ray bank (Colles, Monteggia/Galeazzi, NOF, growth plate) + splinting/traction demo videos",
+    note: "BTR lists fracture facts as text — you still need to have seen the X-ray pattern enough times on Marrow to recognise it cold under exam pressure.",
+  },
+  "Radiology": {
+    hours: 2,
+    topics: "Full plain-film + CT/MRI image-bank pass for today's system (CXR signs, abdomen CT patterns, contrast basics)",
+    note: "Radiology questions are image recognition, not fact recall. BTR's one-liners (\"Rigler sign = pneumoperitoneum\") only work once Marrow's image bank has trained your eye to spot it.",
+  },
+  "Microbiology": {
+    hours: 1,
+    topics: "Culture media colony/colour photo bank + Gram stain and parasite life-cycle animation videos",
+    note: "BTR covers virulence factors and resistance patterns well as text. The actual stain/colony images and life-cycle diagrams are Marrow-only.",
+  },
+  "Anatomy": {
+    hours: 1,
+    topics: "Cross-sectional and radiological anatomy images (nerve/vessel relations) for today's region",
+    note: "BTR's clinical correlations read well as text, but cross-sectional/radiological anatomy still needs Marrow's labelled images to actually stick.",
+  },
+  "Medicine": {
+    hours: 2,
+    topics: "ECG strip bank + CXR pattern bank + relevant procedure videos (central line, ABG interpretation) for today's system",
+    note: "BTR's Medicine notes are fact-dense and genuinely good — but ECG/CXR pattern recognition and bedside procedure steps are only trained by watching Marrow.",
+  },
+  "OBG": {
+    hours: 1.5,
+    topics: "Partograph-reading practice + forceps/vacuum/LSCS procedure videos + USG image bank (dating, anomaly scan)",
+    note: "BTR nails PPH/PIH protocols as text. Partograph reading and USG image interpretation are visual skills that need Marrow's walkthroughs.",
+  },
+  "Paediatrics": {
+    hours: 1,
+    topics: "Growth-chart plotting practice + NRP algorithm video + vaccine administration demo",
+    note: "BTR's vaccine schedule and milestone tables are already complete — this block is only for the growth-chart and NRP-video skills that don't come across in text.",
+  },
+  "Community Medicine": {
+    hours: 0.5,
+    optional: true,
+    topics: "Only if a specific biostatistics formula or study-design concept isn't clicking after BTR + Reflex",
+    note: "PSM is formula/fact-based — BTR's notes plus practice problems are usually enough on their own. Skipping Marrow here is not falling behind.",
+  },
+  "Dermatology": {
+    hours: 1.5,
+    topics: "Clinical photo spot-diagnosis bank (psoriasis, pemphigus vs bullous pemphigoid, leprosy lesions)",
+    note: "NEET PG Dermatology is almost entirely photo-based spot diagnosis — this is one of the two subjects (with Ophthalmology) where the Marrow block is not optional.",
+  },
+  "Anaesthesia": {
+    hours: 1,
+    topics: "Airway equipment photo bank + regional block technique videos",
+    note: "BTR's MAC values and drug facts are solid; equipment recognition and block technique are visual skills only Marrow actually trains.",
+  },
+  "Biochemistry": {
+    hours: 1,
+    topics: "Metabolic pathway animation videos for today's disorder group — only the pathways you can't redraw from memory",
+    note: "If you can already redraw the pathway from BTR's notes, skip this block. It's only for pathways that don't stick from text alone.",
+  },
+  "Forensic Medicine": {
+    hours: 0.5,
+    optional: true,
+    topics: "Only for wound-pattern or injury photos you consistently get wrong in Reflex",
+    note: "Forensic is section numbers and classification-heavy — BTR's notes cover this fully. Marrow only adds value for wound/injury photo recognition.",
+  },
+  "Psychiatry": {
+    hours: 0.5,
+    optional: true,
+    topics: "Only if a specific DSM-5-TR criterion set isn't sticking after BTR's tables",
+    note: "Psychiatry is criteria-based and BTR's tables are enough for most students. Skip this block with no guilt unless one criterion keeps tripping you up.",
+  },
+  "ENT": {
+    hours: 1,
+    topics: "Otoscopy/endoscopy image bank + audiogram pattern-reading practice",
+    note: "BTR's CSOM and staging facts are solid; audiogram reading and otoscopic image ID are the two skills that actually need Marrow's practice sets.",
+  },
+  "Ophthalmology": {
+    hours: 1.5,
+    topics: "Fundus photo + slit-lamp image bank (diabetic retinopathy grading, glaucoma field defects, cataract types)",
+    note: "Like Dermatology, Ophthalmology in NEET PG is largely image-based spot diagnosis — this is a required block, not optional.",
+  },
+  "Pathology": {
+    hours: 1.5,
+    topics: "Gross and histopathology image bank for today's system (tumour morphology, staining patterns)",
+    note: "BTR's marker tables (PSA, AFP, CA-125) are complete as text; gross/micro image recognition is Marrow-only territory.",
+  },
+  "Pharmacology": {
+    hours: 1,
+    topics: "Mechanism-of-action animation videos for today's drug class — only the ones that don't make sense from BTR's table",
+    note: "BTR's drug-of-choice tables are enough for recall. MOA animations only help if the mechanism itself isn't clicking yet.",
+  },
+  "Physiology": {
+    hours: 0.5,
+    optional: true,
+    topics: "Only for mechanisms (e.g. JGA, cardiac cycle) that don't make sense from BTR's diagrams",
+    note: "BTR is already diagram-heavy for Physiology. Marrow adds value only if a specific mechanism needs a slower video explanation.",
+  },
+};
+
+// Exposed so the UI can show the same topics/note/optional info for
+// user-customised days (built via the schedule editor) as for the default plan.
+export function getSupplementInfo(subject: string): { topics: string; note: string; optional?: boolean } {
+  const pack = SUPPLEMENT_PACKS[subject];
+  if (!pack) {
+    return {
+      topics: "General Marrow review of weak areas only",
+      note: "Use only for concepts flagged weak in Reflex/mistake logbook — BTR's notes cover the rest.",
+    };
+  }
+  return { topics: pack.topics, note: pack.note, optional: pack.optional };
+}
+
+function act(subject: string, _btrEquivalentHours: number, revision?: string): MarrowActivity {
+  const pack = SUPPLEMENT_PACKS[subject];
+  const drillSubject = DRILL_SUBJECT_MAP[subject];
+  if (!pack) {
+    return {
+      subject, hours: 1, revision, drillSubject,
+      topics: "General Marrow review of weak areas only",
+      note: "Use only for concepts flagged weak in Reflex/mistake logbook — BTR's notes cover the rest.",
+    };
+  }
+  if (revision) {
+    return {
+      subject, revision, drillSubject,
+      hours: pack.optional ? 0.25 : 0.5,
+      topics: `Quick re-scan — flagged/weak items only, from: ${pack.topics}`,
+      note: `${pack.note} (Spot-check only during revision passes — not a full rewatch.)`,
+      optional: pack.optional,
+    };
+  }
+  return {
+    subject, drillSubject,
+    hours: pack.hours,
+    topics: pack.topics,
+    note: pack.note,
+    optional: pack.optional,
   };
-  return { subject, hours, revision, drillSubject: map[subject] };
 }
 
 // ── Alignment note ────────────────────────────────────────────────────────────

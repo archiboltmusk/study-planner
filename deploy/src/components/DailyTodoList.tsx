@@ -90,10 +90,12 @@ function item(id: string, label: string, badge: Badge, opts?: Partial<TodoItem>)
 }
 
 function makeStudyDayTodos(marrow: MarrowDay, btr: DayEntry | null): DayTodos {
-  const subjects = marrow.activities.map(a => `${a.subject}${a.revision ? ` (${a.revision})` : ""} · ${hoursLabel(a.hours)}`);
   const primarySubject = marrow.activities[0]?.subject ?? "Revision";
   const btrFocus  = btr?.focus ?? "Revision";
   const btrTopics = btr?.topics?.slice(0, 4) ?? [];
+  const marrowRequired = marrow.activities.filter(a => !a.optional);
+  const marrowOptional = marrow.activities.filter(a => a.optional);
+  const marrowTotalHours = marrow.activities.reduce((sum, a) => sum + a.hours, 0);
 
   return [
     {
@@ -105,26 +107,10 @@ function makeStudyDayTodos(marrow: MarrowDay, btr: DayEntry | null): DayTodos {
         item("r4", "Review today's plan on this screen, then close phone", "ROUTINE"),
       ],
     },
-    {
-      id: "marrow-am", time: "6:30 AM", title: `Marrow Morning — ${primarySubject}`, emoji: "📚", blockColor: "border-blue-500/40",
-      items: [
-        ...marrow.activities.map((a, i) =>
-          item(`m-${i}`, `Marrow video: ${a.subject}${a.revision ? ` ${a.revision}` : ""} — ${hoursLabel(a.hours)} (pause every 20 min → active recall)`, "MARROW")
-        ),
-        item("m-notes", `Write 5 high-yield one-liners from ${primarySubject} module`, "MARROW"),
-        item("m-explain", "Revise chapter summary aloud (Feynman technique — 3 min)", "MARROW"),
-      ],
-    },
-    {
-      id: "reflex-am", time: "9:30 AM", title: "Reflex MCQ Sprint", emoji: "⚡", blockColor: "border-violet-500/40",
-      items: [
-        item("rx1", `Reflex: ${primarySubject} — 30 Qs (timed, no pausing)`, "REFLEX"),
-        item("rx2", "Read EVERY explanation — right and wrong answers both", "REFLEX"),
-        item("rx3", "Flag any question you got wrong → add concept to mistake logbook", "REFLEX"),
-      ],
-    },
+    // Core BTR is the 100%-coverage backbone — Marrow below is a short, bounded
+    // supplement for images/videos/mechanisms only, not a parallel full rewatch.
     ...(btr ? [{
-      id: "btr-session", time: "10:30 AM", title: `Core BTR Day ${btr.day} — ${btrFocus}`, emoji: "🏆", blockColor: "border-amber-500/40",
+      id: "btr-session", time: "6:30 AM", title: `Core BTR Day ${btr.day} — ${btrFocus}`, emoji: "🏆", blockColor: "border-amber-500/40",
       items: [
         item("btr0", `Open Core BTR: Day ${btr.day} · ${btrFocus}`, "BTR"),
         ...btrTopics.map((t, i) =>
@@ -134,6 +120,28 @@ function makeStudyDayTodos(marrow: MarrowDay, btr: DayEntry | null): DayTodos {
         item("btr-india", `India-specific: ${btr.india?.slice(0, 80) ?? "Review India-specific stats for this subject"}`, "BTR"),
       ],
     }] : []),
+    ...(marrow.activities.length > 0 ? [{
+      id: "marrow-supplement", time: "9:00 AM",
+      title: `Marrow Supplement (${hoursLabel(marrowTotalHours)}) — ${primarySubject}`,
+      emoji: "📚", blockColor: "border-blue-500/40",
+      items: [
+        ...marrowRequired.map((a, i) =>
+          item(`m-${i}`, `${a.subject}${a.revision ? ` ${a.revision}` : ""}: ${a.topics} (${hoursLabel(a.hours)})`, "MARROW")
+        ),
+        ...marrowOptional.map((a, i) =>
+          item(`mo-${i}`, `Optional — BTR already covers ${a.subject}: only if a specific weak topic needs it (${a.topics})`, "MARROW", { isOptional: true })
+        ),
+        item("m-why", "This is a bounded supplement, not a full rewatch — BTR already covers 100% of the syllabus as facts. Stop once the list above is done.", "ROUTINE"),
+      ],
+    }] : []),
+    {
+      id: "reflex-am", time: "10:30 AM", title: "Reflex MCQ Sprint", emoji: "⚡", blockColor: "border-violet-500/40",
+      items: [
+        item("rx1", `Reflex: ${primarySubject} — 30 Qs (timed, no pausing)`, "REFLEX"),
+        item("rx2", "Read EVERY explanation — right and wrong answers both", "REFLEX"),
+        item("rx3", "Flag any question you got wrong → add concept to mistake logbook", "REFLEX"),
+      ],
+    },
     {
       id: "lunch", time: "1:00 PM", title: "Lunch + Recovery", emoji: "🥗", blockColor: "border-emerald-500/40",
       items: [
@@ -143,10 +151,10 @@ function makeStudyDayTodos(marrow: MarrowDay, btr: DayEntry | null): DayTodos {
       ],
     },
     {
-      id: "marrow-pm", time: "2:00 PM", title: `Marrow Afternoon — ${subjects.join(" + ")}`, emoji: "📖", blockColor: "border-blue-500/40",
+      id: "btr-pm", time: "2:00 PM", title: `Core BTR Deep Pass — ${btrFocus}`, emoji: "🏆", blockColor: "border-amber-500/40",
       items: [
-        item("mp1", `Continue Marrow: ${subjects.join(", ")} — deep revision pass`, "MARROW"),
-        item("mp2", `India-specific one-liners for ${primarySubject}: national programmes, NFHS-5 stats, key acts`, "MARROW"),
+        item("mp1", `Re-attempt every BTR PYQ on today's topics you got wrong this morning`, "BTR"),
+        item("mp2", `Written recall: ${primarySubject} high-yield facts from BTR — no peeking, then check`, "BTR"),
         item("mp3", `Reflex: ${primarySubject} — 30 more Qs on afternoon topics`, "REFLEX"),
       ],
     },
@@ -281,9 +289,10 @@ function makeOpenRevisionTodos(btr: DayEntry | null): DayTodos {
     {
       id: "or-s1", time: "6:30 AM", title: "Weak Subject 1 — Deep Revision", emoji: "🎯", blockColor: "border-blue-500/40",
       items: [
-        item("os1", "Marrow: Weak Subject 1 — R4/final revision (4h focused block)", "MARROW"),
+        item("os1", "BTR re-read: Weak Subject 1 — full notes, written recall after each section", "BTR"),
         item("os2", "Reflex: Weak Subject 1 — 50 Qs (exam conditions, full speed)", "REFLEX"),
-        item("os3", "Write 10 HY one-liners from today's revision of this subject", "REVISION"),
+        item("os3", "Marrow: only the specific images/videos flagged wrong in Reflex for this subject (≤1h, not a full rewatch)", "MARROW", { isOptional: true }),
+        item("os4", "Write 10 HY one-liners from today's revision of this subject", "REVISION"),
       ],
     },
     {
@@ -296,9 +305,9 @@ function makeOpenRevisionTodos(btr: DayEntry | null): DayTodos {
     {
       id: "or-s2", time: "1:30 PM", title: "Weak Subject 2 — Deep Revision", emoji: "🎯", blockColor: "border-violet-500/40",
       items: [
-        item("ov1", "Marrow: Weak Subject 2 — R4/final revision (4h focused block)", "MARROW"),
+        item("ov1", "BTR re-read: Weak Subject 2 — full notes, written recall after each section", "BTR"),
         item("ov2", "Reflex: Weak Subject 2 — 50 Qs (exam conditions)", "REFLEX"),
-        item("ov3", "Image bank: 20 images related to today's subjects", "REVISION"),
+        item("ov3", "Marrow: only the specific images/videos flagged wrong in Reflex for this subject (≤1h, not a full rewatch)", "MARROW", { isOptional: true }),
       ],
     },
     ...(btr ? [{
