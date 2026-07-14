@@ -29,16 +29,21 @@ export const SUBJECTS = [
 ];
 
 export const DAILY_BLOCKS = [
-  { time: "6:00–9:00 AM",   label: "New topic study (Marrow)" },
-  { time: "9:00–10:00 AM",  label: "MCQs on yesterday's topic" },
-  { time: "10:00 AM–1:00 PM", label: "New topic continues" },
-  { time: "1:00–2:00 PM",   label: "Break + light review" },
-  { time: "2:00–5:00 PM",   label: "New topic study" },
-  { time: "5:00–6:00 PM",   label: "MCQs on today's topics" },
-  { time: "6:00–8:00 PM",   label: "'World of' revision notes" },
-  { time: "8:00–9:00 PM",   label: "India-specific one-liners" },
-  { time: "9:00–10:00 PM",  label: "Image review (15–20 images)" },
-  { time: "10:00–11:00 PM", label: "Write 5 key high-yield points" },
+  { time: "5:30 AM",         label: "Wake up + water + stretch" },
+  { time: "6:00–8:00 AM",    label: "Deep Study Block 1 — Core BTR (1 subject, handwritten notes on iPad)" },
+  { time: "8:00–8:30 AM",    label: "Breakfast (no YouTube)" },
+  { time: "8:30–11:30 AM",   label: "Deep Study Block 2 — Marrow QBank (80–100 Qs, read every explanation)" },
+  { time: "11:30 AM",        label: "Break + walk" },
+  { time: "12:00–1:30 PM",   label: "Reflex PYQs (same topic as morning)" },
+  { time: "1:30–2:30 PM",    label: "Lunch + 20 min power nap" },
+  { time: "2:30–4:30 PM",    label: "Marrow videos (weak concepts only — don't watch everything)" },
+  { time: "4:30–5:00 PM",    label: "Exercise / Gym / Walk (close Apple Watch rings)" },
+  { time: "5:00–7:00 PM",    label: "Rapid Revision — BTR notes + error notebook + flashcards" },
+  { time: "7:00–8:00 PM",    label: "Dinner" },
+  { time: "8:00–9:30 PM",    label: "Mixed MCQs — 50 Qs, random subjects" },
+  { time: "9:30–9:45 PM",    label: "Review mistakes (no new study)" },
+  { time: "9:45–10:15 PM",   label: "Update error notebook (Apple Notes)" },
+  { time: "10:15 PM",        label: "Sleep" },
 ];
 
 const PHASE_MAP: Record<string, 'blitz' | 'revision' | 'mock'> = {
