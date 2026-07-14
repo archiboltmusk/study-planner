@@ -67,11 +67,11 @@ export function DayGrid({
         </div>
       </div>
 
-      {/* 28-Day Grid */}
+      {/* Study Grid */}
       <div className="bg-card border border-border rounded-xl p-4">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-xs font-mono uppercase text-muted-foreground flex items-center gap-2">
-            <Calendar className="w-3.5 h-3.5" /> 28-Day Grid
+            <Calendar className="w-3.5 h-3.5" /> Study Grid
           </h3>
           <div className="flex gap-3 text-[10px] uppercase font-mono">
             {PHASES.map(p => (
@@ -83,7 +83,7 @@ export function DayGrid({
           </div>
         </div>
 
-        <div className="grid grid-cols-7 gap-2" role="grid" aria-label="28-day study plan">
+        <div className="grid grid-cols-7 gap-2" role="grid" aria-label="study plan">
           {schedule.map((day) => {
             const daysLeft = schedule.length + 1 - day.day;
             const isSelected  = day.day === selectedDayId;

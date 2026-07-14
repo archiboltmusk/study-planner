@@ -604,7 +604,7 @@ function BTRComplementBox() {
       )}
 
       {!btrSubject && (
-        <p className="text-[10px] font-mono text-muted-foreground">Core BTR 28-day plan starts May 23, 2026.</p>
+        <p className="text-[10px] font-mono text-muted-foreground">Core BTR plan starts May 23, 2026.</p>
       )}
     </div>
   );

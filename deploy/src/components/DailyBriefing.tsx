@@ -226,7 +226,7 @@ export function DailyBriefing({ completedDays, mcqScores, streak, examDate, onGo
               <div className="flex-1 h-1.5 bg-muted/40 rounded-full overflow-hidden max-w-[140px]">
                 <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${completionPct}%` }} />
               </div>
-              <span className="text-[10px] font-mono text-muted-foreground">{completedDays.length}/28 days · {completionPct}%</span>
+              <span className="text-[10px] font-mono text-muted-foreground">{completedDays.length} days done · {completionPct}%</span>
             </div>
           </div>
           <div className="flex items-center gap-1.5 shrink-0 flex-wrap justify-end">

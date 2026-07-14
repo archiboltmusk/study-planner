@@ -109,6 +109,27 @@ export function AppNav({
             />
           </div>
 
+          {/* Earning Chart link */}
+          <a
+            href="/earning-chart.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="The Earning Chart — Life After MBBS"
+            className="hidden sm:flex items-center gap-1 text-[10px] font-mono font-semibold uppercase tracking-widest px-2.5 py-1 transition-all"
+            style={{
+              background: 'rgba(232,169,61,0.10)',
+              color: 'var(--gold)',
+              border: '1px solid rgba(232,169,61,0.30)',
+              borderRadius: '2px',
+              letterSpacing: '0.14em',
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(232,169,61,0.22)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(232,169,61,0.10)'; }}
+          >
+            <ExternalLink className="w-2.5 h-2.5" aria-hidden="true" />
+            ₹ Chart
+          </a>
+
           {/* Aspirant link */}
           <a
             href="/perfect-aspirant.html"

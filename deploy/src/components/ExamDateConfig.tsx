@@ -34,7 +34,7 @@ export function ExamDateConfig({ currentExamDate, onSave, isPostExam = false }: 
               Exam Day is Here!
             </h1>
             <p className="text-sm font-mono text-muted-foreground max-w-xs mx-auto">
-              Your 28-day war plan is complete. You've put in the work — now go ace it!
+              Your war plan is complete. You've put in the work — now go ace it!
             </p>
           </div>
 

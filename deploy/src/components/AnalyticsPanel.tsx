@@ -211,10 +211,10 @@ export function AnalyticsPanel({ mcqScores, completedDays, streak, examDate }: P
     daysToExam > 0 && remainingDays > 0
       ? `${remainingDays} more day${remainingDays > 1 ? "s" : ""} to complete in ${daysToExam} remaining`
       : remainingDays === 0
-      ? "Plan complete — all 28 days done!"
+      ? "Plan complete — all days done!"
       : "Exam is here — good luck!";
 
-  const progressPct = Math.round((actualCompleted / 28) * 100);
+  const progressPct = Math.round((actualCompleted / SCHEDULE.length) * 100);
 
   // ── Accuracy bar color helper ───────────────────────────────────────────────
 
@@ -394,7 +394,7 @@ export function AnalyticsPanel({ mcqScores, completedDays, streak, examDate }: P
       <div className="bg-card border border-border rounded-xl p-5">
         <div className="flex items-center gap-2 mb-4">
           <Calendar className="w-4 h-4 text-muted-foreground" />
-          <h3 className="text-xs uppercase text-muted-foreground font-mono">Study Heatmap — Last 28 Days</h3>
+          <h3 className="text-xs uppercase text-muted-foreground font-mono">Study Heatmap — Last 30 Days</h3>
         </div>
 
         <div className="grid grid-cols-7 gap-1.5">
@@ -462,7 +462,7 @@ export function AnalyticsPanel({ mcqScores, completedDays, streak, examDate }: P
             <div>
               <div className="flex justify-between items-center mb-1">
                 <span className="text-[11px] text-muted-foreground">Plan Progress</span>
-                <span className="text-[11px] text-foreground font-bold">{actualCompleted}/28 days</span>
+                <span className="text-[11px] text-foreground font-bold">{actualCompleted}/{SCHEDULE.length} days</span>
               </div>
               <div className="h-2.5 bg-background rounded-full overflow-hidden border border-border">
                 <div

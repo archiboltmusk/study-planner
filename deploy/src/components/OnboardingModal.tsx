@@ -16,15 +16,15 @@ const STEPS: Step[] = [
     color: "text-red-400",
     bg: "bg-red-500/20",
     title: "Welcome to NEET PG War Plan",
-    body: "This is your complete 28-day command centre to crack NEET PG. Everything you need — plan, practice, track, and learn — is in one place.",
+    body: "This is your complete command centre to crack NEET PG. Everything you need — plan, practice, track, and learn — is in one place.",
     tip: "Built by toppers, for toppers. Start with Day 1 and follow the plan exactly.",
   },
   {
     icon: Calendar,
     color: "text-blue-400",
     bg: "bg-blue-500/20",
-    title: "Your 28-Day Battle Plan",
-    body: "The Planner tab has your full 28-day schedule across 3 phases: Blitz (Days 1–18), Rapid Revision (Days 19–24), and Mock & Consolidate (Days 25–28). Each day has topics, India-specific content, image focus, and MCQ targets.",
+    title: "Your Battle Plan",
+    body: "The Planner tab has your full 100-day schedule across 3 phases: First Pass (Days 1–23), Integration Revision (Days 24–34), and R3/R4/Final (Days 35–100). Each day has topics, India-specific content, image focus, and MCQ targets.",
     tip: "Click any day in the grid to see the full detail. Tick it off when done to build your streak.",
   },
   {

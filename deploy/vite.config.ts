@@ -14,7 +14,7 @@ export default defineConfig({
       manifest: {
         name: "NEET PG War Plan",
         short_name: "NEET PG",
-        description: "28-Day NEET PG Study Planner",
+        description: "NEET PG Study Planner",
         theme_color: "#080810",
         background_color: "#080810",
         display: "standalone",
@@ -32,7 +32,7 @@ export default defineConfig({
         clientsClaim: true,
         cleanupOutdatedCaches: true,
         navigateFallback: "index.html",
-        navigateFallbackDenylist: [/^\/perfect-aspirant\.html/],
+        navigateFallbackDenylist: [/^\/perfect-aspirant\.html/, /^\/earning-chart\.html/],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,

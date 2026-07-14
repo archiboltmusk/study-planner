@@ -100,7 +100,7 @@ export function AdaptiveSuggestions({ pyqAttempts, mcqScores, completedDays, onG
     if (completedDays.length < 10 && new Date() > new Date("2026-04-15")) {
       tips.push({
         priority: "high",
-        text: `Only ${completedDays.length}/28 days completed. Exam is close — you need to accelerate. Consider combining 2 subjects per day in revision phase.`,
+        text: `Only ${completedDays.length} days completed so far. Exam is close — you need to accelerate. Consider combining 2 subjects per day in revision phase.`,
         action: "Open Planner",
         tab: "planner",
       });

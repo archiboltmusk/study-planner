@@ -1,0 +1,1528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Earning Chart — Life After MBBS</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,400&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap');
+
+:root{
+  --ink:#0A0E14;
+  --ink-2:#111826;
+  --paper:#F2EDE3;
+  --paper-dim:#E4DDCD;
+  --crimson:#C42847;
+  --blood:#8E1B2F;
+  --gold:#E8A93D;
+  --amber:#C1832E;
+  --line:rgba(10,14,20,0.14);
+  --line-strong:rgba(10,14,20,0.35);
+  --grid-red:rgba(196,40,71,0.08);
+  --grid-red-strong:rgba(196,40,71,0.16);
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'Inter',sans-serif;
+  overflow-x:hidden;
+}
+::selection{ background:var(--gold); color:var(--ink); }
+:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+
+.gridbg{
+  background-image:
+    linear-gradient(var(--grid-red) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-red) 1px, transparent 1px),
+    linear-gradient(var(--grid-red-strong) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-red-strong) 1px, transparent 1px);
+  background-size: 8px 8px, 8px 8px, 40px 40px, 40px 40px;
+}
+
+.nav{
+  position:sticky;
+  top:0;
+  z-index:100;
+  display:flex;
+  align-items:center;
+  gap:1.5rem;
+  padding:0.8rem 6vw;
+  background:rgba(10,14,20,0.92);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid rgba(232,169,61,0.25);
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.nav::-webkit-scrollbar{ display:none; }
+.nav .logo{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.72rem;
+  font-weight:600;
+  letter-spacing:0.15em;
+  color:var(--gold);
+  white-space:nowrap;
+  text-decoration:none;
+}
+.nav .logo .pulse{
+  display:inline-block;
+  width:7px; height:7px;
+  border-radius:50%;
+  background:var(--crimson);
+  margin-right:0.5rem;
+  animation:pulse 1.4s ease-in-out infinite;
+}
+@keyframes pulse{
+  0%,100%{ opacity:1; box-shadow:0 0 0 0 rgba(196,40,71,0.6); }
+  50%{ opacity:0.6; box-shadow:0 0 0 6px rgba(196,40,71,0); }
+}
+.nav a.nl{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.66rem;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:rgba(242,237,227,0.55);
+  text-decoration:none;
+  white-space:nowrap;
+  transition:color 0.15s ease;
+  padding:0.2rem 0;
+}
+.nav a.nl:hover{ color:var(--gold); }
+.nav a.nl .n{ color:var(--crimson); margin-right:0.3rem; }
+.nav .back-link{
+  margin-left:auto;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.66rem;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:rgba(242,237,227,0.40);
+  text-decoration:none;
+  white-space:nowrap;
+  transition:color 0.15s ease;
+  flex-shrink:0;
+}
+.nav .back-link:hover{ color:var(--gold); }
+
+.hero{
+  position:relative;
+  min-height:calc(96vh - 42px);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:10vh 6vw 22vh;
+  background:
+    radial-gradient(ellipse 80% 60% at 70% 20%, rgba(196,40,71,0.12), transparent 60%),
+    var(--ink);
+  color:var(--paper);
+  overflow:hidden;
+}
+.hero::before{
+  content:"";
+  position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(196,40,71,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(196,40,71,0.05) 1px, transparent 1px),
+    linear-gradient(rgba(196,40,71,0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(196,40,71,0.1) 1px, transparent 1px);
+  background-size: 8px 8px, 8px 8px, 40px 40px, 40px 40px;
+  pointer-events:none;
+  -webkit-mask-image:linear-gradient(to bottom, transparent, black 25%, black 75%, transparent);
+          mask-image:linear-gradient(to bottom, transparent, black 25%, black 75%, transparent);
+}
+.hero > *{ position:relative; }
+.hero .eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.7rem;
+  letter-spacing:0.28em;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:1.6rem;
+  display:flex;
+  align-items:center;
+  gap:0.8rem;
+}
+.hero .eyebrow::before{
+  content:"";
+  width:36px; height:1px;
+  background:var(--crimson);
+}
+.hero h1{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  font-size:clamp(2.9rem,8vw,6.8rem);
+  line-height:0.96;
+  letter-spacing:-0.025em;
+  max-width:14ch;
+}
+.hero h1 em{
+  font-style:italic;
+  font-weight:300;
+  color:transparent;
+  background:linear-gradient(100deg, var(--gold), var(--crimson));
+  -webkit-background-clip:text;
+          background-clip:text;
+}
+.hero p.sub{
+  font-family:'Inter',sans-serif;
+  font-size:clamp(1rem,1.6vw,1.2rem);
+  max-width:48ch;
+  margin-top:2.2rem;
+  color:rgba(242,237,227,0.7);
+  line-height:1.65;
+}
+.hero-stats{
+  display:flex;
+  gap:3.5rem;
+  margin-top:3.2rem;
+  flex-wrap:wrap;
+}
+.hstat .hv{
+  font-family:'Fraunces',serif;
+  font-weight:700;
+  font-size:clamp(1.8rem,3.4vw,2.8rem);
+  color:var(--gold);
+  font-variant-numeric:tabular-nums;
+}
+.hstat .hv .u{ font-size:0.55em; font-weight:400; color:rgba(242,237,227,0.6); }
+.hstat .hl2{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.62rem;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color:rgba(242,237,227,0.45);
+  margin-top:0.3rem;
+}
+.ecg-wrap{
+  position:absolute;
+  bottom:0; left:0; right:0;
+  height:200px;
+  pointer-events:none;
+}
+.ecg-line{
+  stroke:var(--crimson);
+  stroke-width:2.5;
+  fill:none;
+  filter:drop-shadow(0 0 8px rgba(196,40,71,0.7));
+  stroke-dasharray:3200;
+  stroke-dashoffset:3200;
+  animation:ecgdraw 4s ease-out forwards, ecgglow 2.4s ease-in-out 4s infinite;
+}
+.ecg-line-gold{
+  stroke:var(--gold);
+  stroke-width:1;
+  opacity:0.25;
+  fill:none;
+}
+@keyframes ecgdraw{ to{ stroke-dashoffset:0; } }
+@keyframes ecgglow{
+  0%,100%{ filter:drop-shadow(0 0 6px rgba(196,40,71,0.5)); }
+  50%{ filter:drop-shadow(0 0 14px rgba(196,40,71,0.9)); }
+}
+.scroll-cue{
+  margin-top:3rem;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.68rem;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:rgba(242,237,227,0.45);
+  display:flex;
+  align-items:center;
+  gap:0.6rem;
+}
+.scroll-cue::after{
+  content:"";
+  display:block;
+  width:1px; height:26px;
+  background:linear-gradient(to bottom, var(--gold), transparent);
+  animation:cuedrop 1.8s ease-in-out infinite;
+}
+@keyframes cuedrop{
+  0%{ transform:translateY(-4px); opacity:0; }
+  40%{ opacity:1; }
+  100%{ transform:translateY(6px); opacity:0; }
+}
+
+.sec-tag{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.66rem;
+  letter-spacing:0.24em;
+  text-transform:uppercase;
+  display:flex;
+  align-items:center;
+  gap:0.8rem;
+  margin-bottom:1.2rem;
+}
+.sec-tag::before{
+  content:"";
+  width:28px; height:1px;
+  background:currentColor;
+  opacity:0.5;
+}
+
+.reveal{
+  opacity:0;
+  transform:translateY(24px);
+  transition:opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.in{
+  opacity:1;
+  transform:none;
+}
+
+.intro{
+  padding:9vh 6vw;
+  border-bottom:1px solid var(--line);
+  position:relative;
+}
+.intro::after{
+  content:"";
+  position:absolute;
+  right:6vw; top:50%;
+  transform:translateY(-50%);
+  width:180px; height:120px;
+  background-image:
+    linear-gradient(var(--grid-red) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-red) 1px, transparent 1px);
+  background-size:12px 12px;
+  opacity:0.9;
+  pointer-events:none;
+}
+.intro p{
+  font-family:'Fraunces',serif;
+  font-size:clamp(1.35rem,2.6vw,2rem);
+  line-height:1.5;
+  font-weight:400;
+  max-width:64ch;
+  position:relative;
+}
+.intro p .hl{
+  background:linear-gradient(to top, rgba(232,169,61,0.35) 42%, transparent 42%);
+}
+
+.controls{
+  display:flex;
+  flex-wrap:wrap;
+  gap:0.6rem;
+  padding:5vh 6vw 2vh;
+  align-items:center;
+}
+.controls .label{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.68rem;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  color:var(--ink);
+  opacity:0.55;
+  margin-right:0.5rem;
+}
+.filter-btn{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.74rem;
+  letter-spacing:0.04em;
+  padding:0.5rem 1rem;
+  border:1px solid var(--line-strong);
+  background:transparent;
+  color:var(--ink);
+  cursor:pointer;
+  border-radius:2px;
+  transition:all 0.18s ease;
+}
+.filter-btn:hover{ background:rgba(10,14,20,0.06); transform:translateY(-1px); }
+.filter-btn.active{
+  background:var(--ink);
+  color:var(--paper);
+  border-color:var(--ink);
+}
+.filter-btn.active[data-tier="best"]{ background:var(--gold); border-color:var(--gold); color:var(--ink); }
+.filter-btn.active[data-tier="good"]{ background:var(--amber); border-color:var(--amber); color:var(--paper); }
+.filter-btn.active[data-tier="decent"]{ background:var(--crimson); border-color:var(--crimson); color:var(--paper); }
+
+.chart{
+  padding:2vh 6vw 10vh;
+}
+.chart-head{
+  display:grid;
+  grid-template-columns: 2.4fr 1fr 5fr 1fr;
+  gap:1rem;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.66rem;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  opacity:0.5;
+  padding:0 0 0.8rem;
+  border-bottom:2px solid var(--ink);
+}
+.row{
+  display:grid;
+  grid-template-columns: 2.4fr 1fr 5fr 1fr;
+  gap:1rem;
+  align-items:center;
+  padding:1.2rem 0.4rem;
+  border-bottom:1px solid var(--line);
+  transition:background 0.2s ease;
+  row-gap:0;
+  cursor:pointer;
+  position:relative;
+}
+.row:hover{ background:rgba(232,169,61,0.07); }
+.row::before{
+  content:"";
+  position:absolute;
+  left:-0.4rem; top:0; bottom:0;
+  width:3px;
+  background:var(--gold);
+  transform:scaleY(0);
+  transition:transform 0.2s ease;
+}
+.row:hover::before, .row.open::before{ transform:scaleY(1); }
+.row.hidden{ display:none; }
+.row .name{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  font-size:1.08rem;
+}
+.row .name::before{
+  content:"+";
+  display:inline-block;
+  width:1.1rem;
+  color:var(--crimson);
+  font-family:'IBM Plex Mono',monospace;
+  font-weight:600;
+  transition:transform 0.2s ease;
+}
+.row.open .name::before{ content:"–"; }
+.row .degree{
+  display:block;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.66rem;
+  opacity:0.5;
+  margin-top:0.2rem;
+  margin-left:1.1rem;
+  letter-spacing:0.05em;
+}
+.row .start-val, .row .ceil-val{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.84rem;
+  font-weight:500;
+  white-space:nowrap;
+  font-variant-numeric:tabular-nums;
+}
+.row .ceil-val{ text-align:right; }
+.bar-track{
+  position:relative;
+  height:14px;
+  background:
+    repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px 10%);
+  background-color:var(--paper-dim);
+  border-radius:1px;
+}
+.bar-fill{
+  position:absolute;
+  top:0; left:0; bottom:0;
+  border-radius:1px;
+  transform-origin:left;
+  animation:barin 0.9s cubic-bezier(0.25,1,0.4,1) both;
+}
+@keyframes barin{ from{ transform:scaleX(0); } to{ transform:scaleX(1); } }
+.bar-marker{
+  position:absolute;
+  top:50%;
+  width:3px; height:24px;
+  background:var(--ink);
+  transform:translate(-50%,-50%);
+}
+.tier-best .bar-fill{ background:linear-gradient(90deg, var(--gold), #F0BE62); }
+.tier-good .bar-fill{ background:linear-gradient(90deg, var(--amber), #D49A48); }
+.tier-decent .bar-fill{ background:linear-gradient(90deg, var(--blood), var(--crimson)); }
+
+.detail{
+  grid-column: 1 / -1;
+  max-height:0;
+  overflow:hidden;
+  transition:max-height 0.35s ease, padding 0.35s ease;
+}
+.row.open .detail{
+  max-height:900px;
+  padding-top:1.1rem;
+}
+.detail-inner{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:1.3rem 1.8rem;
+  padding:1.3rem 1.3rem 1.5rem;
+  margin-left:1.1rem;
+  background:var(--paper-dim);
+  background-image:
+    linear-gradient(var(--grid-red) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-red) 1px, transparent 1px);
+  background-size:24px 24px;
+  border-left:3px solid var(--crimson);
+}
+.detail-block.span2{ grid-column: 1 / -1; }
+.detail-block .dt{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.64rem;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color:var(--blood);
+  margin-bottom:0.45rem;
+}
+.detail-block .path{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.82rem;
+  line-height:1.65;
+}
+.detail-block ul{
+  list-style:none;
+  font-size:0.86rem;
+  line-height:1.7;
+}
+.detail-block ul li::before{
+  content:"→ ";
+  color:var(--crimson);
+}
+
+.match{
+  background:var(--ink);
+  color:var(--paper);
+  padding:9vh 6vw;
+  position:relative;
+}
+.match .eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.7rem;
+  letter-spacing:0.24em;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:1rem;
+  display:flex;
+  align-items:center;
+  gap:0.8rem;
+}
+.match .eyebrow::before{
+  content:"";
+  width:28px; height:1px;
+  background:var(--crimson);
+}
+.match h2{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  font-size:clamp(1.9rem,4.2vw,3.2rem);
+  max-width:22ch;
+  margin-bottom:0.9rem;
+  letter-spacing:-0.015em;
+}
+.match p.lede{
+  max-width:54ch;
+  color:rgba(242,237,227,0.62);
+  line-height:1.65;
+  margin-bottom:3rem;
+  font-size:0.95rem;
+}
+.quiz-grid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:2rem 3rem;
+  margin-bottom:2.5rem;
+}
+.q-block .q-label{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.76rem;
+  letter-spacing:0.02em;
+  margin-bottom:0.7rem;
+  display:flex;
+  justify-content:space-between;
+  gap:1rem;
+}
+.q-block .q-label .val{
+  color:var(--gold);
+  font-weight:600;
+  min-width:1.2em;
+  text-align:right;
+}
+.q-block input[type="range"]{
+  -webkit-appearance:none;
+  appearance:none;
+  width:100%;
+  height:2px;
+  background:rgba(242,237,227,0.22);
+  outline:none;
+}
+.q-block input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:18px; height:18px;
+  border-radius:50%;
+  background:var(--gold);
+  cursor:pointer;
+  border:2px solid var(--ink);
+  box-shadow:0 0 0 1.5px var(--gold), 0 0 12px rgba(232,169,61,0.4);
+  transition:transform 0.15s ease;
+}
+.q-block input[type="range"]::-webkit-slider-thumb:hover{ transform:scale(1.15); }
+.q-block input[type="range"]::-moz-range-thumb{
+  width:18px; height:18px;
+  border-radius:50%;
+  background:var(--gold);
+  cursor:pointer;
+  border:2px solid var(--ink);
+  box-shadow:0 0 0 1.5px var(--gold);
+}
+.q-block .scale-hint{
+  display:flex;
+  justify-content:space-between;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.6rem;
+  opacity:0.4;
+  margin-top:0.5rem;
+  text-transform:uppercase;
+  letter-spacing:0.06em;
+}
+#rank-input{
+  width:100%;
+  background:rgba(242,237,227,0.05) !important;
+  border:1px solid rgba(242,237,227,0.3) !important;
+  color:var(--paper) !important;
+  font-family:'IBM Plex Mono',monospace !important;
+  font-size:0.85rem !important;
+  padding:0.6rem 0.8rem !important;
+  border-radius:2px !important;
+  transition:border-color 0.15s ease;
+}
+#rank-input:focus{ border-color:var(--gold) !important; }
+.surgery-toggle{ grid-column: 1 / -1; }
+.surgery-toggle .q-label{ margin-bottom:0.8rem; }
+.toggle-row{ display:flex; gap:0.6rem; flex-wrap:wrap; }
+.toggle-opt{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.76rem;
+  padding:0.6rem 1.2rem;
+  border:1px solid rgba(242,237,227,0.3);
+  background:transparent;
+  color:var(--paper);
+  cursor:pointer;
+  border-radius:2px;
+  transition:all 0.18s ease;
+}
+.toggle-opt:hover{ border-color:var(--gold); transform:translateY(-1px); }
+.toggle-opt.active{
+  background:var(--crimson);
+  border-color:var(--crimson);
+  color:var(--paper);
+  box-shadow:0 0 16px rgba(196,40,71,0.35);
+}
+.results{
+  border-top:1px solid rgba(242,237,227,0.18);
+  padding-top:2.4rem;
+}
+.results .r-label{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.68rem;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  opacity:0.5;
+  margin-bottom:1.4rem;
+}
+.match-card{
+  display:grid;
+  grid-template-columns: 2.4rem 1fr auto;
+  gap:1rem;
+  align-items:center;
+  padding:1.1rem 0.6rem;
+  border-bottom:1px solid rgba(242,237,227,0.1);
+  cursor:pointer;
+  transition:background 0.18s ease, padding-left 0.18s ease;
+}
+.match-card:hover{
+  background:rgba(232,169,61,0.06);
+  padding-left:1rem;
+}
+.match-card .rank{
+  font-family:'IBM Plex Mono',monospace;
+  color:var(--crimson);
+  font-size:1rem;
+  font-weight:600;
+}
+.match-card .mc-name{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  font-size:1.18rem;
+}
+.match-card .mc-why{
+  font-family:'Inter',sans-serif;
+  font-size:0.8rem;
+  color:rgba(242,237,227,0.55);
+  margin-top:0.25rem;
+}
+.match-card .mc-score{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.88rem;
+  font-weight:600;
+  color:var(--gold);
+  white-space:nowrap;
+  font-variant-numeric:tabular-nums;
+}
+
+.tier-grid{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap:1.5rem;
+  margin-bottom:2rem;
+}
+.tier-card{
+  border:1px solid var(--line-strong);
+  padding:1.7rem 1.5rem;
+  background:rgba(255,255,255,0.45);
+  position:relative;
+  transition:transform 0.25s ease, box-shadow 0.25s ease;
+}
+.tier-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 12px 32px rgba(10,14,20,0.1);
+}
+.tier-card::before{
+  content:"";
+  position:absolute;
+  top:0; left:0; right:0;
+  height:3px;
+  background:linear-gradient(90deg, var(--gold), var(--crimson));
+}
+.tier-head{
+  margin-bottom:1.2rem;
+  padding-bottom:1rem;
+  border-bottom:1px solid var(--line);
+}
+.tier-num{
+  display:block;
+  font-family:'Fraunces',serif;
+  font-weight:700;
+  font-size:1.7rem;
+  color:var(--crimson);
+}
+.tier-cities{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.7rem;
+  opacity:0.6;
+  line-height:1.5;
+}
+.tier-row{ margin-bottom:1rem; }
+.tier-row .tk{
+  display:block;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.63rem;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  opacity:0.5;
+  margin-bottom:0.3rem;
+}
+.tier-row .tv{
+  font-family:'Inter',sans-serif;
+  font-size:0.86rem;
+  line-height:1.55;
+}
+.strategy-note{
+  border-top:2px solid var(--crimson);
+  padding-top:1.3rem;
+  margin-top:1.6rem;
+  max-width:72ch;
+}
+.strategy-note .dt{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.68rem;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  margin-bottom:0.6rem;
+}
+.strategy-note p{
+  font-family:'Inter',sans-serif;
+  font-size:0.93rem;
+  line-height:1.68;
+  color:rgba(10,14,20,0.78);
+}
+
+.footnote{
+  padding:6vh 6vw 9vh;
+  max-width:64ch;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.76rem;
+  line-height:1.75;
+  opacity:0.62;
+  border-top:1px solid var(--line);
+}
+
+@media (max-width:1100px){
+  .tier-grid[style*="repeat(5"]{ grid-template-columns:repeat(2,1fr) !important; }
+}
+@media (max-width:900px){
+  .tier-grid{ grid-template-columns:1fr; }
+  .tier-grid[style*="repeat(5"]{ grid-template-columns:1fr !important; }
+}
+@media (max-width:720px){
+  .chart-head{ display:none; }
+  .row{
+    grid-template-columns: 1fr;
+    gap:0.5rem;
+    padding:1.4rem 0.4rem;
+  }
+  .row .start-val{ order:2; }
+  .bar-track{ order:3; margin-top:0.3rem;}
+  .row .ceil-val{ order:4; text-align:right; }
+  .row .start-val::before{ content:"Starting  "; opacity:0.5; }
+  .row .ceil-val::before{ content:"Ceiling  "; opacity:0.5; }
+  .detail-inner{ grid-template-columns:1fr; }
+  .detail-block.span2{ grid-column:1; }
+  .quiz-grid{ grid-template-columns:1fr; }
+  .match-card{ grid-template-columns: 1.8rem 1fr; }
+  .match-card .mc-score{ grid-column:2; margin-top:0.3rem; }
+  .hero-stats{ gap:2rem; }
+  .intro::after{ display:none; }
+}
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto; }
+  *, *::before, *::after{ animation:none !important; transition:none !important; }
+  .reveal{ opacity:1; transform:none; }
+  .ecg-line{ stroke-dashoffset:0; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="#top" class="logo"><span class="pulse"></span>LIFE AFTER MBBS</a>
+  <a class="nl" href="#chart"><span class="n">01</span>Earning Chart</a>
+  <a class="nl" href="#engine"><span class="n">02</span>Decision Engine</a>
+  <a class="nl" href="#cities"><span class="n">03</span>City Tiers</a>
+  <a class="nl" href="#ranks"><span class="n">04</span>Rank Reality</a>
+  <a class="nl" href="#toxicity"><span class="n">05</span>The Hard Truths</a>
+  <a class="nl" href="#beyond"><span class="n">06</span>Beyond Clinical</a>
+  <a href="/" class="back-link">← Back to Planner</a>
+</nav>
+
+<section class="hero" id="top">
+  <div class="eyebrow">Career Diagnosis Report // India, 2026</div>
+  <h1>Same degree.<br>Wildly <em>different</em> vitals.</h1>
+  <p class="sub">Every branch after MBBS reads on a different monitor. Some flatline early and stay stable. Some start slow and spike hard by year ten. This is the full readout — earnings, seats, cities, and the parts nobody puts on a brochure.</p>
+  <div class="hero-stats">
+    <div class="hstat"><div class="hv">₹<span class="countup" data-to="180">0</span><span class="u">L</span></div><div class="hl2">Top ceiling / yr</div></div>
+    <div class="hstat"><div class="hv"><span class="countup" data-to="18">0</span></div><div class="hl2">Branches charted</div></div>
+    <div class="hstat"><div class="hv"><span class="countup" data-to="36">0</span><span class="u">x</span></div><div class="hl2">Spread, floor to ceiling</div></div>
+  </div>
+  <div class="scroll-cue">Scroll for the readout</div>
+  <div class="ecg-wrap">
+    <svg viewBox="0 0 1200 200" preserveAspectRatio="none" style="width:100%;height:100%;">
+      <polyline class="ecg-line-gold" points="0,150 1200,150"/>
+      <polyline class="ecg-line" points="0,130 90,130 120,130 138,44 156,176 172,96 188,130 380,130 410,130 428,44 446,176 462,96 478,130 660,130 700,130 718,20 736,188 752,84 768,130 960,130 1000,130 1018,44 1036,176 1052,96 1068,130 1200,130"/>
+    </svg>
+  </div>
+</section>
+
+<section class="intro">
+  <p>MBBS is the <span class="hl">floor</span>, not the ceiling. What you specialize into — and whether you go government, private, or build something of your own — decides whether your income plateaus at 15 lakh or clears a crore.</p>
+</section>
+
+<section class="controls" id="chart">
+  <span class="label">Filter</span>
+  <button class="filter-btn active" data-tier="all">All branches</button>
+  <button class="filter-btn" data-tier="best">Best</button>
+  <button class="filter-btn" data-tier="good">Good</button>
+  <button class="filter-btn" data-tier="decent">Decent</button>
+</section>
+
+<section class="chart">
+  <div class="chart-head">
+    <div>Branch (tap for path + skills)</div>
+    <div>Starting</div>
+    <div>Range (starting → ceiling)</div>
+    <div style="text-align:right;">Ceiling</div>
+  </div>
+  <div id="rows"></div>
+</section>
+
+<section class="match" id="engine">
+  <div class="eyebrow">Decision Engine</div>
+  <h2>Don't guess. Weight what matters to you, and let it rank the branches.</h2>
+  <p class="lede">Move each slider to how much it matters to you — 0 means you don't care, 5 means it's decisive. Pick your OT comfort. The list below re-ranks live.</p>
+
+  <div class="quiz-grid">
+    <div class="q-block">
+      <div class="q-label"><span>Money — high ceiling matters</span><span class="val" id="v-money">3</span></div>
+      <input type="range" id="s-money" min="0" max="5" value="3">
+      <div class="scale-hint"><span>Don't care</span><span>Decisive</span></div>
+    </div>
+    <div class="q-block">
+      <div class="q-label"><span>Work-life balance</span><span class="val" id="v-worklife">3</span></div>
+      <input type="range" id="s-worklife" min="0" max="5" value="3">
+      <div class="scale-hint"><span>Don't care</span><span>Decisive</span></div>
+    </div>
+    <div class="q-block">
+      <div class="q-label"><span>Direct patient contact</span><span class="val" id="v-patient">3</span></div>
+      <input type="range" id="s-patient" min="0" max="5" value="3">
+      <div class="scale-hint"><span>Prefer technical</span><span>Prefer people</span></div>
+    </div>
+    <div class="q-block">
+      <div class="q-label"><span>Social media / personal brand potential</span><span class="val" id="v-social">3</span></div>
+      <input type="range" id="s-social" min="0" max="5" value="3">
+      <div class="scale-hint"><span>Don't care</span><span>Decisive</span></div>
+    </div>
+    <div class="q-block">
+      <div class="q-label"><span>Shorter training preferred</span><span class="val" id="v-short">3</span></div>
+      <input type="range" id="s-short" min="0" max="5" value="3">
+      <div class="scale-hint"><span>Don't care</span><span>Want it fast</span></div>
+    </div>
+    <div class="q-block">
+      <div class="q-label"><span>Attitude to life — grind now for a bigger payoff later, or stability now</span><span class="val" id="v-attitude">3</span></div>
+      <input type="range" id="s-attitude" min="0" max="5" value="3">
+      <div class="scale-hint"><span>Stability now</span><span>Grind for the payoff</span></div>
+    </div>
+    <div class="q-block">
+      <div class="q-label"><span>Your NEET PG rank (actual or expected)</span></div>
+      <input type="number" id="rank-input" placeholder="e.g. 6500 — leave blank to ignore" style="width:100%; background:transparent; border:1px solid rgba(238,235,225,0.3); color:var(--paper); font-family:'IBM Plex Mono',monospace; font-size:0.85rem; padding:0.55rem 0.7rem; border-radius:2px;">
+      <div class="scale-hint"><span>Rough AIQ bands, general category — swings hugely by state/category/round</span></div>
+    </div>
+    <div class="q-block surgery-toggle">
+      <div class="q-label"><span>Operating theatre comfort</span></div>
+      <div class="toggle-row">
+        <button class="toggle-opt" data-ot="love">Love the OT</button>
+        <button class="toggle-opt active" data-ot="neutral">Neutral</button>
+        <button class="toggle-opt" data-ot="avoid">Avoid surgery</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="results">
+    <div class="r-label">Your top matches — tap any to see its full path</div>
+    <div id="matchResults"></div>
+  </div>
+</section>
+
+<section class="match" id="cities" style="background:var(--paper); color:var(--ink);">
+  <div class="eyebrow" style="color:var(--crimson);">Where You Practice</div>
+  <h2 style="color:var(--ink);">The same MCh pays differently depending on the pin code.</h2>
+  <p class="lede" style="color:rgba(14,27,42,0.65);">City tier changes four things at once: what things cost, what research you can touch, what your actual daily life looks like, and how big an audience is even reachable if you build a public presence.</p>
+
+  <div class="tier-grid">
+    <div class="tier-card">
+      <div class="tier-head">
+        <span class="tier-num">Tier 1</span>
+        <span class="tier-cities">Delhi NCR · Mumbai · Bengaluru · Chennai · Hyderabad · Kolkata · Pune</span>
+      </div>
+      <div class="tier-row"><span class="tk">Lifestyle cost</span><span class="tv">High — ₹40k–80k+/month for a comfortable single life; 2BHK rent ₹25k–60k</span></div>
+      <div class="tier-row"><span class="tk">Research access</span><span class="tv">Best in the country — AIIMS Delhi, NIMHANS, Tata Memorial, CMC-network collaborations, most clinical trials and fellowships, highest paper/publication throughput</span></div>
+      <div class="tier-row"><span class="tk">Gym & lifestyle</span><span class="tv">Best fitness infrastructure and social scene by far — also the most traffic, longest commutes, highest ambient stress</span></div>
+      <div class="tier-row"><span class="tk">Social media reach</span><span class="tv">Largest addressable audience and most brand-deal money — but also the most competition; standing out takes real content investment</span></div>
+      <div class="tier-row"><span class="tk">Best fit</span><span class="tv">Cosmetic derm, plastic surgery, DM/MCh super-specialties — these need corporate hospital volume and patient willingness-to-pay that only exists here</span></div>
+    </div>
+
+    <div class="tier-card">
+      <div class="tier-head">
+        <span class="tier-num">Tier 2</span>
+        <span class="tier-cities">Kalyani · Bhubaneswar · Lucknow · Jaipur · Indore · Kochi · Chandigarh · Nagpur · Coimbatore</span>
+      </div>
+      <div class="tier-row"><span class="tk">Lifestyle cost</span><span class="tv">Moderate — ₹20k–40k/month covers a genuinely comfortable life; rent a fraction of Tier 1</span></div>
+      <div class="tier-row"><span class="tk">Research access</span><span class="tv">Growing fast — new AIIMS campuses (Kalyani, Bhubaneswar, Raipur, Rishikesh) now put real research infrastructure here; less volume than Tier 1 but far less competition for authorship and PI roles</span></div>
+      <div class="tier-row"><span class="tk">Gym & lifestyle</span><span class="tv">Decent and improving fitness culture, shorter commutes, meaningfully better actual work-life balance than the metro grind</span></div>
+      <div class="tier-row"><span class="tk">Social media reach</span><span class="tv">Underserved niche — becoming "the doctor" of a Tier 2 city is realistic with far less competition than fighting for attention in Mumbai or Delhi</span></div>
+      <div class="tier-row"><span class="tk">Best fit</span><span class="tv">General surgery, ortho, ophthalmology, general medicine — strong demand, fast patient-trust building, first-mover advantage still very much open</span></div>
+    </div>
+
+    <div class="tier-card">
+      <div class="tier-head">
+        <span class="tier-num">Tier 3</span>
+        <span class="tier-cities">Purulia and comparable district towns</span>
+      </div>
+      <div class="tier-row"><span class="tk">Lifestyle cost</span><span class="tv">Low — ₹10k–20k/month covers a full life; largest gap between income and cost of living of any tier</span></div>
+      <div class="tier-row"><span class="tk">Research access</span><span class="tv">Limited formal infrastructure, but real openings in public health and epidemiology — rural health data, NFHS-style field research, and government scheme evaluation are genuinely under-studied here</span></div>
+      <div class="tier-row"><span class="tk">Gym & lifestyle</span><span class="tv">Minimal fitness infrastructure, but low ambient stress and a tight, known community</span></div>
+      <div class="tier-row"><span class="tk">Social media reach</span><span class="tv">Small absolute audience, but the "local hero doctor" angle builds trust fast and converts into real patient volume — hyperlocal, high-conversion rather than high-reach</span></div>
+      <div class="tier-row"><span class="tk">Best fit</span><span class="tv">General practice, govt medical officer, general medicine — near-monopoly potential, strong NPA/pension benefits, minimal competition for patient base</span></div>
+    </div>
+  </div>
+
+  <div class="strategy-note">
+    <div class="dt" style="color:var(--crimson);">A realistic combined strategy</div>
+    <p>Train where the volume and mentorship are — Tier 1, for the PG years. Build the hard skill and the publication record there. Then move the practice to Tier 2, where cost of living drops sharply, competition thins out, and — for you specifically — AIIMS Kalyani gives Tier 1-grade research access without the Tier 1 cost or crowd. Keep Tier 3 (Purulia) as a genuine second base: govt posting or a satellite clinic gives near-monopoly patient access, NPA benefits, and a hyperlocal platform your civic-tech work already half-built.</p>
+  </div>
+
+  <div class="strategy-note" style="border-color:rgba(14,27,42,0.2);">
+    <div class="dt" style="color:var(--crimson);">Where the decision engine above breaks down</div>
+    <p>It doesn't check NEET PG rank feasibility, private-seat capitation cost, or specialty saturation — it ranks your stated preferences against trait data, not against what you can actually get a seat for or what's already crowded in your target city. Treat the ranking as a shortlist to sanity-check, not a verdict.</p>
+  </div>
+</section>
+
+<section class="match" id="ranks" style="background:var(--ink); color:var(--paper);">
+  <div class="eyebrow">Rank Reality</div>
+  <h2>What your rank actually buys you.</h2>
+  <p class="lede">Category (SC/ST/OBC/EWS) shifts your effective rank significantly against these general-category bands — always check the category-wise cutoff for your specific state, not just the headline number.</p>
+
+  <div class="tier-grid" style="grid-template-columns:repeat(3,1fr);">
+    <div class="tier-card" style="background:rgba(238,235,225,0.05); border-color:rgba(238,235,225,0.2);">
+      <div class="tier-head" style="border-color:rgba(238,235,225,0.15);">
+        <span class="tier-num" style="color:var(--paper);">Top ~500</span>
+        <span class="tier-cities" style="color:rgba(238,235,225,0.55);">AIIMS Delhi · PGIMER Chandigarh · JIPMER</span>
+      </div>
+      <div class="tier-row"><span class="tk" style="color:rgba(238,235,225,0.5);">What you get</span><span class="tv" style="color:rgba(238,235,225,0.85);">Near-zero fees, best training and research access in the country, toughest competition to reach</span></div>
+    </div>
+    <div class="tier-card" style="background:rgba(238,235,225,0.05); border-color:rgba(238,235,225,0.2);">
+      <div class="tier-head" style="border-color:rgba(238,235,225,0.15);">
+        <span class="tier-num" style="color:var(--paper);">~500–3,000</span>
+        <span class="tier-cities" style="color:rgba(238,235,225,0.55);">Top state govt colleges — Maulana Azad, MAMC, Grant Medical, Madras Medical, KGMU</span>
+      </div>
+      <div class="tier-row"><span class="tk" style="color:rgba(238,235,225,0.5);">What you get</span><span class="tv" style="color:rgba(238,235,225,0.85);">Strong reputation, nominal fees, solid faculty and case volume — the realistic "best" tier for most toppers</span></div>
+    </div>
+    <div class="tier-card" style="background:rgba(238,235,225,0.05); border-color:rgba(238,235,225,0.2);">
+      <div class="tier-head" style="border-color:rgba(238,235,225,0.15);">
+        <span class="tier-num" style="color:var(--paper);">~3,000–15,000</span>
+        <span class="tier-cities" style="color:rgba(238,235,225,0.55);">Other state government medical colleges, via AIQ or state quota</span>
+      </div>
+      <div class="tier-row"><span class="tk" style="color:rgba(238,235,225,0.5);">What you get</span><span class="tv" style="color:rgba(238,235,225,0.85);">Respectable training, low fees, wide geographic spread — this is where most PG seats in the country actually sit</span></div>
+    </div>
+    <div class="tier-card" style="background:rgba(238,235,225,0.05); border-color:rgba(238,235,225,0.2);">
+      <div class="tier-head" style="border-color:rgba(238,235,225,0.15);">
+        <span class="tier-num" style="color:var(--paper);">~15,000–50,000+</span>
+        <span class="tier-cities" style="color:rgba(238,235,225,0.55);">Deemed universities and private medical colleges</span>
+      </div>
+      <div class="tier-row"><span class="tk" style="color:rgba(238,235,225,0.5);">What you get</span><span class="tv" style="color:rgba(238,235,225,0.85);">A seat is available, but total fees run ₹15L–₹1Cr+ depending on branch and college. Quality varies enormously — verify NMC recognition and faculty strength before committing</span></div>
+    </div>
+    <div class="tier-card" style="background:rgba(238,235,225,0.05); border-color:rgba(238,235,225,0.2);">
+      <div class="tier-head" style="border-color:rgba(238,235,225,0.15);">
+        <span class="tier-num" style="color:var(--paper);">DNB route</span>
+        <span class="tier-cities" style="color:rgba(238,235,225,0.55);">National Board — often overlooked</span>
+      </div>
+      <div class="tier-row"><span class="tk" style="color:rgba(238,235,225,0.5);">What you get</span><span class="tv" style="color:rgba(238,235,225,0.85);">Hospital-based training, often at strong private/corporate hospitals, degree carries equivalent recognition to MD/MS. Fees usually lower than private MD/MS — but check the specific center's accreditation and faculty strength case by case</span></div>
+    </div>
+    <div class="tier-card" style="background:rgba(238,235,225,0.05); border-color:rgba(196,40,71,0.4);">
+      <div class="tier-head" style="border-color:rgba(238,235,225,0.15);">
+        <span class="tier-num" style="color:var(--crimson);">NEET SS — a second exam entirely</span>
+        <span class="tier-cities" style="color:rgba(238,235,225,0.55);">The gate DM/MCh actually runs through</span>
+      </div>
+      <div class="tier-row"><span class="tk" style="color:rgba(238,235,225,0.5);">What's easy to miss</span><span class="tv" style="color:rgba(238,235,225,0.85);">Your NEET PG rank only gets you MS/MD. Neurosurgery, CTVS, Plastic Surgery, Cardiology, Gastro, and Nephro all require clearing NEET SS <em>afterward</em> — a completely separate exam, sat only by existing postgrads, drawing from a different and far smaller pool (~2,500-5,000 seats nationally across every DM/MCh branch combined, vs ~50,000 for NEET PG). A comfortable NEET PG rank says nothing about your NEET SS chances two-plus years later</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="match" id="toxicity" style="background:var(--paper); color:var(--ink);">
+  <div class="eyebrow" style="color:var(--crimson);">The Part Nobody Puts On A Brochure</div>
+  <h2 style="color:var(--ink);">Toxicity in the system — and what actually helps.</h2>
+  <p class="lede" style="color:rgba(14,27,42,0.65);">This isn't a scare tactic. It's what the data and the residents themselves are reporting, so you walk in knowing what to watch for and how to protect yourself.</p>
+
+  <div class="quiz-grid" style="grid-template-columns:1fr 1fr; gap:2rem 3rem;">
+    <div>
+      <div class="dt" style="color:var(--crimson); font-family:'IBM Plex Mono',monospace; font-size:0.7rem; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:0.8rem;">What's actually happening</div>
+      <ul style="list-style:none; font-size:0.9rem; line-height:1.8; color:rgba(14,27,42,0.8);">
+        <li style="margin-bottom:0.9rem;"><strong>Extreme duty hours.</strong> A 2026 FAIMA survey of 1,260 residents found 87% sleep-deprived and 62% working 36+ hour stretches — with over half considering leaving residency entirely because of it.</li>
+        <li style="margin-bottom:0.9rem;"><strong>Workplace violence.</strong> Multiple studies put verbal abuse rates at 75-80% of doctors and physical assault around 20%, mostly from patient parties during high-stress moments, with most incidents never formally reported.</li>
+        <li style="margin-bottom:0.9rem;"><strong>Steep hierarchy.</strong> Senior-junior power structures in Indian PG training discourage reporting of harassment — junior residents are structurally the most vulnerable and the least protected.</li>
+        <li style="margin-bottom:0.9rem;"><strong>Rules that exist on paper only.</strong> A 1992 government notification capped resident hours at 12/day and 48/week. It was never enforced. 2023 NMC regulations still just say "reasonable working hours" — undefined.</li>
+        <li><strong>Night-shift safety.</strong> A widely reported 2024 assault case at a Kolkata hospital triggered nationwide protests and renewed scrutiny of on-campus safety infrastructure for doctors, especially women, on night duty.</li>
+      </ul>
+    </div>
+    <div>
+      <div class="dt" style="color:var(--crimson); font-family:'IBM Plex Mono',monospace; font-size:0.7rem; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:0.8rem;">What actually helps</div>
+      <ul style="list-style:none; font-size:0.9rem; line-height:1.8; color:rgba(14,27,42,0.8);">
+        <li style="margin-bottom:0.9rem;"><strong>Reform is finally moving.</strong> A 2026 Parliamentary panel formally flagged "inhuman" duty hours and called for a national protocol; a Supreme Court PIL is pushing the same. Not resolved yet, but real institutional pressure now exists.</li>
+        <li style="margin-bottom:0.9rem;"><strong>Check the grievance mechanism before you join.</strong> Ask directly: does this college/hospital have a functioning anti-harassment (ICC) committee and 24/7 mental health counselling — not just on paper.</li>
+        <li style="margin-bottom:0.9rem;"><strong>Join a resident association.</strong> FAIMA and state-level resident doctor associations give you collective bargaining power and a reporting channel that an individual junior resident doesn't have alone.</li>
+        <li style="margin-bottom:0.9rem;"><strong>Ask seniors, not rankings.</strong> Word of mouth from current residents about a department's actual culture is far more reliable than a college's official reputation.</li>
+        <li><strong>Document everything.</strong> If harassment or unsafe duty conditions happen, write it down with dates — it protects you and it's what makes systemic complaints (and reform) possible in the first place.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="match" id="beyond" style="background:var(--paper); color:var(--ink);">
+  <div class="eyebrow" style="color:var(--crimson);">Off The Rank Ladder</div>
+  <h2 style="color:var(--ink);">Not everything after MBBS needs a NEET PG rank.</h2>
+  <p class="lede" style="color:rgba(10,14,20,0.65);">These don't fit the MD/MS/DM/MCh model the rest of this site is built on — different entry exams, different timelines, different risk shapes entirely. Figures are 2026 India estimates, ₹ lakh per annum, blended across sources.</p>
+
+  <div class="tier-grid">
+    <div class="tier-card">
+      <div class="tier-head">
+        <span class="tier-num">₹10L → ₹45L+</span>
+        <span class="tier-cities">Armed Forces Medical Corps · via AFMC or Short Service Commission</span>
+      </div>
+      <div class="tier-row"><span class="tk">Entry</span><span class="tv">AFMC direct entry, or SSC commission for any MBBS graduate — separate exam track from NEET PG</span></div>
+      <div class="tier-row"><span class="tk">Skills</span><span class="tv">Military medical officer training, field/trauma medicine, leadership under the rank structure</span></div>
+      <div class="tier-row"><span class="tk">Reality check</span><span class="tv">Pension + free specialization (MD/MS while in service) + a genuine second private-practice career post-retirement is the real value, not just the salary</span></div>
+    </div>
+
+    <div class="tier-card">
+      <div class="tier-head">
+        <span class="tier-num">₹7L → ₹40L+</span>
+        <span class="tier-cities">Public Health · MPH, then WHO / ICMR / NHM / state epidemiology</span>
+      </div>
+      <div class="tier-row"><span class="tk">Entry</span><span class="tv">MBBS → MPH (1-2yr, India or abroad) → state health mission, ICMR project roles, or international agencies</span></div>
+      <div class="tier-row"><span class="tk">Skills</span><span class="tv">Epidemiological modelling, program design and evaluation, grant writing, field survey design</span></div>
+      <div class="tier-row"><span class="tk">Reality check</span><span class="tv">Domestic ceiling is modest, but international postings (WHO, Gates Foundation, Global Fund) pay in USD and can far exceed the domestic band — genuinely relevant if civic-tech and policy interest you</span></div>
+    </div>
+
+    <div class="tier-card">
+      <div class="tier-head">
+        <span class="tier-num">₹6L → ₹60L+</span>
+        <span class="tier-cities">Hospital Administration · MHA / PGDHA / MBA-HCM</span>
+      </div>
+      <div class="tier-row"><span class="tk">Entry</span><span class="tv">MBBS → MHA (TISS, IIHMR, Manipal) or MBA in healthcare management</span></div>
+      <div class="tier-row"><span class="tk">Skills</span><span class="tv">Healthcare finance and operations, NABH/JCI accreditation processes, hospital P&L ownership</span></div>
+      <div class="tier-row"><span class="tk">Reality check</span><span class="tv">You stop treating patients entirely — this is running the hospital, not working in it. Ceiling scales fast at large private chains (COO/CEO track), stays modest in government</span></div>
+    </div>
+
+    <div class="tier-card">
+      <div class="tier-head">
+        <span class="tier-num">₹9L → ₹80L+</span>
+        <span class="tier-cities">Pharma & CRO · Medical Affairs, Clinical Research, Drug Safety</span>
+      </div>
+      <div class="tier-row"><span class="tk">Entry</span><span class="tv">MBBS/MD directly into medical affairs, or via a PG diploma in clinical research</span></div>
+      <div class="tier-row"><span class="tk">Skills</span><span class="tv">Clinical data interpretation, regulatory submission writing, KOL (key opinion leader) engagement, publication strategy</span></div>
+      <div class="tier-row"><span class="tk">Reality check</span><span class="tv">Zero night shifts, zero patient emergencies — genuinely one of the best work-life trades in medicine. MNC pharma pays meaningfully more than domestic companies</span></div>
+    </div>
+
+    <div class="tier-card">
+      <div class="tier-head">
+        <span class="tier-num">₹8L → ₹35L</span>
+        <span class="tier-cities">UPSC / Civil Services · IAS, IPS, or Central Health Service with MBBS</span>
+      </div>
+      <div class="tier-row"><span class="tk">Entry</span><span class="tv">MBBS → UPSC Civil Services Exam (open to any graduate) or Combined Medical Services for CHS specifically</span></div>
+      <div class="tier-row"><span class="tk">Skills</span><span class="tv">General studies and public administration prep (a genuinely separate exam track from medicine), policy drafting, administrative decision-making</span></div>
+      <div class="tier-row"><span class="tk">Reality check</span><span class="tv">Pay is fixed by the Pay Commission and capped well below top clinical branches — the actual draw here is policy influence and institutional power, not income</span></div>
+    </div>
+
+    <div class="tier-card">
+      <div class="tier-head">
+        <span class="tier-num">₹8L → ₹55L</span>
+        <span class="tier-cities">Aviation & Sports Medicine · niche, high-trust roles</span>
+      </div>
+      <div class="tier-row"><span class="tk">Entry</span><span class="tv">MBBS → Diploma in Aviation Medicine (IAM), or sports medicine fellowship</span></div>
+      <div class="tier-row"><span class="tk">Skills</span><span class="tv">Aeromedical fitness assessment, sports injury and performance medicine, on-call event coverage</span></div>
+      <div class="tier-row"><span class="tk">Reality check</span><span class="tv">Very small market in India — real income comes from stacking an airline's medical examiner retainer with a sports team or league physician contract, not one alone</span></div>
+    </div>
+
+    <div class="tier-card">
+      <div class="tier-head">
+        <span class="tier-num">₹6L → ₹30L</span>
+        <span class="tier-cities">Academic & Research · ICMR fellowships, PhD, faculty track</span>
+      </div>
+      <div class="tier-row"><span class="tk">Entry</span><span class="tv">MBBS → MD (any) or direct PhD → ICMR/DBT-funded research position → faculty appointment</span></div>
+      <div class="tier-row"><span class="tk">Skills</span><span class="tv">Grant writing, study design and biostatistics, sustained publication record</span></div>
+      <div class="tier-row"><span class="tk">Reality check</span><span class="tv">The lowest ceiling on this entire site by design — this path is chosen for the work itself and the legacy, not the money. Be honest with yourself about which one you actually want</span></div>
+    </div>
+
+    <div class="tier-card">
+      <div class="tier-head">
+        <span class="tier-num">₹6L → ₹45L</span>
+        <span class="tier-cities">Insurance & Medico-Legal · TPA medical officer, claims, expert witness</span>
+      </div>
+      <div class="tier-row"><span class="tk">Entry</span><span class="tv">MBBS directly into a Third-Party Administrator (TPA) or insurer's medical team; expert witness work builds with reputation over time</span></div>
+      <div class="tier-row"><span class="tk">Skills</span><span class="tv">Claims adjudication, medical records auditing, courtroom-ready report writing</span></div>
+      <div class="tier-row"><span class="tk">Reality check</span><span class="tv">Desk job, fixed hours, genuinely low-stress — expert witness fees can meaningfully stack on top of a base salary once you're established</span></div>
+    </div>
+
+    <div class="tier-card">
+      <div class="tier-head">
+        <span class="tier-num">₹0L → Uncapped</span>
+        <span class="tier-cities">Health-Tech Founder · the path you're already on</span>
+      </div>
+      <div class="tier-row"><span class="tk">Entry</span><span class="tv">No formal entry — MBBS credibility + a real product + investor conviction. This is the only path here with no exam gatekeeping it at all</span></div>
+      <div class="tier-row"><span class="tk">Skills</span><span class="tv">Product thinking, fundraising, regulatory navigation (ABDM/NMC compliance), the discipline to ship while still studying</span></div>
+      <div class="tier-row"><span class="tk">Reality check</span><span class="tv">Highest variance of anything on this page — most founders make less than a Govt MO for years before an exit or scale event, if one ever comes. The upside is real but so is the tail risk</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="footnote">
+  Figures are annual, India, 2026 estimates in ₹ lakh per annum (LPA) — private + government blended, metro-skewed. Ceiling reflects senior consultant / established own private practice, 10–15 yrs in, cross-checked against multiple 2026 salary-guide sources. No official Indian medical compensation survey exists publicly, so treat these as a directional band, not a guarantee — actuals swing enormously with city, hospital brand, patient volume, and how hard you hustle beyond the base salary.
+  <br><br>
+  If residency stress or burnout is something you're personally navigating right now, that's worth talking through with a counsellor or a trusted senior — not just reading about. Most medical colleges have a mental health/counselling cell; FAIMA and state resident associations can also point you to support.
+</section>
+
+<script>
+const data = [
+  {name:"Neurosurgery", degree:"MCh", tier:"best", start:15, ceiling:180,
+    path:"MBBS → NEET PG → MS Surgery (3yr) or direct NEET SS → MCh Neurosurgery (3yr, 6yr total PG)",
+    skills:["Microsurgical technique — years of cadaver + OT time under a senior","Stereotactic & neuro-navigation systems (BrainLab, Medtronic StealthStation)","Spine instrumentation if going spine-heavy — pedicle screws, fusion","A fellowship (endoscopic, vascular, or pediatric neuro) to differentiate","Building referral relationships with neurologists and trauma centers"],
+    worklife:"Toughest branch in medicine — unpredictable emergency calls, long OTs, minimal personal time especially the first decade in.",
+    companies:"Apollo, Fortis, Medanta, Manipal Hospitals, AIIMS faculty track",
+    passive:"Device/navigation-system consulting, CME faculty fees, textbook or chapter authorship",
+    social:"Low mainstream reach — audience is peers and referring doctors, not patients. LinkedIn and academic presence matter more than Instagram."},
+  {name:"CTVS (Cardiothoracic)", degree:"MCh", tier:"best", start:15, ceiling:180,
+    path:"MBBS → NEET PG → MS Surgery → MCh CTVS (3yr, 6yr total PG)",
+    skills:["On-pump and off-pump bypass technique","Valve repair/replacement, minimally invasive cardiac surgery (MICS)","Comfort running a cardiac OT team under time pressure","Fellowship in minimally invasive or pediatric cardiac surgery adds real ceiling","Attach to a high-volume corporate cardiac center early — volume builds skill fastest"],
+    worklife:"Similarly demanding to neurosurgery — high-stakes OTs, heavy on-call, better once senior and elective-heavy.",
+    companies:"Apollo, Fortis, Medanta, Narayana Health, Max",
+    passive:"Valve/device company advisory boards, clinical proctoring fees for new surgeons",
+    social:"Low — technical, peer-facing specialty with little patient-facing content niche."},
+  {name:"Plastic Surgery", degree:"MCh", tier:"best", start:12, ceiling:160,
+    path:"MBBS → NEET PG → MS Surgery → MCh Plastic Surgery (3yr, 6yr total PG)",
+    skills:["Microvascular free flap reconstruction","Aesthetic/cosmetic procedures — rhinoplasty, liposuction, body contouring","Burns and reconstructive trauma work for hospital-based volume","Building a personal aesthetic practice brand — this is where the real money is","Social media presence matters more here than in almost any other branch"],
+    worklife:"Better than most surgical peers once private — elective cosmetic work means real schedule control.",
+    companies:"Apollo Cosmetic, Kaya, independent aesthetic clinic chains, hospital cosmetic wings",
+    passive:"Franchise cosmetic clinics, own skincare/aesthetic product line, brand ambassador deals",
+    social:"Very high — before/after transformation content is among the best-performing medical content on Instagram and YouTube."},
+  {name:"Cardiology", degree:"DM", tier:"best", start:15, ceiling:170,
+    path:"MBBS → NEET PG → MD Medicine (3yr) → DM Cardiology (3yr, 6yr total PG)",
+    skills:["Interventional skills — angiography, angioplasty, stenting","Echocardiography and TEE proficiency","Electrophysiology if pursuing arrhythmia sub-specialization","Cath lab volume during DM determines your independent competence after","Corporate hospital empanelment drives most of the high-end income"],
+    worklife:"Demanding — cath lab hours and cardiac emergencies, but more schedule-predictable than surgery once established.",
+    companies:"Apollo, Fortis, Medanta, Narayana Health, Max",
+    passive:"Stent/pacemaker company consulting, clinical trial site fees, CME teaching circuit",
+    social:"Moderate — heart-health education content performs well; credibility-driven rather than entertainment-driven."},
+  {name:"Orthopedics", degree:"MS", tier:"best", start:10, ceiling:130,
+    path:"MBBS → NEET PG → MS Orthopedics (3yr PG)",
+    skills:["Joint replacement (hip/knee) — the highest-volume money-maker","Arthroscopy for sports injury work","Trauma fixation for hospital emergency volume","Spine surgery fellowship pushes you into the neurosurgery income bracket","Implant company relationships and OT efficiency drive private practice margin"],
+    worklife:"Moderate to good once volume shifts toward elective joint replacement over trauma call.",
+    companies:"Apollo, Max, Manipal, dedicated sports medicine and joint-replacement chains",
+    passive:"Implant company consulting, sports team physician retainers, franchise ortho clinics",
+    social:"High — sports injury and joint-pain education content has a large, engaged audience."},
+  {name:"Dermatology (cosmetic)", degree:"MD/DVL", tier:"best", start:9, ceiling:150,
+    path:"MBBS → NEET PG → MD Dermatology/DVL (3yr PG)",
+    skills:["Laser procedures — hair reduction, pigmentation, resurfacing","Botox and dermal filler injection technique","Chemical peels and acne scar management","Building a personal clinic brand — Instagram-led patient acquisition is now standard","Low OT dependency means you scale by adding chairs/branches, not just hours"],
+    worklife:"Best work-life balance in medicine — no emergencies, fixed clinic hours, high personal control.",
+    companies:"Kaya, Oliva, VLCC medical wings, or an independent clinic chain of your own",
+    passive:"Skincare/cosmeceutical product line, franchise clinics, brand ambassador and sponsored-content deals",
+    social:"Extremely high — arguably the most social-media-friendly medical specialty that exists right now."},
+  {name:"Radiology", degree:"MD", tier:"best", start:9, ceiling:120,
+    path:"MBBS → NEET PG → MD/DNB Radiodiagnosis (3yr PG)",
+    skills:["Cross-sectional imaging reads — CT, MRI proficiency at speed","Interventional radiology adds a major income tier if pursued further","Tele-radiology reporting — lets you stack multiple diagnostic center contracts","PACS/RIS software fluency","Volume-based reporting speed is the real income lever here"],
+    worklife:"Very good — few direct patient emergencies, and teleradiology allows genuinely remote, flexible work.",
+    companies:"SRL Diagnostics, Metropolis, Apollo Radiology, Teleradiology Solutions, overseas teleradiology contracts",
+    passive:"Stacking multiple teleradiology reporting contracts is close to true passive income; AI-radiology startup advisory",
+    social:"Low to moderate — technical audience; more LinkedIn/YouTube education content than Instagram."},
+  {name:"Gastroenterology", degree:"DM", tier:"good", start:14, ceiling:75,
+    path:"MBBS → NEET PG → MD Medicine → DM Gastroenterology (3yr, 6yr total PG)",
+    skills:["Upper & lower GI endoscopy volume and speed","ERCP and therapeutic endoscopy — the real differentiator","Hepatology knowledge if attached to a liver transplant center","Building endoscopy suite throughput drives private income directly"],
+    worklife:"Moderate — scheduled endoscopy sessions plus occasional GI bleed emergencies.",
+    companies:"Apollo, Fortis, Asian Institute of Gastroenterology, Max",
+    passive:"Endoscopy device/consumables consulting, second-opinion telemedicine",
+    social:"Moderate — gut-health content is a growing niche."},
+  {name:"Oncology / Radiotherapy", degree:"MD", tier:"good", start:10, ceiling:60,
+    path:"MBBS → NEET PG → MD Radiotherapy or DM Medical Oncology (3-6yr PG)",
+    skills:["Chemotherapy protocol management (medical onc) or linear accelerator planning (radiotherapy)","Tumor board collaboration skills — oncology is inherently multi-disciplinary","Less competition than surgical branches right now — a genuine strategic opening","Attach to a cancer center early for case volume and referral network"],
+    worklife:"Regular hours on paper, but emotionally demanding — heavy tumor board and counseling load.",
+    companies:"Tata Memorial Centre, Apollo Cancer Centres, HCG, Max",
+    passive:"Pharma clinical-trial site fees, medical writing, cancer-awareness content partnerships",
+    social:"Moderate to high — cancer awareness and prevention content has strong reach and real impact."},
+  {name:"Nephrology", degree:"DM", tier:"good", start:12, ceiling:65,
+    path:"MBBS → NEET PG → MD Medicine → DM Nephrology (3yr, 6yr total PG)",
+    skills:["Dialysis unit management — steady recurring-patient income model","Renal transplant medicine if attached to a transplant center","Critical care nephrology (ICU consults) for hospital-based volume"],
+    worklife:"Steady and predictable — dialysis clinic hours run on a fixed schedule.",
+    companies:"NephroPlus, Apollo, DaVita India, Fresenius Medical Care",
+    passive:"Dialysis center franchise/partnership is a genuine recurring-revenue avenue",
+    social:"Low — niche, non-visual specialty with limited public-facing content angle."},
+  {name:"General Surgery", degree:"MS", tier:"good", start:10, ceiling:90,
+    path:"MBBS → NEET PG → MS General Surgery (3yr PG)",
+    skills:["Laparoscopic technique — now near-mandatory for private practice viability","Hernia, gallbladder, appendix — your bread-and-butter volume cases","A fellowship (onco-surgery, bariatric, GI surgery) meaningfully lifts the ceiling"],
+    worklife:"Moderate, improves noticeably once practice shifts toward scheduled laparoscopic cases over emergency call.",
+    companies:"Any major hospital chain — Apollo, Max, Fortis",
+    passive:"Franchise day-care surgery centers, junior-surgeon teaching/proctoring fees",
+    social:"Moderate — general surgical health content has decent reach."},
+  {name:"Ophthalmology", degree:"MS", tier:"good", start:10, ceiling:45,
+    path:"MBBS → NEET PG → MS Ophthalmology (3yr PG)",
+    skills:["Phacoemulsification (cataract surgery) — the core volume procedure","LASIK/refractive surgery for the cosmetic-adjacent income tier","Retina fellowship if you want the highest sub-specialty ceiling"],
+    worklife:"Very good — high procedure volume but short cases and predictable hours.",
+    companies:"Dr. Agarwal's Eye Hospital, Centre for Sight, Vasan Eye Care",
+    passive:"Franchise eye-care clinics, LASIK center partnerships",
+    social:"Moderate to high — vision-care content plus strong franchise brand visibility."},
+  {name:"ENT", degree:"MS", tier:"good", start:9, ceiling:42,
+    path:"MBBS → NEET PG → MS ENT (3yr PG)",
+    skills:["Endoscopic sinus surgery","Micro-ear surgery technique","Head & neck onco-surgery fellowship for a meaningfully higher ceiling"],
+    worklife:"Good — moderate emergency load, mostly scheduled OPD and elective surgery.",
+    companies:"Apollo, Fortis, dedicated ENT specialty chains",
+    passive:"Hearing-aid center partnerships, franchise ENT clinics",
+    social:"Moderate — hearing and sinus health content has a steady audience."},
+  {name:"Anesthesia", degree:"MD", tier:"good", start:9, ceiling:75,
+    path:"MBBS → NEET PG → MD Anesthesiology (3yr PG)",
+    skills:["Regional and neuraxial block technique","Critical care/ICU cross-skilling — opens a second income stream","Flexibility to freelance across multiple private hospitals — this is the real lever"],
+    worklife:"Flexible but on-call heavy — no OPD pressure, but you go where the OT list takes you.",
+    companies:"Every hospital chain needs anesthetists — the most in-demand freelance specialty in private healthcare",
+    passive:"Stacking retainer contracts across multiple hospitals functions as near-passive income; critical care consulting",
+    social:"Very low — invisible to patients, essentially no public-facing content niche."},
+  {name:"General Medicine", degree:"MD", tier:"decent", start:9, ceiling:65,
+    path:"MBBS → NEET PG → MD General Medicine (3yr PG)",
+    skills:["Broad diagnostic acumen — the foundation for any DM super-specialization later","Building an OPD-based consulting practice with a loyal patient base","Best used as a stepping stone into DM Cardio/Gastro/Nephro, not an endpoint"],
+    worklife:"Moderate — OPD-heavy, ward rounds, some on-call depending on hospital.",
+    companies:"Any hospital chain; corporate health-check networks like Apollo Health and Medibuddy",
+    passive:"Telemedicine consultations via Practo, Tata 1mg, or MFine; corporate health-checkup contracts",
+    social:"Moderate — general health and lifestyle content reaches a broad audience."},
+  {name:"Pediatrics", degree:"MD", tier:"decent", start:8, ceiling:55,
+    path:"MBBS → NEET PG → MD Pediatrics (3yr PG)",
+    skills:["Neonatal care if attached to a NICU","Vaccination and well-child clinic volume for steady OPD income","Pediatric sub-specialty fellowships (cardiology, neurology) raise the ceiling meaningfully"],
+    worklife:"Good once private and OPD-driven — fewer late-night emergencies than adult medicine outside the NICU.",
+    companies:"Rainbow Children's Hospital, Apollo Cradle, Motherhood Hospitals",
+    passive:"Parenting/child-health brand partnerships, vaccination clinic franchise",
+    social:"High — parenting and child-health content builds a large, loyal, highly engaged audience."},
+  {name:"Govt. Medical Officer", degree:"MBBS", tier:"decent", start:6, ceiling:15,
+    path:"MBBS → state PSC or UPSC medical officer recruitment exam → posting",
+    skills:["No further clinical specialization required — the exam and posting are the qualification","Job security, pension, and NPA allowances are the real value, not the base pay","Evening private practice on the side is common where service rules permit"],
+    worklife:"Best fixed-hours security in medicine, offset by rural/remote posting risk in early years.",
+    companies:"State health departments, ESIC, Railways, PSU medical departments (ONGC, Coal India, etc.)",
+    passive:"Pension is effectively long-term passive income; permitted evening private practice adds a second stream",
+    social:"Low — role is service-based, not a public-facing brand."},
+  {name:"General Practice (unspecialized)", degree:"MBBS", tier:"decent", start:5, ceiling:14,
+    path:"MBBS → direct private practice or clinic employment, no PG",
+    skills:["Broad first-contact diagnostic skill across common conditions","Patient trust and word-of-mouth — this is the entire growth engine","Ceiling is capped without a PG; most who stay here add a diploma or certification over time"],
+    worklife:"Most flexible schedule in medicine — entirely self-set, but income is capped without further qualification.",
+    companies:"Independent clinics, Practo-affiliated clinic networks, corporate wellness tie-ups",
+    passive:"Telemedicine platform consultations (Practo, Tata 1mg, MFine) as a side income stream",
+    social:"Moderate — accessible, everyday-health content has broad reach."},
+];
+
+const rankBands = {
+  "Neurosurgery":12000, "CTVS (Cardiothoracic)":12000, "Plastic Surgery":12000, "Cardiology":5500,
+  "Gastroenterology":5500, "Nephrology":5500,
+  "Radiology":3500, "Dermatology (cosmetic)":10000,
+  "General Medicine":5500, "Pediatrics":5500, "Oncology / Radiotherapy":9000,
+  "Orthopedics":11000, "General Surgery":12000, "Ophthalmology":13000,
+  "ENT":16000, "Anesthesia":12000,
+  "Govt. Medical Officer":999999, "General Practice (unspecialized)":999999,
+};
+const neetSS = {
+  "Neurosurgery":  "via MS Surgery, then NEET SS — ~2,500-5,000 seats nationally across all DM/MCh combined; reported closing ranks for this branch have run from under 1,000 to ~25,000+ depending entirely on college prestige",
+  "CTVS (Cardiothoracic)": "via MS Surgery, then NEET SS — same small national seat pool as other MCh branches; closing ranks vary enormously by college, from under 1,000 to well into five figures",
+  "Plastic Surgery": "via MS Surgery, then NEET SS — a separate, smaller-pool exam than NEET PG; competitiveness depends heavily on which college's seats you're targeting",
+  "Cardiology": "via MD Medicine, then NEET SS — DM Cardiology is consistently one of the most competitive NEET SS branches; real closing ranks have been reported under 1,000 at some colleges, several thousand at others",
+  "Gastroenterology": "via MD Medicine, then NEET SS — a separate, smaller-pool exam; competitiveness varies significantly by college",
+  "Nephrology": "via MD Medicine, then NEET SS — generally less crowded than Cardiology or Gastro at the NEET SS stage, but still a distinct second hurdle",
+};
+const grindIndex = {
+  "Neurosurgery":5, "CTVS (Cardiothoracic)":5, "Plastic Surgery":5, "Cardiology":5,
+  "Gastroenterology":4, "Nephrology":4,
+  "Radiology":2, "Dermatology (cosmetic)":2,
+  "General Medicine":2, "Pediatrics":2, "Oncology / Radiotherapy":3,
+  "Orthopedics":3, "General Surgery":3, "Ophthalmology":2,
+  "ENT":2, "Anesthesia":2,
+  "Govt. Medical Officer":1, "General Practice (unspecialized)":1,
+};
+
+const matchScores = {
+  "Neurosurgery":        {money:5, wlScore:1, patient:3, socialScore:1, surgical:5, years:6},
+  "CTVS (Cardiothoracic)":{money:5, wlScore:1, patient:2, socialScore:1, surgical:5, years:6},
+  "Plastic Surgery":     {money:4, wlScore:3, patient:3, socialScore:5, surgical:5, years:6},
+  "Cardiology":          {money:5, wlScore:2, patient:3, socialScore:3, surgical:3, years:6},
+  "Orthopedics":         {money:4, wlScore:3, patient:3, socialScore:4, surgical:5, years:3},
+  "Dermatology (cosmetic)":{money:4, wlScore:5, patient:4, socialScore:5, surgical:2, years:3},
+  "Radiology":           {money:3, wlScore:5, patient:1, socialScore:2, surgical:1, years:3},
+  "Gastroenterology":    {money:4, wlScore:3, patient:3, socialScore:3, surgical:3, years:6},
+  "Oncology / Radiotherapy":{money:3, wlScore:3, patient:4, socialScore:4, surgical:2, years:3},
+  "Nephrology":          {money:3, wlScore:4, patient:3, socialScore:1, surgical:1, years:6},
+  "General Surgery":     {money:3, wlScore:3, patient:3, socialScore:3, surgical:5, years:3},
+  "Ophthalmology":       {money:3, wlScore:5, patient:3, socialScore:4, surgical:4, years:3},
+  "ENT":                 {money:3, wlScore:4, patient:3, socialScore:3, surgical:4, years:3},
+  "Anesthesia":          {money:3, wlScore:4, patient:1, socialScore:1, surgical:3, years:3},
+  "General Medicine":    {money:2, wlScore:3, patient:4, socialScore:3, surgical:1, years:3},
+  "Pediatrics":          {money:2, wlScore:4, patient:5, socialScore:5, surgical:1, years:3},
+  "Govt. Medical Officer":{money:1, wlScore:5, patient:4, socialScore:1, surgical:1, years:0},
+  "General Practice (unspecialized)":{money:1, wlScore:5, patient:4, socialScore:3, surgical:1, years:0},
+};
+data.forEach(d=> Object.assign(d, matchScores[d.name], {rankBand: rankBands[d.name], grind: grindIndex[d.name], neetSSNote: neetSS[d.name] || null}));
+
+const maxCeiling = Math.max(...data.map(d=>d.ceiling));
+const rowsEl = document.getElementById('rows');
+
+data.sort((a,b)=>b.ceiling-a.ceiling);
+
+data.forEach(d=>{
+  const row = document.createElement('div');
+  row.className = `row tier-${d.tier}`;
+  row.dataset.tier = d.tier;
+
+  const startPct = (d.start/maxCeiling)*100;
+  const ceilPct = (d.ceiling/maxCeiling)*100;
+
+  row.innerHTML = `
+    <div>
+      <span class="name">${d.name}</span>
+      <span class="degree">${d.degree}</span>
+    </div>
+    <div class="start-val">₹${d.start}L</div>
+    <div class="bar-track">
+      <div class="bar-fill" style="left:${startPct}%; width:${ceilPct-startPct}%;"></div>
+      <div class="bar-marker" style="left:${startPct}%;"></div>
+    </div>
+    <div class="ceil-val">₹${d.ceiling}L</div>
+    <div class="detail">
+      <div class="detail-inner">
+        <div class="detail-block span2">
+          <div class="dt">Degree path</div>
+          <div class="path">${d.path}</div>
+        </div>
+        ${d.neetSSNote ? `
+        <div class="detail-block span2" style="background:rgba(196,40,71,0.08); padding:0.8rem 1rem; border-left:3px solid var(--crimson);">
+          <div class="dt" style="color:var(--crimson);">⚠ Two-stage exam — don't plan around one rank</div>
+          <div class="path" style="font-family:'Inter',sans-serif; font-size:0.85rem;">${d.neetSSNote}. Your NEET PG rank only gets you to MS/MD — it says nothing about your NEET SS chances afterward, since that's a separate exam against a separate, much smaller pool.</div>
+        </div>` : ''}
+        <div class="detail-block span2">
+          <div class="dt">Skills to acquire</div>
+          <ul>${d.skills.map(s=>`<li>${s}</li>`).join('')}</ul>
+        </div>
+        <div class="detail-block">
+          <div class="dt">Work-life balance</div>
+          <ul><li>${d.worklife}</li></ul>
+        </div>
+        <div class="detail-block">
+          <div class="dt">Who hires / works with</div>
+          <ul><li>${d.companies}</li></ul>
+        </div>
+        <div class="detail-block">
+          <div class="dt">Passive income options</div>
+          <ul><li>${d.passive}</li></ul>
+        </div>
+        <div class="detail-block">
+          <div class="dt">Social media potential</div>
+          <ul><li>${d.social}</li></ul>
+        </div>
+      </div>
+    </div>
+  `;
+  row.addEventListener('click', ()=> row.classList.toggle('open'));
+  rowsEl.appendChild(row);
+});
+
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const tier = btn.dataset.tier;
+    document.querySelectorAll('.row').forEach(row=>{
+      row.classList.toggle('hidden', tier!=='all' && row.dataset.tier!==tier);
+    });
+  });
+});
+
+const sliders = {
+  money: document.getElementById('s-money'),
+  worklife: document.getElementById('s-worklife'),
+  patient: document.getElementById('s-patient'),
+  social: document.getElementById('s-social'),
+  short: document.getElementById('s-short'),
+  attitude: document.getElementById('s-attitude'),
+};
+const rankInput = document.getElementById('rank-input');
+rankInput.addEventListener('input', runMatch);
+let otMode = 'neutral';
+
+document.querySelectorAll('.toggle-opt').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.toggle-opt').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    otMode = btn.dataset.ot;
+    runMatch();
+  });
+});
+
+Object.entries(sliders).forEach(([key, el])=>{
+  el.addEventListener('input', ()=>{
+    document.getElementById('v-'+key).textContent = el.value;
+    runMatch();
+  });
+});
+
+function runMatch(){
+  const w = {
+    money: +sliders.money.value,
+    worklife: +sliders.worklife.value,
+    patient: +sliders.patient.value,
+    social: +sliders.social.value,
+    short: +sliders.short.value,
+    attitude: +sliders.attitude.value,
+  };
+  const userRank = rankInput.value ? +rankInput.value : null;
+
+  const scored = data.map(d=>{
+    const trainingFit = d.years<=3 ? 5 : 1;
+    let surgicalBonus = 0;
+    if(otMode==='love') surgicalBonus = d.surgical * 2;
+    else if(otMode==='avoid') surgicalBonus = (6 - d.surgical) * 2;
+
+    let feasibility = 1, feasLabel = null;
+    if(userRank && d.years > 0){
+      const ratio = userRank / d.rankBand;
+      if(ratio <= 0.6){ feasibility = 1.15; feasLabel = "comfortably within your rank for MD/MS entry"; }
+      else if(ratio <= 1.5){ feasibility = 1.0; feasLabel = "realistic at your rank for MD/MS entry"; }
+      else if(ratio <= 3){ feasibility = 0.7; feasLabel = "a reach at your rank — later rounds/state quota"; }
+      else{ feasibility = 0.45; feasLabel = "major stretch at your rank"; }
+      if(d.neetSSNote){ feasLabel += " — plus a separate NEET SS clear needed after"; }
+    }
+
+    const rawScore =
+      d.money * w.money +
+      d.wlScore * w.worklife +
+      d.patient * w.patient +
+      d.socialScore * w.social +
+      trainingFit * w.short +
+      d.grind * w.attitude +
+      surgicalBonus;
+
+    const score = rawScore * feasibility;
+
+    const traits = [
+      {label:`₹${d.ceiling}L ceiling`, weight: d.money*w.money},
+      {label:`work-life: ${['','rough','tough','moderate','good','excellent'][d.wlScore]}`, weight: d.wlScore*w.worklife},
+      {label:`${d.years<=3?'3yr PG only':'6yr total PG'}`, weight: trainingFit*w.short},
+      {label:`social reach: ${['','very low','low','moderate','high','very high'][d.socialScore]}`, weight: d.socialScore*w.social},
+      {label: otMode==='love' ? 'OT-heavy' : otMode==='avoid' ? 'low-OT' : null, weight: Math.abs(surgicalBonus)},
+      {label: `grind: ${['','light','light-moderate','moderate','heavy','heaviest'][d.grind]}`, weight: d.grind*w.attitude},
+      {label: feasLabel, weight: feasLabel ? 999 : 0},
+    ].filter(t=>t.label).sort((a,b)=>b.weight-a.weight).slice(0,4).map(t=>t.label);
+
+    return {...d, score, why: traits.join(' · ')};
+  });
+
+  scored.sort((a,b)=>b.score-a.score);
+  const top = scored.slice(0,5);
+  const maxScore = top[0].score || 1;
+
+  const resEl = document.getElementById('matchResults');
+  resEl.innerHTML = top.map((d,i)=>`
+    <div class="match-card" data-jump="${d.name}">
+      <div class="rank">${String(i+1).padStart(2,'0')}</div>
+      <div>
+        <div class="mc-name">${d.name} <span style="opacity:0.4;font-family:'IBM Plex Mono',monospace;font-size:0.7rem;">${d.degree}</span></div>
+        <div class="mc-why">${d.why}</div>
+      </div>
+      <div class="mc-score">${Math.round((d.score/maxScore)*100)}% fit</div>
+    </div>
+  `).join('');
+
+  resEl.querySelectorAll('.match-card').forEach(card=>{
+    card.addEventListener('click', ()=>{
+      const target = Array.from(document.querySelectorAll('.row')).find(r=> r.querySelector('.name').textContent.trim() === card.dataset.jump);
+      if(target){
+        document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+        document.querySelector('.filter-btn[data-tier="all"]').classList.add('active');
+        document.querySelectorAll('.row').forEach(r=>r.classList.remove('hidden'));
+        target.classList.add('open');
+        target.scrollIntoView({behavior:'smooth', block:'center'});
+      }
+    });
+  });
+}
+
+runMatch();
+
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+document.querySelectorAll('.countup').forEach(el=>{
+  const to = +el.dataset.to;
+  if(reduceMotion){ el.textContent = to; return; }
+  const dur = 1600, t0 = performance.now();
+  function tick(t){
+    const p = Math.min((t-t0)/dur, 1);
+    el.textContent = Math.round(to * (1 - Math.pow(1-p, 3)));
+    if(p < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+});
+
+const revealTargets = document.querySelectorAll('.intro, .tier-card, .strategy-note, .q-block, .results');
+revealTargets.forEach(el=> el.classList.add('reveal'));
+if(reduceMotion){
+  revealTargets.forEach(el=> el.classList.add('in'));
+}else{
+  const io = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, {threshold:0.12});
+  revealTargets.forEach(el=> io.observe(el));
+}
+</script>
+
+</body>
+</html>

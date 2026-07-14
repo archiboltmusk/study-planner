@@ -226,7 +226,7 @@ function Leaderboard({ currentUserId }: { currentUserId?: string }) {
                 <span className="text-[10px] text-muted-foreground font-mono hidden sm:block">{e.rank_title}</span>
               </div>
               <div className="flex items-center gap-3 mt-0.5">
-                <span className="text-[10px] text-muted-foreground font-mono">{e.completed}/28 days</span>
+                <span className="text-[10px] text-muted-foreground font-mono">{e.completed} days</span>
                 <span className="text-[10px] text-orange-400 font-mono">🔥 {e.streak}</span>
               </div>
             </div>
