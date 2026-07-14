@@ -78,12 +78,12 @@ export function DailyScheduleView() {
             <ShieldAlert className="w-5 h-5" /> NON-NEGOTIABLES
           </h3>
           <ul className="space-y-4 font-serif text-sm">
-            <li className="flex gap-3"><span className="text-destructive font-bold block">•</span> No new resources after Day 18</li>
-            <li className="flex gap-3"><span className="text-destructive font-bold block">•</span> 1 full mock required from Day 22</li>
-            <li className="flex gap-3"><span className="text-destructive font-bold block">•</span> Skip question if &lt;60% confident</li>
-            <li className="flex gap-3"><span className="text-destructive font-bold block">•</span> Anatomy/Physio via MCQs only</li>
-            <li className="flex gap-3"><span className="text-destructive font-bold block">•</span> Sleep strictly at 10 PM on exam eve</li>
-            <li className="flex gap-3"><span className="text-destructive font-bold block">•</span> Creatine 5g daily for cognitive stamina</li>
+            <li className="flex gap-3"><span className="text-destructive font-bold block">•</span> No YouTube at breakfast — no distractions before 11:30 AM</li>
+            <li className="flex gap-3"><span className="text-destructive font-bold block">•</span> Read every QBank explanation — don't skip even on correct answers</li>
+            <li className="flex gap-3"><span className="text-destructive font-bold block">•</span> Marrow videos only for weak concepts — not topic-by-topic</li>
+            <li className="flex gap-3"><span className="text-destructive font-bold block">•</span> Error notebook updated every single night</li>
+            <li className="flex gap-3"><span className="text-destructive font-bold block">•</span> Close Apple Watch rings daily — exercise is non-negotiable</li>
+            <li className="flex gap-3"><span className="text-destructive font-bold block">•</span> Lights out 10:15 PM sharp — sleep is part of the plan</li>
           </ul>
         </div>
       </div>
